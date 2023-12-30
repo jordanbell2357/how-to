@@ -20,6 +20,10 @@ https://sparkbyexamples.com/apache-hive/apache-hive-installation-on-hadoop/
 
 https://kontext.tech/article/1066/install-spark-330-on-linux-or-wsl
 
+# Docker
+
+https://learning.oreilly.com/videos/docker-containers-third/9780134862958/9780134862958-DOC3_01_02_03/
+
 # Hue
 
 https://hub.docker.com/r/gethue/hue
