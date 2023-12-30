@@ -10,7 +10,7 @@ https://www.digitalocean.com/community/tutorials/how-to-install-hadoop-in-stand-
 
 https://kontext.tech/article/624/install-hbase-in-wsl-pseudo-distributed-mode
 
-https://learning.oreilly.com/videos/introduction-to-apache/9781771375993/9781771375993-video246537/
+https://learning.oreilly.com/videos/introduction-to-apache/9781771375993/9781771375993-video246558/
 
 # Hive
 
