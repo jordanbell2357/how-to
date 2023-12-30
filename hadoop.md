@@ -10,6 +10,10 @@ https://www.digitalocean.com/community/tutorials/how-to-install-hadoop-in-stand-
 
 https://kontext.tech/article/624/install-hbase-in-wsl-pseudo-distributed-mode
 
+# Hive
+
+https://sparkbyexamples.com/apache-hive/apache-hive-installation-on-hadoop/
+
 # Spark
 
 https://kontext.tech/article/1066/install-spark-330-on-linux-or-wsl
