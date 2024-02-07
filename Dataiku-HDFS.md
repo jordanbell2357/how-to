@@ -1,5 +1,9 @@
 <https://ubuntu.com/server/docs/service-openssh>
 
+https://kontext.tech/article/448/install-hadoop-330-on-linux
+
+https://linuxconfig.org/ubuntu-20-04-hadoop
+
 ```bash
 sudo apt-get install openssh-client openssh-server
 sudo apt-get install ssh pdsh
