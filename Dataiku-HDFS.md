@@ -150,5 +150,3 @@ Note: it is unfruitful to suggest running hadoop fs -cat and piping to wc. This 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/bd5b765f-c0b6-471f-b346-7beca77bfe4a)
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/7b45ee6e-b65d-4fd6-bccb-c379b62a9019)
-
-![image](https://github.com/jordanbell2357/how-to/assets/47544607/db8ecd19-0e92-4c30-a97d-e5767bff2138)
