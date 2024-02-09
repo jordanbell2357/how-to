@@ -1,8 +1,8 @@
-https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
+# Install and configure dependencies
 
 https://learning.oreilly.com/library/view/apache-hadoop-3/9781788999830/05acc385-65dc-4355-8980-37b2c8933bb3.xhtml
 
-# Install and configure dependencies
+https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
 
 ```bash
 sudo apt-get install default-jre openjdk-11-jre-headless openjdk-8-jre-headless openjdk-8-jdk
@@ -20,6 +20,8 @@ chmod 0600 ~/.ssh/authorized_keys
 ```
 
 # Download and configure Hadoop
+
+https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
 
 https://hadoop.apache.org/releases.html
 
