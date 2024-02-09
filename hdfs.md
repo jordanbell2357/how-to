@@ -1,23 +1,8 @@
 https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
 
-```bash
-sudo apt-get install default-jre openjdk-11-jre-headless openjdk-8-jre-headless openjdk-8-jdk
-```
+https://learning.oreilly.com/library/view/apache-hadoop-3/9781788999830/05acc385-65dc-4355-8980-37b2c8933bb3.xhtml
 
-```bash
-sudo apt-get install openssh-client openssh-server
-sudo apt-get install ssh pdsh
-```
-
-```bash
-ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
-cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-chmod 0600 ~/.ssh/authorized_keys
-```
-
-```bash
-HADOOP_CLASSPATH=/usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar
-```
+# CSV dataset
 
 Canada 2021 Census:
 
@@ -45,6 +30,36 @@ CENSUS_YEAR,DGUID,ALT_GEO_CODE,GEO_LEVEL,GEO_NAME,TNR_SF,TNR_LF,DATA_QUALITY_FLA
 2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",9,"  0 to 14 years",,925,"",460,"",465,"",10.4,"",10.5,"",10.3,""
 ```
 
+# Install and configure dependencies
+
+```bash
+sudo apt-get install default-jre openjdk-11-jre-headless openjdk-8-jre-headless openjdk-8-jdk
+```
+
+```bash
+sudo apt-get install openssh-client openssh-server
+sudo apt-get install ssh pdsh
+```
+
+```bash
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 0600 ~/.ssh/authorized_keys
+```
+
+# Download and configure Hadoop
+
+```bash
+wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz
+tar -xvzf hadoop-3.3.6.tar.gz
+```
+
+```bash
+HADOOP_CLASSPATH=/usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar
+```
+
+
+
 ```bash
 ubuntu@LAPTOP-JBell:~$ hadoop fs -ls /ONTARIO
 Found 2 items
@@ -71,7 +86,7 @@ CENSUS_YEAR,DGUID,ALT_GEO_CODE,GEO_LEVEL,GEO_NAME,TNR_SF,TNR_LF,DATA_QUALITY_FLA
 https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html
 
 
-
+# MapReduce code for line count
 
 https://statinfer.com/301-2-3-map-reduce-code-for-line-count/
 https://stackoverflow.com/questions/29260900/could-not-find-or-load-main-class-com-sun-tools-javac-main-hadoop-mapreduce
@@ -166,6 +181,7 @@ ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ jar cf lc.jar LineCount*.class
 ```
 
 
+# Spark
 
 https://spark.apache.org/downloads.html
 
@@ -317,10 +333,4 @@ scala> println(s"Number of rows: $rowCount")
 Number of rows: 14294222
 
 scala>
-```
-```bash
-ubuntu@LAPTOP-JBell:~$ hadoop fs -rm /ONTARIO/ada/98-401-X2021012_English_CSV_data.csv
-Deleted /ONTARIO/ada/98-401-X2021012_English_CSV_data.csv
-ubuntu@LAPTOP-JBell:~$ hadoop fs -rmdir /ONTARIO/ada
-ubuntu@LAPTOP-JBell:~$
 ```
