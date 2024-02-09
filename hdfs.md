@@ -15,16 +15,27 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 chmod 0600 ~/.ssh/authorized_keys
 ```
 
-https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html
+```bash
+HADOOP_CLASSPATH=/usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar
+```
+
+Ingest csv using Dataiku:
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/c9a96f54-612b-4216-86ae-61b0d834c739)
 
-![image](https://github.com/jordanbell2357/how-to/assets/47544607/7659a8b7-2f68-45b8-b41d-547032987f5d)
+https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html
 
-![image](https://github.com/jordanbell2357/how-to/assets/47544607/bb177d40-078a-4765-af7a-2756d951c2ab)
 
 ```bash
-HADOOP_CLASSPATH=/usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar
+ubuntu@LAPTOP-JBell:~/DATA_DIR$ hadoop fs -head /ONTARIO/ada_copy/out-s0.csv
+2021    2021S051610010004       10010004        Aggregate dissemination area    10010004        2.4     2.7 00000    1964    Reformed                0.0             0.0             0.0             0.0             0.0 0.0
+2021    2021S051610010004       10010004        Aggregate dissemination area    10010004        2.4     2.7 00000    1965    United Church           1075.0          530.0           545.0           10.8            11.010.6
+2021    2021S051610010004       10010004        Aggregate dissemination area    10010004        2.4     2.7 00000    1966    Other Christian and Christian-related traditions                55.0            20.0        30.0             0.6             0.4             0.6
+2021    2021S051610010004       10010004        Aggregate dissemination area    10010004        2.4     2.7 00000    1967    Hindu           205.0           95.0            110.0           2.1             2.0         2.1
+2021    2021S051610010004       10010004        Aggregate dissemination area    10010004        2.4     2.7 00000    1968    Jewish          0.0             0.0             0.0             0.0             0.0         0.0
+2021    2021S051610010004       10010004        Aggregate dissemination area    10010004        2.4     2.7 00000    1969    Muslim          230.0           115.0           110.0           2.3             2.4         2.1
+2021    2021S051610010004       10010004        Aggregate dissemination area    10010004        2.4     2.7 00000    1970    Sikh            0.0             0.0             0.0             0.0             0.0         0.0
+2021    2021S051610010004       10010004        Aggregate dissemination area    10
 ```
 
 https://statinfer.com/301-2-3-map-reduce-code-for-line-count/
