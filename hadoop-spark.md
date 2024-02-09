@@ -7,7 +7,10 @@ I've made this because I haven't found a single guide that explains every step n
 ## Install and configure dependencies
 
 ```bash
-sudo apt-get install default-jre openjdk-11-jre-headless openjdk-8-jre-headless openjdk-8-jdk
+sudo apt-get install default-jre
+sudo apt-get install openjdk-11-jre-headless
+sudo apt-get install openjdk-8-jre-headless
+sudo apt-get install openjdk-8-jdk
 ```
 
 ```bash
@@ -28,6 +31,9 @@ https://hadoop.apache.org/releases.html
 ```bash
 wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz
 tar -xvzf hadoop-3.3.6.tar.gz
+```
+
+```bash
 ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/etc/hadoop$ ls
 capacity-scheduler.xml            httpfs-env.sh               mapred-site.xml
 configuration.xsl                 httpfs-log4j.properties     shellprofile.d
@@ -94,7 +100,7 @@ hdfs-site.xml                     mapred-queues.xml.template
 </configuration>
 ```
 
-Add to environment variables; either `~/.bashrc` or in system environment configuration.
+Add to environment variables; either for single user with `~/.bashrc` or for system with `/etc/environment`.
 
 ```bash
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
@@ -171,15 +177,13 @@ Source: Statistics Canada, 2021 Census, Catalogue no. 98-316-X2021001.
 How to cite: Statistics Canada. 2022. Census Profile. 2021 Census. Statistics Canada Catalogue no. 98-316-X2021001. Ottawa. Released December 15, 2022. https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/index.cfm?Lang=E
 ```
 
-Further in `98-401-X2021012_English_meta.txt`:
+Also from `98-401-X2021012_English_meta.txt`:
 
-```
-Aggregate dissemination area (ADA)
-
-An aggregate dissemination area (ADA) is a dissemination geography created for the Census. ADAs cover the entire country and, where possible, have a population between 5,000 and 15,000 based on the previous census population counts. ADAs are created by grouping existing dissemination geographic areas, including census tracts (CTs), census subdivisions (CSDs) or dissemination areas (DAs). ADA boundaries respect provincial, territorial, census division (CD), census metropolitan area (CMA) and census agglomeration (CA) boundaries.
-
-The intent of the ADA geography is to ensure the availability of census data, where possible, across all regions of Canada.
-```
+> Aggregate dissemination area (ADA)
+>
+> An aggregate dissemination area (ADA) is a dissemination geography created for the Census. ADAs cover the entire country and, where possible, have a population between 5,000 and 15,000 based on the previous census population counts. ADAs are created by grouping existing dissemination geographic areas, including census tracts (CTs), census subdivisions (CSDs) or dissemination areas (DAs). ADA boundaries respect provincial, territorial, census division (CD), census metropolitan area (CMA) and census agglomeration (CA) boundaries.
+>
+> The intent of the ADA geography is to ensure the availability of census data, where possible, across all regions of Canada.
 
 ## Putting CSV into HDFS
 
@@ -205,9 +209,7 @@ ubuntu@LAPTOP-JBell:~$ hadoop fs -cat /census2021/ada/ada.csv | wc -l
 
 ## MapReduce code for line count
 
-```bash
-cat LineCount.java
-```
+We make new file `/home/ubuntu/hadoop-3.3.6/bin/LineCount.java` with following contents:
 
 ```java
 import java.io.IOException;
@@ -286,7 +288,6 @@ public class LineCount{
 ```
 
 ```bash
-ubuntu@LAPTOP-JBell:~$ cd hadoop-3.3.6/bin
 ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ ls
 LineCount.java      hadoop      hdfs      mapred      oom-listener             yarn
 container-executor  hadoop.cmd  hdfs.cmd  mapred.cmd  test-container-executor  yarn.cmd
@@ -386,6 +387,8 @@ ubuntu@LAPTOP-JBell:~$ hadoop fs -cat /LineCount/part-r-00000
 Total Lines     14294224
 ```
 
+Total lines are 14294224. This includes the header, thus there are 14294223 records.
+
 ## Spark
 
 https://spark.apache.org/downloads.html
@@ -451,6 +454,8 @@ df: org.apache.spark.sql.DataFrame = [CENSUS_YEAR: string, DGUID: string ... 21 
 scala> val distinctGeoNameCount = df.select("GEO_NAME").distinct().count()
 distinctGeoNameCount: Long = 5433
 ```
+
+That is, the number of ADA is 5433.
 
 At the end of our tutorial, we calculate the number of ADA another way.
 
@@ -644,7 +649,7 @@ CHARACTERISTIC_ID,CHARACTERISTIC_NAME
 41,Total - Occupied pri
 ```
 
-We can reckon the number of CHARACTERISTIC_ID in two ways: the following
+We can determine the number of CHARACTERISTIC_ID in two ways: the following
 
 ```bash
 ubuntu@LAPTOP-JBell:~$ hadoop fs -cat /census2021/ada_characteristic/part-00000-3912cf78-b4fe-4986-9e70-9a62c
@@ -678,7 +683,7 @@ There are 14294223 records in the datasets. Thus there are $\dfrac{14294223}{263
 
 ## References
 
-https://learning.oreilly.com/library/view/apache-hadoop-3/9781788999830/05acc385-65dc-4355-8980-37b2c8933bb3.xhtml
+https://learning.oreilly.com/library/view/apache-hadoop-3/9781788999830/84fbb63a-e0de-4a47-9411-7ed9b9663dfd.xhtml
 
 https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
 
