@@ -40,14 +40,6 @@ hdfs-rbf-site.xml                 mapred-env.sh               yarnservice-log4j.
 hdfs-site.xml                     mapred-queues.xml.template
 ```
 
-```bash
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
-export HADOOP_HOME=~/hadoop-3.3.6
-export PATH=$PATH:$HADOOP_HOME/bin
-export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
-export HADOOP_CLASSPATH=/usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar
-```
-
 `core-site.xml`
 
 ```xml
@@ -101,7 +93,19 @@ export HADOOP_CLASSPATH=/usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar
 ```
 
 ```bash
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+export HADOOP_HOME=~/hadoop-3.3.6
+export PATH=$PATH:$HADOOP_HOME/bin
+export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+export HADOOP_CLASSPATH=/usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar
+```
+
+```bash
 hdfs namenode -format
+```
+
+```bash
+start-all.sh
 ```
 
 # CSV dataset
@@ -162,6 +166,8 @@ CENSUS_YEAR,DGUID,ALT_GEO_CODE,GEO_LEVEL,GEO_NAME,TNR_SF,TNR_LF,DATA_QUALITY_FLA
 ubuntu@LAPTOP-JBell:~$ hadoop fs -cat /census2021/ada/ada.csv | wc -l
 14294224
 ```
+
+(We remind ourselves that `hadoop fs -head` displays the first kilobyte of a file, not a fixed number of lines.)
 
 # MapReduce code for line count
 
@@ -341,6 +347,14 @@ ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ hadoop jar lc.jar LineCount /census2021/
                 Bytes Written=21
 ```
 
+```bash
+ubuntu@LAPTOP-JBell:~$ hadoop fs -ls -R /LineCount
+-rw-r--r--   1 ubuntu supergroup          0 2024-02-09 09:54 /LineCount/_SUCCESS
+-rw-r--r--   1 ubuntu supergroup         21 2024-02-09 09:54 /LineCount/part-r-00000
+ubuntu@LAPTOP-JBell:~$ hadoop fs -cat /LineCount/part-r-00000
+Total Lines     14294224
+```
+
 # Spark
 
 https://spark.apache.org/downloads.html
@@ -348,9 +362,6 @@ https://spark.apache.org/downloads.html
 https://spark.apache.org/docs/latest/spark-standalone.html
 
 https://spark.apache.org/docs/3.3.4/configuration.html
-
-https://kontext.tech/article/1066/install-spark-330-on-linux-or-wsl
-
 
 ```bash
 wget https://dlcdn.apache.org/spark/spark-3.3.4/spark-3.3.4-bin-hadoop3.tgz
@@ -380,9 +391,6 @@ run-example SparkPi 10
 Pi is roughly 3.1433631433631435
 24/02/08 17:42:53 INFO SparkUI: Stopped Spark web UI at http://localhost:4040
 ```
-
-
-
 
 ```bash
 ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ spark-shell
@@ -513,4 +521,4 @@ GEO_NAME,CHARACTERISTIC_ID,CHARACTERISTIC_NAME,C1_COUNT_TOTAL,C2_COUNT_MEN,C3_CO
 10010001,17,30 to 34 years
 ```
 
-(I had to remind myself that Hadoop `-head` displays first kilobyte of file, not a fixed number of lines.)
+(We remind ourselves that `hadoop fs -head` displays the first kilobyte of a file, not a fixed number of lines.)
