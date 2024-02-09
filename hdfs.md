@@ -427,3 +427,9 @@ Line count output in Dataiku:
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/caf9bd3a-146f-4acb-9e02-bdb394989797)
 
+```bash
+ubuntu@LAPTOP-JBell:~$ hadoop fs -rm /ONTARIO/ada/98-401-X2021012_English_CSV_data.csv
+Deleted /ONTARIO/ada/98-401-X2021012_English_CSV_data.csv
+ubuntu@LAPTOP-JBell:~$ hadoop fs -rmdir /ONTARIO/ada
+ubuntu@LAPTOP-JBell:~$
+```
