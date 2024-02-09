@@ -153,6 +153,36 @@ CENSUS_YEAR,DGUID,ALT_GEO_CODE,GEO_LEVEL,GEO_NAME,TNR_SF,TNR_LF,DATA_QUALITY_FLA
 2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",9,"  0 to 14 years",,925,"",460,"",465,"",10.4,"",10.5,"",10.3,""
 ```
 
+```bash
+ubuntu@LAPTOP-JBell:~$ head -n 16 98-401-X2021012_English_meta.txt
+***********************************************************************************
+**      General Information
+***********************************************************************************
+
+Census Profile, 2021 - Aggregate Dissemination Areas
+
+Catalogue number: 98-401-X2021012       Release date: 2022-12-15
+
+
+Note on data quality and disclosure control
+
+For information on data quality, as well as random rounding, data suppression, and other methods of disclosure control, please consult the Guide to the Census of Population, 2021, Catalogue no. 98-304-X, and the reference guides for the individual topics.
+
+Source: Statistics Canada, 2021 Census, Catalogue no. 98-316-X2021001.
+
+How to cite: Statistics Canada. 2022. Census Profile. 2021 Census. Statistics Canada Catalogue no. 98-316-X2021001. Ottawa. Released December 15, 2022. https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/index.cfm?Lang=E
+```
+
+Further in `98-401-X2021012_English_meta.txt`:
+
+```
+Aggregate dissemination area (ADA)
+
+An aggregate dissemination area (ADA) is a dissemination geography created for the Census. ADAs cover the entire country and, where possible, have a population between 5,000 and 15,000 based on the previous census population counts. ADAs are created by grouping existing dissemination geographic areas, including census tracts (CTs), census subdivisions (CSDs) or dissemination areas (DAs). ADA boundaries respect provincial, territorial, census division (CD), census metropolitan area (CMA) and census agglomeration (CA) boundaries.
+
+The intent of the ADA geography is to ensure the availability of census data, where possible, across all regions of Canada.
+```
+
 ## Putting CSV into HDFS
 
 https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html
