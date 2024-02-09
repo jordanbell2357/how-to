@@ -364,10 +364,11 @@ val ada_linecount = sparkSession.createDataFrame(sparkContext.parallelize(rowDat
 dkuContext.save("ada_linecount", ada_linecount)
 ```
 
+Calculate line count using Spark Scala in Dataiku:
+
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/5fd378a8-5457-41ba-bf01-8934fccc68b0)
 
-
-
+Line count output in Dataiku:
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/caf9bd3a-146f-4acb-9e02-bdb394989797)
 
