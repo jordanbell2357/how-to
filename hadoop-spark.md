@@ -1,6 +1,8 @@
-# Configuring and using Hadoop and Spark on Ubuntu (with Canada 2021 Census data)
+# Configuring and using Hadoop and Spark on Ubuntu 22.04 LTS (with Canada 2021 Census data)
 
 This tutorial works for Ubuntu 22.04 LTS both as VM (tested using VirtualBox) and using WSL2.
+
+I've made this because I haven't found a single guide that explains every step needed to configure and use Hadoop and Spark and actually use it for something meaningful like census data.
 
 ## Install and configure dependencies
 
@@ -418,6 +420,41 @@ Pi is roughly 3.1433631433631435
 ```
 
 ```bash
+ubuntu@LAPTOP-JBell:~$ spark-shell
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/ubuntu/spark-3.3.4-bin-hadoop3/jars/log4j-slf4j-impl-2.17.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/ubuntu/hadoop-3.3.6/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+24/02/09 16:54:19 WARN Utils: Your hostname, LAPTOP-JBell resolves to a loopback address: 127.0.1.1; using 172.17.194.43 instead (on interface eth0)
+24/02/09 16:54:19 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+24/02/09 16:54:24 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Spark context Web UI available at http://localhost:4040
+Spark context available as 'sc' (master = local[*], app id = local-1707515665178).
+Spark session available as 'spark'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 3.3.4
+      /_/
+
+Using Scala version 2.12.15 (OpenJDK 64-Bit Server VM, Java 1.8.0_392)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> val df = spark.read.option("header", "true").csv("/census2021/ada/ada.csv")
+df: org.apache.spark.sql.DataFrame = [CENSUS_YEAR: string, DGUID: string ... 21 more fields]
+
+scala> val distinctGeoNameCount = df.select("GEO_NAME").distinct().count()
+distinctGeoNameCount: Long = 5433
+```
+
+At the end of our tutorial, we calculate the number of ADA another way.
+
+```bash
 ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ spark-shell
 SLF4J: Class path contains multiple SLF4J bindings.
 SLF4J: Found binding in [jar:file:/home/ubuntu/spark-3.3.4-bin-hadoop3/jars/log4j-slf4j-impl-2.17.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
@@ -646,6 +683,8 @@ https://learning.oreilly.com/library/view/apache-hadoop-3/9781788999830/05acc385
 https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
 
 https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html
+
+https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html
 
 https://statinfer.com/301-2-3-map-reduce-code-for-line-count/
 
