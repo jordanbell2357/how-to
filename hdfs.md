@@ -2,34 +2,6 @@ https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCl
 
 https://learning.oreilly.com/library/view/apache-hadoop-3/9781788999830/05acc385-65dc-4355-8980-37b2c8933bb3.xhtml
 
-# CSV dataset
-
-Canada 2021 Census:
-
-https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger.cfm
-
-```bash
-wget --content-disposition "https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=012"
-unzip 98-401-X2021012_eng_CSV.zip
-98-401-X2021012_English_CSV_data.csv
-98-401-X2021012_English_meta.txt
-98-401-X2021012_Geo_starting_row.CSV
-```
-
-```bash
-ubuntu@LAPTOP-JBell:~$ head 98-401-X2021012_English_CSV_data.csv
-CENSUS_YEAR,DGUID,ALT_GEO_CODE,GEO_LEVEL,GEO_NAME,TNR_SF,TNR_LF,DATA_QUALITY_FLAG,CHARACTERISTIC_ID,CHARACTERISTIC_NAME,CHARACTERISTIC_NOTE,C1_COUNT_TOTAL,SYMBOL,C2_COUNT_MEN+,SYMBOL,C3_COUNT_WOMEN+,SYMBOL,C10_RATE_TOTAL,SYMBOL,C11_RATE_MEN+,SYMBOL,C12_RATE_WOMEN+,SYMBOL
-2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",1,"Population, 2021",1,8881,"",,"...",,"...",,"...",,"...",,"..."
-2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",2,"Population, 2016",1,9334,"",,"...",,"...",,"...",,"...",,"..."
-2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",3,"Population percentage change, 2016 to 2021",,-4.9,"",,"...",,"...",-4.9,"",,"...",,"..."
-2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",4,"Total private dwellings",2,5737,"",,"...",,"...",,"...",,"...",,"..."
-2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",5,"Private dwellings occupied by usual residents",3,4121,"",,"...",,"...",,"...",,"...",,"..."
-2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",6,"Population density per square kilometre",,9.4,"",,"...",,"...",9.4,"",,"...",,"..."
-2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",7,"Land area in square kilometres",,941.33,"",,"...",,"...",,"...",,"...",,"..."
-2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",8,"Total - Age groups of the population - 100% data",,8880,"",4365,"",4515,"",100,"",100,"",100,""
-2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",9,"  0 to 14 years",,925,"",460,"",465,"",10.4,"",10.5,"",10.3,""
-```
-
 # Install and configure dependencies
 
 ```bash
@@ -49,42 +21,147 @@ chmod 0600 ~/.ssh/authorized_keys
 
 # Download and configure Hadoop
 
+https://hadoop.apache.org/releases.html
+
 ```bash
 wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz
 tar -xvzf hadoop-3.3.6.tar.gz
+ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/etc/hadoop$ ls
+capacity-scheduler.xml            httpfs-env.sh               mapred-site.xml
+configuration.xsl                 httpfs-log4j.properties     shellprofile.d
+container-executor.cfg            httpfs-site.xml             ssl-client.xml.example
+core-site.xml                     kms-acls.xml                ssl-server.xml.example
+hadoop-env.cmd                    kms-env.sh                  user_ec_policies.xml.template
+hadoop-env.sh                     kms-log4j.properties        workers
+hadoop-metrics2.properties        kms-site.xml                yarn-env.cmd
+hadoop-policy.xml                 log4j.properties            yarn-env.sh
+hadoop-user-functions.sh.example  mapred-env.cmd              yarn-site.xml
+hdfs-rbf-site.xml                 mapred-env.sh               yarnservice-log4j.properties
+hdfs-site.xml                     mapred-queues.xml.template
 ```
 
 ```bash
-HADOOP_CLASSPATH=/usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+export HADOOP_HOME=~/hadoop-3.3.6
+export PATH=$PATH:$HADOOP_HOME/bin
+export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+export HADOOP_CLASSPATH=/usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar
 ```
 
+`core-site.xml`
 
+```xml
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>
+    </property>
+</configuration>
+```
+
+`hdfs-site.xml`
+
+```xml
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+</configuration>
+```
+
+`mapred-site.xml`
+
+```xml
+<configuration>
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+    <property>
+        <name>mapreduce.application.classpath</name>
+        <value>$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/*:$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/lib/*</value>
+    </property>
+</configuration>
+```
+
+`yarn-site.xml`
+
+```xml
+<configuration>
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.env-whitelist</name>
+        <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_HOME,PATH,LANG,TZ,HADOOP_MAPRED_HOME</value>
+    </property>
+</configuration>
+```
 
 ```bash
-ubuntu@LAPTOP-JBell:~$ hadoop fs -ls /ONTARIO
-Found 2 items
-drwxr-xr-x   - ubuntu supergroup          0 2024-02-08 17:48 /ONTARIO/ada_copy
-drwxr-xr-x   - ubuntu supergroup          0 2024-02-08 18:20 /ONTARIO/ada_linecount
-ubuntu@LAPTOP-JBell:~$ hadoop fs -mkdir /ONTARIO/ada
-ubuntu@LAPTOP-JBell:~$ hadoop fs -put 98-401-X2021012_English_CSV_data.csv /ONTARIO/ada
-ubuntu@LAPTOP-JBell:~$ hadoop fs -ls /ONTARIO/ada
-Found 1 items
--rw-r--r--   1 ubuntu supergroup 2415200889 2024-02-08 21:12 /ONTARIO/ada/98-401-X2021012_English_CSV_data.csv
-ubuntu@LAPTOP-JBell:~$ hadoop fs -head /ONTARIO/ada/98-401-X2021012_English_CSV_data.csv
+hdfs namenode -format
+```
+
+# CSV dataset
+
+Canada 2021 Census:
+
+https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger.cfm
+
+```bash
+wget --content-disposition "https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=012"
+ubuntu@LAPTOP-JBell:~$ unzip -v 98-401-X2021012_eng_CSV.zip
+Archive:  98-401-X2021012_eng_CSV.zip
+ Length   Method    Size  Cmpr    Date    Time   CRC-32   Name
+--------  ------  ------- ---- ---------- ----- --------  ----
+2415200889  Defl:N 211587436  91% 2022-12-07 16:41 f32de755  98-401-X2021012_English_CSV_data.csv
+  240208  Defl:N    44892  81% 2022-12-07 10:34 2eb21c80  98-401-X2021012_English_meta.txt
+  218562  Defl:N    41420  81% 2022-12-07 10:35 e0bd4f6c  98-401-X2021012_Geo_starting_row.CSV
+    1421  Defl:N      673  53% 2022-07-30 15:56 e7f8363b  README_meta.txt
+--------          -------  ---                            -------
+2415661080         211674421  91%                            4 files
+ubuntu@LAPTOP-JBell:~$ unzip 98-401-X2021012_eng_CSV.zip
+Archive:  98-401-X2021012_eng_CSV.zip
+  inflating: 98-401-X2021012_English_CSV_data.csv
+  inflating: 98-401-X2021012_English_meta.txt
+  inflating: 98-401-X2021012_Geo_starting_row.CSV
+  inflating: README_meta.txt
+ubuntu@LAPTOP-JBell:~$ head 98-401-X2021012_English_CSV_data.csv
+CENSUS_YEAR,DGUID,ALT_GEO_CODE,GEO_LEVEL,GEO_NAME,TNR_SF,TNR_LF,DATA_QUALITY_FLAG,CHARACTERISTIC_ID,CHARACTERISTIC_NAME,CHARACTERISTIC_NOTE,C1_COUNT_TOTAL,SYMBOL,C2_COUNT_MEN+,SYMBOL,C3_COUNT_WOMEN+,SYMBOL,C10_RATE_TOTAL,SYMBOL,C11_RATE_MEN+,SYMBOL,C12_RATE_WOMEN+,SYMBOL
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",1,"Population, 2021",1,8881,"",,"...",,"...",,"...",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",2,"Population, 2016",1,9334,"",,"...",,"...",,"...",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",3,"Population percentage change, 2016 to 2021",,-4.9,"",,"...",,"...",-4.9,"",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",4,"Total private dwellings",2,5737,"",,"...",,"...",,"...",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",5,"Private dwellings occupied by usual residents",3,4121,"",,"...",,"...",,"...",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",6,"Population density per square kilometre",,9.4,"",,"...",,"...",9.4,"",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",7,"Land area in square kilometres",,941.33,"",,"...",,"...",,"...",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",8,"Total - Age groups of the population - 100% data",,8880,"",4365,"",4515,"",100,"",100,"",100,""
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",9,"  0 to 14 years",,925,"",460,"",465,"",10.4,"",10.5,"",10.3,""
+```
+
+# Putting CSV into HDFS
+
+https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html
+
+```bash
+ubuntu@LAPTOP-JBell:~$ hadoop fs -mkdir /census2021
+ubuntu@LAPTOP-JBell:~$ hadoop fs -mkdir /census2021/ada
+ubuntu@LAPTOP-JBell:~$ hadoop fs -put ./98-401-X2021012_English_CSV_data.csv /census2021/ada/ada.csv
+ubuntu@LAPTOP-JBell:~$ hadoop fs -ls -R /census2021
+drwxr-xr-x   - ubuntu supergroup          0 2024-02-09 09:50 /census2021/ada
+-rw-r--r--   1 ubuntu supergroup 2415200889 2024-02-09 09:50 /census2021/ada/ada.csv
+ubuntu@LAPTOP-JBell:~$ hadoop fs -head /census2021/ada/ada.csv
 CENSUS_YEAR,DGUID,ALT_GEO_CODE,GEO_LEVEL,GEO_NAME,TNR_SF,TNR_LF,DATA_QUALITY_FLAG,CHARACTERISTIC_ID,CHARACTERISTIC_NAME,CHARACTERISTIC_NOTE,C1_COUNT_TOTAL,SYMBOL,C2_COUNT_MEN+,SYMBOL,C3_COUNT_WOMEN+,SYMBOL,C10_RATE_TOTAL,SYMBOL,C11_RATE_MEN+,SYMBOL,C12_RATE_WOMEN+,SYMBOL
 2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",1,"Population, 2021",1,8881,"",,"...",,"...",,"...",,"...",,"..."
 2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",2,"Population, 2016",1,9334,"",,"...",,"...",,"...",,"...",,"..."
 2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",3,"Population percentage change, 2016 to 2021",,-4.9,"",,"...",,"...",-4.9,"",,"...",,"..."
 2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",4,"Total private dwellings",2,5737,"",,"...",,"...",,"...",,"...",,"..."
 2021,"2021S051610010001","10010001","Aggregate dissemination area","100100
+ubuntu@LAPTOP-JBell:~$ hadoop fs -cat /census2021/ada/ada.csv | wc -l
+14294224
 ```
-
-
-
-
-
-https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html
-
 
 # MapReduce code for line count
 
@@ -180,6 +257,89 @@ ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ hadoop com.sun.tools.javac.Main LineCoun
 ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ jar cf lc.jar LineCount*.class
 ```
 
+```bash
+ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ hadoop jar lc.jar LineCount /census2021/ada/ada.csv /LineCount
+2024-02-09 09:53:23,449 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at /0.0.0.0:8032
+2024-02-09 09:53:23,793 WARN mapreduce.JobResourceUploader: Hadoop command-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.
+2024-02-09 09:53:23,804 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/ubuntu/.staging/job_1707010689166_0003
+2024-02-09 09:53:23,975 INFO input.FileInputFormat: Total input files to process : 1
+2024-02-09 09:53:24,022 INFO mapreduce.JobSubmitter: number of splits:18
+2024-02-09 09:53:24,127 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1707010689166_0003
+2024-02-09 09:53:24,127 INFO mapreduce.JobSubmitter: Executing with tokens: []
+2024-02-09 09:53:24,248 INFO conf.Configuration: resource-types.xml not found
+2024-02-09 09:53:24,248 INFO resource.ResourceUtils: Unable to find 'resource-types.xml'.
+2024-02-09 09:53:24,593 INFO impl.YarnClientImpl: Submitted application application_1707010689166_0003
+2024-02-09 09:53:24,625 INFO mapreduce.Job: The url to track the job: http://LAPTOP-JBell.:8088/proxy/application_1707010689166_0003/
+2024-02-09 09:53:24,626 INFO mapreduce.Job: Running job: job_1707010689166_0003
+2024-02-09 09:53:29,730 INFO mapreduce.Job: Job job_1707010689166_0003 running in uber mode : false
+2024-02-09 09:53:29,731 INFO mapreduce.Job:  map 0% reduce 0%
+2024-02-09 09:54:17,390 INFO mapreduce.Job:  map 33% reduce 0%
+2024-02-09 09:54:24,509 INFO mapreduce.Job:  map 67% reduce 0%
+2024-02-09 09:54:31,629 INFO mapreduce.Job:  map 94% reduce 0%
+2024-02-09 09:54:36,652 INFO mapreduce.Job:  map 100% reduce 100%
+2024-02-09 09:54:37,663 INFO mapreduce.Job: Job job_1707010689166_0003 completed successfully
+2024-02-09 09:54:37,776 INFO mapreduce.Job: Counters: 54
+        File System Counters
+                FILE: Number of bytes read=330
+                FILE: Number of bytes written=5240478
+                FILE: Number of read operations=0
+                FILE: Number of large read operations=0
+                FILE: Number of write operations=0
+                HDFS: Number of bytes read=2415272483
+                HDFS: Number of bytes written=21
+                HDFS: Number of read operations=59
+                HDFS: Number of large read operations=0
+                HDFS: Number of write operations=2
+                HDFS: Number of bytes read erasure-coded=0
+        Job Counters
+                Launched map tasks=18
+                Launched reduce tasks=1
+                Data-local map tasks=18
+                Total time spent by all maps in occupied slots (ms)=346566
+                Total time spent by all reduces in occupied slots (ms)=11939
+                Total time spent by all map tasks (ms)=346566
+                Total time spent by all reduce tasks (ms)=11939
+                Total vcore-milliseconds taken by all map tasks=346566
+                Total vcore-milliseconds taken by all reduce tasks=11939
+                Total megabyte-milliseconds taken by all map tasks=354883584
+                Total megabyte-milliseconds taken by all reduce tasks=12225536
+        Map-Reduce Framework
+                Map input records=14294224
+                Map output records=14294224
+                Map output bytes=228707584
+                Map output materialized bytes=432
+                Input split bytes=1962
+                Combine input records=14294224
+                Combine output records=18
+                Reduce input groups=1
+                Reduce shuffle bytes=432
+                Reduce input records=18
+                Reduce output records=1
+                Spilled Records=36
+                Shuffled Maps =18
+                Failed Shuffles=0
+                Merged Map outputs=18
+                GC time elapsed (ms)=50184
+                CPU time spent (ms)=88410
+                Physical memory (bytes) snapshot=8216698880
+                Virtual memory (bytes) snapshot=49281294336
+                Total committed heap usage (bytes)=8874622976
+                Peak Map Physical memory (bytes)=475123712
+                Peak Map Virtual memory (bytes)=2596765696
+                Peak Reduce Physical memory (bytes)=242405376
+                Peak Reduce Virtual memory (bytes)=2599333888
+        Shuffle Errors
+                BAD_ID=0
+                CONNECTION=0
+                IO_ERROR=0
+                WRONG_LENGTH=0
+                WRONG_MAP=0
+                WRONG_REDUCE=0
+        File Input Format Counters
+                Bytes Read=2415270521
+        File Output Format Counters
+                Bytes Written=21
+```
 
 # Spark
 
@@ -189,15 +349,12 @@ https://spark.apache.org/docs/latest/spark-standalone.html
 
 https://spark.apache.org/docs/3.3.4/configuration.html
 
+https://kontext.tech/article/1066/install-spark-330-on-linux-or-wsl
+
+
 ```bash
 wget https://dlcdn.apache.org/spark/spark-3.3.4/spark-3.3.4-bin-hadoop3.tgz
 tar -xvzf spark-3.3.4-bin-hadoop3.tgz
-```
-
-https://spark.apache.org/docs/latest/api/python/getting_started/install.html
-
-```bash
-pip install pyspark
 ```
 
 ```bash
@@ -205,8 +362,6 @@ export SPARK_HOME=/home/ubuntu/spark-3.3.4-bin-hadoop3
 export PATH=$SPARK_HOME/bin:$PATH
 export SPARK_DIST_CLASSPATH=$(hadoop classpath)
 ```
-
-https://kontext.tech/article/1066/install-spark-330-on-linux-or-wsl
 
 ```bash
 cp $SPARK_HOME/conf/spark-defaults.conf.template $SPARK_HOME/conf/spark-defaults.conf
@@ -226,111 +381,46 @@ Pi is roughly 3.1433631433631435
 24/02/08 17:42:53 INFO SparkUI: Stopped Spark web UI at http://localhost:4040
 ```
 
-```bash
-ubuntu@LAPTOP-JBell:~$ hadoop fs -ls /ONTARIO
-Found 1 items
-drwxr-xr-x   - ubuntu supergroup          0 2024-02-08 17:48 /ONTARIO/ada_copy
-ubuntu@LAPTOP-JBell:~$ hadoop fs -ls -R /ONTARIO
-drwxr-xr-x   - ubuntu supergroup          0 2024-02-08 17:48 /ONTARIO/ada_copy
--rw-r--r--   1 ubuntu supergroup 2087945609 2024-02-08 17:50 /ONTARIO/ada_copy/out-s0.csv
-```
+
+
 
 ```bash
-ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ hadoop jar lc.jar LineCount /ONTARIO/ada_copy/out-s0.csv /LineCount
-2024-02-08 17:54:41,838 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at /0.0.0.0:8032
-2024-02-08 17:54:42,213 WARN mapreduce.JobResourceUploader: Hadoop command-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.
-2024-02-08 17:54:42,227 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/ubuntu/.staging/job_1707010689166_0002
-2024-02-08 17:54:42,419 INFO input.FileInputFormat: Total input files to process : 1
-2024-02-08 17:54:43,288 INFO mapreduce.JobSubmitter: number of splits:16
-2024-02-08 17:54:43,405 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1707010689166_0002
-2024-02-08 17:54:43,405 INFO mapreduce.JobSubmitter: Executing with tokens: []
-2024-02-08 17:54:43,593 INFO conf.Configuration: resource-types.xml not found
-2024-02-08 17:54:43,594 INFO resource.ResourceUtils: Unable to find 'resource-types.xml'.
-2024-02-08 17:54:44,004 INFO impl.YarnClientImpl: Submitted application application_1707010689166_0002
-2024-02-08 17:54:44,047 INFO mapreduce.Job: The url to track the job: http://LAPTOP-JBell.:8088/proxy/application_1707010689166_0002/
-2024-02-08 17:54:44,047 INFO mapreduce.Job: Running job: job_1707010689166_0002
-2024-02-08 17:54:49,175 INFO mapreduce.Job: Job job_1707010689166_0002 running in uber mode : false
-2024-02-08 17:54:49,176 INFO mapreduce.Job:  map 0% reduce 0%
-2024-02-08 17:54:58,173 INFO mapreduce.Job:  map 38% reduce 0%
-2024-02-08 17:55:05,307 INFO mapreduce.Job:  map 75% reduce 0%
-2024-02-08 17:55:11,361 INFO mapreduce.Job:  map 81% reduce 0%
-2024-02-08 17:55:12,368 INFO mapreduce.Job:  map 100% reduce 0%
-2024-02-08 17:55:13,374 INFO mapreduce.Job:  map 100% reduce 100%
-2024-02-08 17:55:14,386 INFO mapreduce.Job: Job job_1707010689166_0002 completed successfully
-2024-02-08 17:55:14,464 INFO mapreduce.Job: Counters: 55
-        File System Counters
-                FILE: Number of bytes read=294
-                FILE: Number of bytes written=4688923
-                FILE: Number of read operations=0
-                FILE: Number of large read operations=0
-                FILE: Number of write operations=0
-                HDFS: Number of bytes read=2088008873
-                HDFS: Number of bytes written=21
-                HDFS: Number of read operations=53
-                HDFS: Number of large read operations=0
-                HDFS: Number of write operations=2
-                HDFS: Number of bytes read erasure-coded=0
-        Job Counters
-                Killed map tasks=1
-                Launched map tasks=16
-                Launched reduce tasks=1
-                Data-local map tasks=16
-                Total time spent by all maps in occupied slots (ms)=98159
-                Total time spent by all reduces in occupied slots (ms)=6594
-                Total time spent by all map tasks (ms)=98159
-                Total time spent by all reduce tasks (ms)=6594
-                Total vcore-milliseconds taken by all map tasks=98159
-                Total vcore-milliseconds taken by all reduce tasks=6594
-                Total megabyte-milliseconds taken by all map tasks=100514816
-                Total megabyte-milliseconds taken by all reduce tasks=6752256
-        Map-Reduce Framework
-                Map input records=14294223
-                Map output records=14294223
-                Map output bytes=228707568
-                Map output materialized bytes=384
-                Input split bytes=1824
-                Combine input records=14294223
-                Combine output records=16
-                Reduce input groups=1
-                Reduce shuffle bytes=384
-                Reduce input records=16
-                Reduce output records=1
-                Spilled Records=32
-                Shuffled Maps =16
-                Failed Shuffles=0
-                Merged Map outputs=16
-                GC time elapsed (ms)=15097
-                CPU time spent (ms)=70770
-                Physical memory (bytes) snapshot=7352893440
-                Virtual memory (bytes) snapshot=44092829696
-                Total committed heap usage (bytes)=7523008512
-                Peak Map Physical memory (bytes)=489000960
-                Peak Map Virtual memory (bytes)=2596409344
-                Peak Reduce Physical memory (bytes)=263659520
-                Peak Reduce Virtual memory (bytes)=2597912576
-        Shuffle Errors
-                BAD_ID=0
-                CONNECTION=0
-                IO_ERROR=0
-                WRONG_LENGTH=0
-                WRONG_MAP=0
-                WRONG_REDUCE=0
-        File Input Format Counters
-                Bytes Read=2088007049
-        File Output Format Counters
-                Bytes Written=21
-```
+ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ spark-shell
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/ubuntu/spark-3.3.4-bin-hadoop3/jars/log4j-slf4j-impl-2.17.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/ubuntu/hadoop-3.3.6/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+24/02/09 09:58:14 WARN Utils: Your hostname, LAPTOP-JBell resolves to a loopback address: 127.0.1.1; using 172.17.194.43 instead (on interface eth0)
+24/02/09 09:58:14 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+24/02/09 09:58:19 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Spark context Web UI available at http://localhost:4040
+Spark context available as 'sc' (master = local[*], app id = local-1707490699967).
+Spark session available as 'spark'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 3.3.4
+      /_/
 
-```bash
-spark-shell
-scala> val df = spark.read.option("header", "true").csv("/ONTARIO/ada_copy/out-s0.csv")
-df: org.apache.spark.sql.DataFrame = [2021      2021S051610010004       10010004        Aggregate dissemination area 10010004        2.4     2.7     00000   1964    Reformed                0.0             0.0         0.0              0.0             0.0             0.0     : string]
+Using Scala version 2.12.15 (OpenJDK 64-Bit Server VM, Java 1.8.0_392)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> val df = spark.read.option("header", "true").csv("/census2021/ada/ada.csv")
+df: org.apache.spark.sql.DataFrame = [CENSUS_YEAR: string, DGUID: string ... 21 more fields]
 
 scala> val rowCount = df.count()
-rowCount: Long = 14294222
+rowCount: Long = 14294223
+```
 
-scala> println(s"Number of rows: $rowCount")
-Number of rows: 14294222
+# PySpark
 
-scala>
+https://spark.apache.org/docs/latest/api/python/getting_started/install.html
+
+```bash
+pip install pyspark
 ```
