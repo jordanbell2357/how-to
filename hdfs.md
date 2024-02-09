@@ -1,4 +1,4 @@
-# Single cluster Hadoop and Spark on Ubuntu using Canada Census 2021 data
+# Single cluster Hadoop and Spark on Ubuntu using Canada 2021 Census data
 
 This tutorial works for Ubuntu 22.04 LTS both as VM (tested using VirtualBox) and using WSL2.
 
@@ -119,6 +119,8 @@ start-all.sh
 Canada 2021 Census:
 
 https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger.cfm
+
+We use the most geographically granular data, for Aggregate Dissemination Areas (ADA).
 
 ```bash
 wget --content-disposition "https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=012"
