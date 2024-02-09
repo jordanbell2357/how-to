@@ -589,3 +589,35 @@ CHARACTERISTIC_ID,CHARACTERISTIC_NAME
 40,Median age of the population
 41,Total - Occupied pri
 ```
+
+We can reckon the number of CHARACTERISTIC_ID in two ways: the following
+
+```bash
+ubuntu@LAPTOP-JBell:~$ hadoop fs -cat /census2021/ada_characteristic/part-00000-3912cf78-b4fe-4986-9e70-9a62c
+ff91ab6-c000.csv | wc -l
+2632
+```
+
+and the following
+
+```bash
+ubuntu@LAPTOP-JBell:~$ hadoop fs -tail /census2021/ada_characteristic/part-00000-3912cf78-b4fe-4986-9e70-9a62
+cff91ab6-c000.csv
+ a.m.
+2620,Between 7 a.m. and 7:59 a.m.
+2621,Between 8 a.m. and 8:59 a.m.
+2622,Between 9 a.m. and 11:59 a.m.
+2623,Between 12 p.m. and 4:59 a.m.
+2624,Total - Eligibility for instruction in the minority official language for the population in private households born in 2003 or later - 100% data
+2625,Children eligible for instruction in the minority official language
+2626,Children not eligible for instruction in the minority official language
+2627,"Total - Eligibility and instruction in the minority official language, for the population in private households born between 2003 and 2015 (inclusive) - 100% data"
+2628,Children eligible for instruction in the minority official language
+2629,Eligible children�who have been instructed in the minority official language at the primary or secondary level in Canada
+2630,Eligible children�who have not been instructed in the minority official language at the primary or secondary level in Canada
+2631,Children not eligible for instruction in the minority official language
+```
+
+Thus there are 2631 CHARACTERISTIC_ID.
+
+There are 14294223 records in the datasets. Thus there are $\dfrac{14294223}{2631}=5433$ ADA.
