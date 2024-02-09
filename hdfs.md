@@ -125,112 +125,13 @@ ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ hadoop com.sun.tools.javac.Main LineCoun
 ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ jar cf lc.jar LineCount*.class
 ```
 
-```bash
-ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ hadoop jar lc.jar LineCount /ONTARIO/ada_copy/out-s0.csv /LineCount
-2024-02-07 16:54:12,280 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at /0.0.0.0:8032
-2024-02-07 16:54:13,093 WARN mapreduce.JobResourceUploader: Hadoop command-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.
-2024-02-07 16:54:13,097 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/ubuntu/.staging/job_1707010689166_0001
-2024-02-07 16:54:13,373 INFO input.FileInputFormat: Total input files to process : 1
-2024-02-07 16:54:13,841 INFO mapreduce.JobSubmitter: number of splits:16
-2024-02-07 16:54:13,986 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1707010689166_0001
-2024-02-07 16:54:13,986 INFO mapreduce.JobSubmitter: Executing with tokens: []
-2024-02-07 16:54:14,122 INFO conf.Configuration: resource-types.xml not found
-2024-02-07 16:54:14,122 INFO resource.ResourceUtils: Unable to find 'resource-types.xml'.
-2024-02-07 16:54:14,931 INFO impl.YarnClientImpl: Submitted application application_1707010689166_0001
-2024-02-07 16:54:14,966 INFO mapreduce.Job: The url to track the job: http://LAPTOP-JBell.:8088/proxy/application_1707010689166_0001/
-2024-02-07 16:54:14,966 INFO mapreduce.Job: Running job: job_1707010689166_0001
-2024-02-07 16:54:23,219 INFO mapreduce.Job: Job job_1707010689166_0001 running in uber mode : false
-2024-02-07 16:54:23,220 INFO mapreduce.Job:  map 0% reduce 0%
-2024-02-07 16:54:55,181 INFO mapreduce.Job:  map 38% reduce 0%
-2024-02-07 16:55:03,390 INFO mapreduce.Job:  map 50% reduce 0%
-2024-02-07 16:55:04,403 INFO mapreduce.Job:  map 75% reduce 0%
-2024-02-07 16:55:08,453 INFO mapreduce.Job:  map 81% reduce 0%
-2024-02-07 16:55:09,463 INFO mapreduce.Job:  map 94% reduce 0%
-2024-02-07 16:55:10,469 INFO mapreduce.Job:  map 100% reduce 100%
-2024-02-07 16:55:12,490 INFO mapreduce.Job: Job job_1707010689166_0001 completed successfully
-2024-02-07 16:55:12,573 INFO mapreduce.Job: Counters: 55
-        File System Counters
-                FILE: Number of bytes read=294
-                FILE: Number of bytes written=4688923
-                FILE: Number of read operations=0
-                FILE: Number of large read operations=0
-                FILE: Number of write operations=0
-                HDFS: Number of bytes read=2088008873
-                HDFS: Number of bytes written=21
-                HDFS: Number of read operations=53
-                HDFS: Number of large read operations=0
-                HDFS: Number of write operations=2
-                HDFS: Number of bytes read erasure-coded=0
-        Job Counters
-                Killed map tasks=1
-                Launched map tasks=16
-                Launched reduce tasks=1
-                Data-local map tasks=16
-                Total time spent by all maps in occupied slots (ms)=240133
-                Total time spent by all reduces in occupied slots (ms)=6381
-                Total time spent by all map tasks (ms)=240133
-                Total time spent by all reduce tasks (ms)=6381
-                Total vcore-milliseconds taken by all map tasks=240133
-                Total vcore-milliseconds taken by all reduce tasks=6381
-                Total megabyte-milliseconds taken by all map tasks=245896192
-                Total megabyte-milliseconds taken by all reduce tasks=6534144
-        Map-Reduce Framework
-                Map input records=14294223
-                Map output records=14294223
-                Map output bytes=228707568
-                Map output materialized bytes=384
-                Input split bytes=1824
-                Combine input records=14294223
-                Combine output records=16
-                Reduce input groups=1
-                Reduce shuffle bytes=384
-                Reduce input records=16
-                Reduce output records=1
-                Spilled Records=32
-                Shuffled Maps =16
-                Failed Shuffles=0
-                Merged Map outputs=16
-                GC time elapsed (ms)=99665
-                CPU time spent (ms)=79840
-                Physical memory (bytes) snapshot=7707107328
-                Virtual memory (bytes) snapshot=44080840704
-                Total committed heap usage (bytes)=8267497472
-                Peak Map Physical memory (bytes)=488071168
-                Peak Map Virtual memory (bytes)=2596761600
-                Peak Reduce Physical memory (bytes)=258457600
-                Peak Reduce Virtual memory (bytes)=2595168256
-        Shuffle Errors
-                BAD_ID=0
-                CONNECTION=0
-                IO_ERROR=0
-                WRONG_LENGTH=0
-                WRONG_MAP=0
-                WRONG_REDUCE=0
-        File Input Format Counters
-                Bytes Read=2088007049
-        File Output Format Counters
-                Bytes Written=21
-```
 
-```bash
-ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ hadoop fs -ls /LineCount
-Found 2 items
--rw-r--r--   1 ubuntu supergroup          0 2024-02-07 16:55 /LineCount/_SUCCESS
--rw-r--r--   1 ubuntu supergroup         21 2024-02-07 16:55 /LineCount/part-r-00000
-ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ hadoop fs -ls /LineCount/part-r-00000
--rw-r--r--   1 ubuntu supergroup         21 2024-02-07 16:55 /LineCount/part-r-00000
-ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ hadoop fs -cat /LineCount/part-r-00000
-Total Lines     14294223
-```
-
-Note: it is unfruitful to suggest running hadoop fs -cat and piping to wc. This loses the thread of working in Hadoop.
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/d894764b-b4c6-4f1c-b47c-6396944fbc27)
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/bd5b765f-c0b6-471f-b346-7beca77bfe4a)
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/7b45ee6e-b65d-4fd6-bccb-c379b62a9019)
-
 
 https://spark.apache.org/downloads.html
 
@@ -273,4 +174,113 @@ run-example SparkPi 10
 24/02/08 17:42:53 INFO DAGScheduler: Job 0 finished: reduce at SparkPi.scala:38, took 0.770038 s
 Pi is roughly 3.1433631433631435
 24/02/08 17:42:53 INFO SparkUI: Stopped Spark web UI at http://localhost:4040
+```
+
+```bash
+ubuntu@LAPTOP-JBell:~$ hadoop fs -ls /ONTARIO
+Found 1 items
+drwxr-xr-x   - ubuntu supergroup          0 2024-02-08 17:48 /ONTARIO/ada_copy
+ubuntu@LAPTOP-JBell:~$ hadoop fs -ls -R /ONTARIO
+drwxr-xr-x   - ubuntu supergroup          0 2024-02-08 17:48 /ONTARIO/ada_copy
+-rw-r--r--   1 ubuntu supergroup 2087945609 2024-02-08 17:50 /ONTARIO/ada_copy/out-s0.csv
+```
+
+```bash
+ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ hadoop jar lc.jar LineCount /ONTARIO/ada_copy/out-s0.csv /LineCount
+2024-02-08 17:54:41,838 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at /0.0.0.0:8032
+2024-02-08 17:54:42,213 WARN mapreduce.JobResourceUploader: Hadoop command-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.
+2024-02-08 17:54:42,227 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/ubuntu/.staging/job_1707010689166_0002
+2024-02-08 17:54:42,419 INFO input.FileInputFormat: Total input files to process : 1
+2024-02-08 17:54:43,288 INFO mapreduce.JobSubmitter: number of splits:16
+2024-02-08 17:54:43,405 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1707010689166_0002
+2024-02-08 17:54:43,405 INFO mapreduce.JobSubmitter: Executing with tokens: []
+2024-02-08 17:54:43,593 INFO conf.Configuration: resource-types.xml not found
+2024-02-08 17:54:43,594 INFO resource.ResourceUtils: Unable to find 'resource-types.xml'.
+2024-02-08 17:54:44,004 INFO impl.YarnClientImpl: Submitted application application_1707010689166_0002
+2024-02-08 17:54:44,047 INFO mapreduce.Job: The url to track the job: http://LAPTOP-JBell.:8088/proxy/application_1707010689166_0002/
+2024-02-08 17:54:44,047 INFO mapreduce.Job: Running job: job_1707010689166_0002
+2024-02-08 17:54:49,175 INFO mapreduce.Job: Job job_1707010689166_0002 running in uber mode : false
+2024-02-08 17:54:49,176 INFO mapreduce.Job:  map 0% reduce 0%
+2024-02-08 17:54:58,173 INFO mapreduce.Job:  map 38% reduce 0%
+2024-02-08 17:55:05,307 INFO mapreduce.Job:  map 75% reduce 0%
+2024-02-08 17:55:11,361 INFO mapreduce.Job:  map 81% reduce 0%
+2024-02-08 17:55:12,368 INFO mapreduce.Job:  map 100% reduce 0%
+2024-02-08 17:55:13,374 INFO mapreduce.Job:  map 100% reduce 100%
+2024-02-08 17:55:14,386 INFO mapreduce.Job: Job job_1707010689166_0002 completed successfully
+2024-02-08 17:55:14,464 INFO mapreduce.Job: Counters: 55
+        File System Counters
+                FILE: Number of bytes read=294
+                FILE: Number of bytes written=4688923
+                FILE: Number of read operations=0
+                FILE: Number of large read operations=0
+                FILE: Number of write operations=0
+                HDFS: Number of bytes read=2088008873
+                HDFS: Number of bytes written=21
+                HDFS: Number of read operations=53
+                HDFS: Number of large read operations=0
+                HDFS: Number of write operations=2
+                HDFS: Number of bytes read erasure-coded=0
+        Job Counters
+                Killed map tasks=1
+                Launched map tasks=16
+                Launched reduce tasks=1
+                Data-local map tasks=16
+                Total time spent by all maps in occupied slots (ms)=98159
+                Total time spent by all reduces in occupied slots (ms)=6594
+                Total time spent by all map tasks (ms)=98159
+                Total time spent by all reduce tasks (ms)=6594
+                Total vcore-milliseconds taken by all map tasks=98159
+                Total vcore-milliseconds taken by all reduce tasks=6594
+                Total megabyte-milliseconds taken by all map tasks=100514816
+                Total megabyte-milliseconds taken by all reduce tasks=6752256
+        Map-Reduce Framework
+                Map input records=14294223
+                Map output records=14294223
+                Map output bytes=228707568
+                Map output materialized bytes=384
+                Input split bytes=1824
+                Combine input records=14294223
+                Combine output records=16
+                Reduce input groups=1
+                Reduce shuffle bytes=384
+                Reduce input records=16
+                Reduce output records=1
+                Spilled Records=32
+                Shuffled Maps =16
+                Failed Shuffles=0
+                Merged Map outputs=16
+                GC time elapsed (ms)=15097
+                CPU time spent (ms)=70770
+                Physical memory (bytes) snapshot=7352893440
+                Virtual memory (bytes) snapshot=44092829696
+                Total committed heap usage (bytes)=7523008512
+                Peak Map Physical memory (bytes)=489000960
+                Peak Map Virtual memory (bytes)=2596409344
+                Peak Reduce Physical memory (bytes)=263659520
+                Peak Reduce Virtual memory (bytes)=2597912576
+        Shuffle Errors
+                BAD_ID=0
+                CONNECTION=0
+                IO_ERROR=0
+                WRONG_LENGTH=0
+                WRONG_MAP=0
+                WRONG_REDUCE=0
+        File Input Format Counters
+                Bytes Read=2088007049
+        File Output Format Counters
+                Bytes Written=21
+```
+
+```bash
+spark-shell
+scala> val df = spark.read.option("header", "true").csv("/ONTARIO/ada_copy/out-s0.csv")
+df: org.apache.spark.sql.DataFrame = [2021      2021S051610010004       10010004        Aggregate dissemination area 10010004        2.4     2.7     00000   1964    Reformed                0.0             0.0         0.0              0.0             0.0             0.0     : string]
+
+scala> val rowCount = df.count()
+rowCount: Long = 14294222
+
+scala> println(s"Number of rows: $rowCount")
+Number of rows: 14294222
+
+scala>
 ```
