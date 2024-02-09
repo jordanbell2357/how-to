@@ -1,12 +1,8 @@
-# Single cluster Hadoop and Spark on Ubuntu using Canada 2021 Census data
+# Configuring and using Hadoop and Spark on Ubuntu (with Canada 2021 Census data)
 
 This tutorial works for Ubuntu 22.04 LTS both as VM (tested using VirtualBox) and using WSL2.
 
 ## Install and configure dependencies
-
-https://learning.oreilly.com/library/view/apache-hadoop-3/9781788999830/05acc385-65dc-4355-8980-37b2c8933bb3.xhtml
-
-https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
 
 ```bash
 sudo apt-get install default-jre openjdk-11-jre-headless openjdk-8-jre-headless openjdk-8-jdk
@@ -24,8 +20,6 @@ chmod 0600 ~/.ssh/authorized_keys
 ```
 
 ## Download and configure Hadoop
-
-https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
 
 https://hadoop.apache.org/releases.html
 
@@ -97,6 +91,8 @@ hdfs-site.xml                     mapred-queues.xml.template
     </property>
 </configuration>
 ```
+
+Add to environment variables; either `~/.bashrc` or in system environment configuration.
 
 ```bash
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
@@ -185,8 +181,6 @@ The intent of the ADA geography is to ensure the availability of census data, wh
 
 ## Putting CSV into HDFS
 
-https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html
-
 ```bash
 ubuntu@LAPTOP-JBell:~$ hadoop fs -mkdir /census2021
 ubuntu@LAPTOP-JBell:~$ hadoop fs -mkdir /census2021/ada
@@ -208,9 +202,6 @@ ubuntu@LAPTOP-JBell:~$ hadoop fs -cat /census2021/ada/ada.csv | wc -l
 (We remind ourselves that `hadoop fs -head` displays the first kilobyte of a file, not a fixed number of lines.)
 
 ## MapReduce code for line count
-
-https://statinfer.com/301-2-3-map-reduce-code-for-line-count/
-https://stackoverflow.com/questions/29260900/could-not-find-or-load-main-class-com-sun-tools-javac-main-hadoop-mapreduce
 
 ```bash
 cat LineCount.java
@@ -396,10 +387,6 @@ Total Lines     14294224
 ## Spark
 
 https://spark.apache.org/downloads.html
-
-https://spark.apache.org/docs/latest/spark-standalone.html
-
-https://spark.apache.org/docs/3.3.4/configuration.html
 
 ```bash
 wget https://dlcdn.apache.org/spark/spark-3.3.4/spark-3.3.4-bin-hadoop3.tgz
@@ -651,3 +638,19 @@ cff91ab6-c000.csv
 Thus there are 2631 CHARACTERISTIC_ID.
 
 There are 14294223 records in the datasets. Thus there are $\dfrac{14294223}{2631}=5433$ ADA.
+
+## References
+
+https://learning.oreilly.com/library/view/apache-hadoop-3/9781788999830/05acc385-65dc-4355-8980-37b2c8933bb3.xhtml
+
+https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
+
+https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html
+
+https://statinfer.com/301-2-3-map-reduce-code-for-line-count/
+
+https://stackoverflow.com/questions/29260900/could-not-find-or-load-main-class-com-sun-tools-javac-main-hadoop-mapreduce
+
+https://spark.apache.org/docs/latest/spark-standalone.html
+
+https://spark.apache.org/docs/3.3.4/configuration.html
