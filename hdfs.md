@@ -19,6 +19,53 @@ chmod 0600 ~/.ssh/authorized_keys
 HADOOP_CLASSPATH=/usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar
 ```
 
+Canada 2021 Census:
+
+https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger.cfm
+
+```bash
+wget --content-disposition "https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=012"
+unzip 98-401-X2021012_eng_CSV.zip
+98-401-X2021012_English_CSV_data.csv
+98-401-X2021012_English_meta.txt
+98-401-X2021012_Geo_starting_row.CSV
+```
+
+```bash
+ubuntu@LAPTOP-JBell:~$ head 98-401-X2021012_English_CSV_data.csv
+CENSUS_YEAR,DGUID,ALT_GEO_CODE,GEO_LEVEL,GEO_NAME,TNR_SF,TNR_LF,DATA_QUALITY_FLAG,CHARACTERISTIC_ID,CHARACTERISTIC_NAME,CHARACTERISTIC_NOTE,C1_COUNT_TOTAL,SYMBOL,C2_COUNT_MEN+,SYMBOL,C3_COUNT_WOMEN+,SYMBOL,C10_RATE_TOTAL,SYMBOL,C11_RATE_MEN+,SYMBOL,C12_RATE_WOMEN+,SYMBOL
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",1,"Population, 2021",1,8881,"",,"...",,"...",,"...",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",2,"Population, 2016",1,9334,"",,"...",,"...",,"...",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",3,"Population percentage change, 2016 to 2021",,-4.9,"",,"...",,"...",-4.9,"",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",4,"Total private dwellings",2,5737,"",,"...",,"...",,"...",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",5,"Private dwellings occupied by usual residents",3,4121,"",,"...",,"...",,"...",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",6,"Population density per square kilometre",,9.4,"",,"...",,"...",9.4,"",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",7,"Land area in square kilometres",,941.33,"",,"...",,"...",,"...",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",8,"Total - Age groups of the population - 100% data",,8880,"",4365,"",4515,"",100,"",100,"",100,""
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",9,"  0 to 14 years",,925,"",460,"",465,"",10.4,"",10.5,"",10.3,""
+```
+
+```bash
+ubuntu@LAPTOP-JBell:~$ hadoop fs -ls /ONTARIO
+Found 2 items
+drwxr-xr-x   - ubuntu supergroup          0 2024-02-08 17:48 /ONTARIO/ada_copy
+drwxr-xr-x   - ubuntu supergroup          0 2024-02-08 18:20 /ONTARIO/ada_linecount
+ubuntu@LAPTOP-JBell:~$ hadoop fs -mkdir /ONTARIO/ada
+ubuntu@LAPTOP-JBell:~$ hadoop fs -put 98-401-X2021012_English_CSV_data.csv /ONTARIO/ada
+ubuntu@LAPTOP-JBell:~$ hadoop fs -ls /ONTARIO/ada
+Found 1 items
+-rw-r--r--   1 ubuntu supergroup 2415200889 2024-02-08 21:12 /ONTARIO/ada/98-401-X2021012_English_CSV_data.csv
+ubuntu@LAPTOP-JBell:~$ hadoop fs -head /ONTARIO/ada/98-401-X2021012_English_CSV_data.csv
+CENSUS_YEAR,DGUID,ALT_GEO_CODE,GEO_LEVEL,GEO_NAME,TNR_SF,TNR_LF,DATA_QUALITY_FLAG,CHARACTERISTIC_ID,CHARACTERISTIC_NAME,CHARACTERISTIC_NOTE,C1_COUNT_TOTAL,SYMBOL,C2_COUNT_MEN+,SYMBOL,C3_COUNT_WOMEN+,SYMBOL,C10_RATE_TOTAL,SYMBOL,C11_RATE_MEN+,SYMBOL,C12_RATE_WOMEN+,SYMBOL
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",1,"Population, 2021",1,8881,"",,"...",,"...",,"...",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",2,"Population, 2016",1,9334,"",,"...",,"...",,"...",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",3,"Population percentage change, 2016 to 2021",,-4.9,"",,"...",,"...",-4.9,"",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",4,"Total private dwellings",2,5737,"",,"...",,"...",,"...",,"...",,"..."
+2021,"2021S051610010001","10010001","Aggregate dissemination area","100100
+```
+
+
+
 Ingest csv using Dataiku:
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/7b45ee6e-b65d-4fd6-bccb-c379b62a9019)
@@ -26,6 +73,14 @@ Ingest csv using Dataiku:
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/bd5b765f-c0b6-471f-b346-7beca77bfe4a)
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/c9a96f54-612b-4216-86ae-61b0d834c739)
+
+Access directly loaded HDFS file using Dataiku:
+
+![image](https://github.com/jordanbell2357/how-to/assets/47544607/403cfbcb-0ddd-4bc3-91c9-834b754bfbea)
+
+![image](https://github.com/jordanbell2357/how-to/assets/47544607/8ef1939c-3a74-4c95-8f24-37460ec953c2)
+
+![image](https://github.com/jordanbell2357/how-to/assets/47544607/2b27723e-8bf9-4790-81e4-987c614d2a47)
 
 https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html
 
