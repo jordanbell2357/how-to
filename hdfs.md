@@ -416,11 +416,3 @@ df: org.apache.spark.sql.DataFrame = [CENSUS_YEAR: string, DGUID: string ... 21 
 scala> val rowCount = df.count()
 rowCount: Long = 14294223
 ```
-
-# PySpark
-
-https://spark.apache.org/docs/latest/api/python/getting_started/install.html
-
-```bash
-pip install pyspark
-```
