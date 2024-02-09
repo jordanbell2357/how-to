@@ -415,4 +415,102 @@ df: org.apache.spark.sql.DataFrame = [CENSUS_YEAR: string, DGUID: string ... 21 
 
 scala> val rowCount = df.count()
 rowCount: Long = 14294223
+
+scala> df.columns.foreach(println)
+CENSUS_YEAR
+DGUID
+ALT_GEO_CODE
+GEO_LEVEL
+GEO_NAME
+TNR_SF
+TNR_LF
+DATA_QUALITY_FLAG
+CHARACTERISTIC_ID
+CHARACTERISTIC_NAME
+CHARACTERISTIC_NOTE
+C1_COUNT_TOTAL
+SYMBOL12
+C2_COUNT_MEN+
+SYMBOL14
+C3_COUNT_WOMEN+
+SYMBOL16
+C10_RATE_TOTAL
+SYMBOL18
+C11_RATE_MEN+
+SYMBOL20
+C12_RATE_WOMEN+
+SYMBOL22
+
+scala> val df = spark.read.option("header", "true").csv("/census2021/ada/ada.csv")
+df: org.apache.spark.sql.DataFrame = [CENSUS_YEAR: string, DGUID: string ... 21 more fields]
+
+scala> val dfRenamed = df.withColumnRenamed("C2_COUNT_MEN+", "C2_COUNT_MEN").withColumnRenamed("C3_COUNT_WOMEN+", "C3_COUNT_WOMEN").withColumnRenamed("C11_RATE_MEN+", "C11_RATE_MEN").withColumnRenamed("C12_RATE_WOMEN+", "C12_RATE_WOMEN")
+dfRenamed: org.apache.spark.sql.DataFrame = [CENSUS_YEAR: string, DGUID: string ... 21 more fields]
+
+scala> dfRenamed.columns.foreach(println)
+CENSUS_YEAR
+DGUID
+ALT_GEO_CODE
+GEO_LEVEL
+GEO_NAME
+TNR_SF
+TNR_LF
+DATA_QUALITY_FLAG
+CHARACTERISTIC_ID
+CHARACTERISTIC_NAME
+CHARACTERISTIC_NOTE
+C1_COUNT_TOTAL
+SYMBOL12
+C2_COUNT_MEN
+SYMBOL14
+C3_COUNT_WOMEN
+SYMBOL16
+C10_RATE_TOTAL
+SYMBOL18
+C11_RATE_MEN
+SYMBOL20
+C12_RATE_WOMEN
+SYMBOL22
+
+scala> val df = spark.read.option("header", "true").csv("/census2021/ada/ada.csv")
+df: org.apache.spark.sql.DataFrame = [CENSUS_YEAR: string, DGUID: string ... 21 more fields]
+
+scala> val dfRenamed = df.withColumnRenamed("C2_COUNT_MEN+", "C2_COUNT_MEN").withColumnRenamed("C3_COUNT_WOMEN+", "C3_COUNT_WOMEN").withColumnRenamed("C11_RATE_MEN+", "C11_RATE_MEN").withColumnRenamed("C12_RATE_WOMEN+", "C12_RATE_WOMEN")
+dfRenamed: org.apache.spark.sql.DataFrame = [CENSUS_YEAR: string, DGUID: string ... 21 more fields]
+
+scala> val df_reduced = dfRenamed.select("GEO_NAME", "CHARACTERISTIC_ID", "CHARACTERISTIC_NAME", "C1_COUNT_TOTAL", "C2_COUNT_MEN", "C3_COUNT_WOMEN", "C10_RATE_TOTAL", "C11_RATE_MEN", "C12_RATE_WOMEN")
+df_reduced: org.apache.spark.sql.DataFrame = [GEO_NAME: string, CHARACTERISTIC_ID: string ... 7 more fields]
+
+scala> df_reduced.coalesce(1).write.option("header", "true").csv("/census2021/ada_reduced")
+[Stage 1:>                                                          (0 + 1) / 1]
 ```
+
+```bash
+ubuntu@LAPTOP-JBell:~$ hadoop fs -ls -R /census2021
+drwxr-xr-x   - ubuntu supergroup          0 2024-02-09 10:29 /census2021/ada
+-rw-r--r--   1 ubuntu supergroup 2415200889 2024-02-09 09:50 /census2021/ada/ada.csv
+drwxr-xr-x   - ubuntu supergroup          0 2024-02-09 10:32 /census2021/ada_reduced
+-rw-r--r--   1 ubuntu supergroup          0 2024-02-09 10:32 /census2021/ada_reduced/_SUCCESS
+-rw-r--r--   1 ubuntu supergroup  763087510 2024-02-09 10:32 /census2021/ada_reduced/part-00000-f87a37db-597e-42df-bd05-bab7766f0c41-c000.csv
+ubuntu@LAPTOP-JBell:~$ hadoop fs -head /census2021/ada_reduced/part-00000-f87a37db-597e-42df-bd05-bab7766f0c41-c000.csv
+GEO_NAME,CHARACTERISTIC_ID,CHARACTERISTIC_NAME,C1_COUNT_TOTAL,C2_COUNT_MEN,C3_COUNT_WOMEN,C10_RATE_TOTAL,C11_RATE_MEN,C12_RATE_WOMEN
+10010001,1,"Population, 2021",8881,,,,,
+10010001,2,"Population, 2016",9334,,,,,
+10010001,3,"Population percentage change, 2016 to 2021",-4.9,,,-4.9,,
+10010001,4,Total private dwellings,5737,,,,,
+10010001,5,Private dwellings occupied by usual residents,4121,,,,,
+10010001,6,Population density per square kilometre,9.4,,,9.4,,
+10010001,7,Land area in square kilometres,941.33,,,,,
+10010001,8,Total - Age groups of the population - 100% data,8880,4365,4515,100,100,100
+10010001,9,0 to 14 years,925,460,465,10.4,10.5,10.3
+10010001,10,0 to 4 years,265,130,135,3,3,3
+10010001,11,5 to 9 years,295,135,150,3.3,3.1,3.3
+10010001,12,10 to 14 years,370,190,180,4.2,4.4,4
+10010001,13,15 to 64 years,5010,2500,2510,56.4,57.3,55.6
+10010001,14,15 to 19 years,370,185,180,4.2,4.2,4
+10010001,15,20 to 24 years,280,155,120,3.2,3.6,2.7
+10010001,16,25 to 29 years,250,130,120,2.8,3,2.7
+10010001,17,30 to 34 years
+```
+
+(I had to remind myself that Hadoop `-head` displays first kilobyte of file, not a fixed number of lines.)
