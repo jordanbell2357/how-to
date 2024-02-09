@@ -21,9 +21,9 @@ HADOOP_CLASSPATH=/usr/lib/jvm/java-8-openjdk-amd64/lib/tools.jar
 
 Ingest csv using Dataiku:
 
-![image](https://github.com/jordanbell2357/how-to/assets/47544607/bd5b765f-c0b6-471f-b346-7beca77bfe4a)
-
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/7b45ee6e-b65d-4fd6-bccb-c379b62a9019)
+
+![image](https://github.com/jordanbell2357/how-to/assets/47544607/bd5b765f-c0b6-471f-b346-7beca77bfe4a)
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/c9a96f54-612b-4216-86ae-61b0d834c739)
 
@@ -134,7 +134,7 @@ ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ hadoop com.sun.tools.javac.Main LineCoun
 ubuntu@LAPTOP-JBell:~/hadoop-3.3.6/bin$ jar cf lc.jar LineCount*.class
 ```
 
-
+View using Dataiku:
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/d894764b-b4c6-4f1c-b47c-6396944fbc27)
 
