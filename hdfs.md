@@ -230,3 +230,47 @@ Note: it is unfruitful to suggest running hadoop fs -cat and piping to wc. This 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/bd5b765f-c0b6-471f-b346-7beca77bfe4a)
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/7b45ee6e-b65d-4fd6-bccb-c379b62a9019)
+
+
+https://spark.apache.org/downloads.html
+
+https://spark.apache.org/docs/latest/spark-standalone.html
+
+https://spark.apache.org/docs/3.3.4/configuration.html
+
+```bash
+wget https://dlcdn.apache.org/spark/spark-3.3.4/spark-3.3.4-bin-hadoop3.tgz
+tar -xvzf spark-3.3.4-bin-hadoop3.tgz
+```
+
+https://spark.apache.org/docs/latest/api/python/getting_started/install.html
+
+```bash
+pip install pyspark
+```
+
+```bash
+export SPARK_HOME=/home/ubuntu/spark-3.3.4-bin-hadoop3
+export PATH=$SPARK_HOME/bin:$PATH
+export SPARK_DIST_CLASSPATH=$(hadoop classpath)
+```
+
+https://kontext.tech/article/1066/install-spark-330-on-linux-or-wsl
+
+```bash
+cp $SPARK_HOME/conf/spark-defaults.conf.template $SPARK_HOME/conf/spark-defaults.conf
+```
+
+```bash
+spark.driver.host	localhost
+```
+
+```bash
+run-example SparkPi 10
+```
+
+```bash
+24/02/08 17:42:53 INFO DAGScheduler: Job 0 finished: reduce at SparkPi.scala:38, took 0.770038 s
+Pi is roughly 3.1433631433631435
+24/02/08 17:42:53 INFO SparkUI: Stopped Spark web UI at http://localhost:4040
+```
