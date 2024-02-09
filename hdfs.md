@@ -1,4 +1,8 @@
-# Install and configure dependencies
+# Single cluster Hadoop and Spark on Ubuntu using Canada Census 2021 data
+
+This tutorial works for Ubuntu 22.04 LTS both as VM (tested using VirtualBox) and using WSL2.
+
+## Install and configure dependencies
 
 https://learning.oreilly.com/library/view/apache-hadoop-3/9781788999830/05acc385-65dc-4355-8980-37b2c8933bb3.xhtml
 
@@ -19,7 +23,7 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 chmod 0600 ~/.ssh/authorized_keys
 ```
 
-# Download and configure Hadoop
+## Download and configure Hadoop
 
 https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
 
@@ -110,7 +114,7 @@ hdfs namenode -format
 start-all.sh
 ```
 
-# CSV dataset
+## CSV dataset
 
 Canada 2021 Census:
 
@@ -147,7 +151,7 @@ CENSUS_YEAR,DGUID,ALT_GEO_CODE,GEO_LEVEL,GEO_NAME,TNR_SF,TNR_LF,DATA_QUALITY_FLA
 2021,"2021S051610010001","10010001","Aggregate dissemination area","10010001",3.1,4.6,"00000",9,"  0 to 14 years",,925,"",460,"",465,"",10.4,"",10.5,"",10.3,""
 ```
 
-# Putting CSV into HDFS
+## Putting CSV into HDFS
 
 https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html
 
@@ -171,7 +175,7 @@ ubuntu@LAPTOP-JBell:~$ hadoop fs -cat /census2021/ada/ada.csv | wc -l
 
 (We remind ourselves that `hadoop fs -head` displays the first kilobyte of a file, not a fixed number of lines.)
 
-# MapReduce code for line count
+## MapReduce code for line count
 
 https://statinfer.com/301-2-3-map-reduce-code-for-line-count/
 https://stackoverflow.com/questions/29260900/could-not-find-or-load-main-class-com-sun-tools-javac-main-hadoop-mapreduce
@@ -357,7 +361,7 @@ ubuntu@LAPTOP-JBell:~$ hadoop fs -cat /LineCount/part-r-00000
 Total Lines     14294224
 ```
 
-# Spark
+## Spark
 
 https://spark.apache.org/downloads.html
 
