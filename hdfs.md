@@ -522,3 +522,62 @@ GEO_NAME,CHARACTERISTIC_ID,CHARACTERISTIC_NAME,C1_COUNT_TOTAL,C2_COUNT_MEN,C3_CO
 ```
 
 (We remind ourselves that `hadoop fs -head` displays the first kilobyte of a file, not a fixed number of lines.)
+
+```bash
+scala> val df = spark.read.option("header", "true").csv("/census2021/ada_reduced/part-00000-f87a37db-597e-42df-bd05-bab7766f0c41-c000.csv")
+df: org.apache.spark.sql.DataFrame = [GEO_NAME: string, CHARACTERISTIC_ID: string ... 7 more fields]
+
+scala> val df_id = df.select($"CHARACTERISTIC_ID".cast("integer").alias("CHARACTERISTIC_ID"), $"CHARACTERISTIC_NAME").distinct().orderBy("CHARACTERISTIC_ID")
+df_id: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] = [CHARACTERISTIC_ID: int, CHARACTERISTIC_NAME: string]
+
+scala> df_id.coalesce(1).write.option("header", "true").csv("/census2021/ada_characteristic")
+```
+
+```bash
+ubuntu@LAPTOP-JBell:~$ hadoop fs -ls -R /census2021/ada_characteristic
+-rw-r--r--   1 ubuntu supergroup          0 2024-02-09 13:31 /census2021/ada_characteristic/_SUCCESS
+-rw-r--r--   1 ubuntu supergroup      78032 2024-02-09 13:31 /census2021/ada_characteristic/part-00000-3912cf78-b4fe-4986-9e70-9a62cff91ab6-c000.csv
+ubuntu@LAPTOP-JBell:~$ hadoop fs -head /census2021/ada_characteristic/part-00000-3912cf78-b4fe-4986-9e70-9a62cff91ab6-c000.csv
+CHARACTERISTIC_ID,CHARACTERISTIC_NAME
+1,"Population, 2021"
+2,"Population, 2016"
+3,"Population percentage change, 2016 to 2021"
+4,Total private dwellings
+5,Private dwellings occupied by usual residents
+6,Population density per square kilometre
+7,Land area in square kilometres
+8,Total - Age groups of the population - 100% data
+9,0 to 14 years
+10,0 to 4 years
+11,5 to 9 years
+12,10 to 14 years
+13,15 to 64 years
+14,15 to 19 years
+15,20 to 24 years
+16,25 to 29 years
+17,30 to 34 years
+18,35 to 39 years
+19,40 to 44 years
+20,45 to 49 years
+21,50 to 54 years
+22,55 to 59 years
+23,60 to 64 years
+24,65 years and over
+25,65 to 69 years
+26,70 to 74 years
+27,75 to 79 years
+28,80 to 84 years
+29,85 years and over
+30,85 to 89 years
+31,90 to 94 years
+32,95 to 99 years
+33,100 years and over
+34,Total - Distribution (%) of the population by broad age groups - 100% data
+35,0 to 14 years
+36,15 to 64 years
+37,65 years and over
+38,85 years and over
+39,Average age of the population
+40,Median age of the population
+41,Total - Occupied pri
+```
