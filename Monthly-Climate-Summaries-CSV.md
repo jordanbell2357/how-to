@@ -119,6 +119,9 @@ Make coordinates file `coords.dat` of first 200 entries in `.csv`:
 
 ```bash
 ubuntu@LAPTOP-JBell:~/climate$ awk -F, 'NR==1 {next} NR<=201 {gsub(/"/, "", $1); gsub(/"/, "", $2); print $1, $2}' climate_summaries_ON.csv > coords.dat
+```
+
+```bash
 ubuntu@LAPTOP-JBell:~/climate$ head coords.dat
 -82.432 52.928
 -89.897 53.818
