@@ -69,3 +69,43 @@ ubuntu@LAPTOP-JBell:~/climate$ head climate_summaries_ON.csv
 "-90.218","51.449","PICKLE LAKE (AUT)","6016525","ON","-13.9","0","NA","4.8","0","-32.7","0","","","NA","38.1","0","NA","39.0","11","","","NA","987.4","0.0","2017-01"
 ```
 
+```bash
+ubuntu@LAPTOP-JBell:~/climate$ cat csv_to_geojson.sh
+#!/bin/bash
+
+input_file="climate_summaries_ON.csv"
+output_file="climate_summaries_ON.geojson"
+
+# Convert the CSV to GeoJSON and include description in each entry
+ogr2ogr -f "GeoJSON" -oo X_POSSIBLE_NAMES="Long" -oo Y_POSSIBLE_NAMES="Lat" -oo KEEP_GEOM_COLUMNS="NO" "/vsistdout/" "$input_file" | \
+jq '.features[].properties += {
+    "description_Long": "Longitude (West - , degrees)",
+    "description_Lat": "Latitude (North + , degrees)",
+    "description_Stn_Name": "Station Name",
+    "description_Clim_ID": "Climate Identifier",
+    "description_Prov_or_Ter": "Province or Territory",
+    "description_Tm": "Mean Temperature (°C)",
+    "description_DwTm": "Days without Valid Mean Temperature",
+    "description_D": "Mean Temperature difference from Normal (1981-2010) (°C)",
+    "description_Tx": "Highest Monthly Maximum Temperature (°C)",
+    "description_DwTx": "Days without Valid Maximum Temperature",
+    "description_Tn": "Lowest Monthly Minimum Temperature (°C)",
+    "description_DwTn": "Days without Valid Minimum Temperature",
+    "description_S": "Snowfall (cm)",
+    "description_DwS": "Days without Valid Snowfall",
+    "description_S%N": "Percent of Normal (1981-2010) Snowfall",
+    "description_P": "Total Precipitation (mm)",
+    "description_DwP": "Days without Valid Precipitation",
+    "description_P%N": "Percent of Normal (1981-2010) Precipitation",
+    "description_S_G": "Snow on the ground at the end of the month (cm)",
+    "description_Pd": "Number of days with Precipitation 1.0 mm or more",
+    "description_BS": "Bright Sunshine (hours)",
+    "description_DwBS": "Days without Valid Bright Sunshine",
+    "description_BS%": "Percent of Normal (1981-2010) Bright Sunshine",
+    "description_HDD": "Degree Days below 18 °C",
+    "description_CDD": "Degree Days above 18 °C"
+}' > "$output_file"
+
+echo "Conversion complete: $output_file"
+```
+
