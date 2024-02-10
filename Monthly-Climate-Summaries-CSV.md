@@ -40,6 +40,7 @@ ubuntu@LAPTOP-JBell:~/climate$ head en_climate_summaries_ON_01-2024.dat
 ```
 
 ```bash
+ubuntu@LAPTOP-JBell:~/climate$ gnuplot
 gnuplot> set title "Lowest Monthly Minimum Temperature (°C)"
 gnuplot> set xlabel "Longitude"
 gnuplot> set ylabel "Latitude"
@@ -49,9 +50,18 @@ gnuplot> set palette defined (0 "blue", 1 "white", 2 "red")
 gnuplot> plot "en_climate_summaries_ON_01-2024.dat" using 1:2:8 with points pt 7 palette title ""
 ```
 
-January 2024:
-
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/f5b9faf5-ab14-4810-b594-8244f75dd424)
+
+```bash
+ubuntu@LAPTOP-JBell:~/climate$ gnuplot
+gnuplot> set title "Mean Temperature (°C)"
+gnuplot> set xlabel "Longitude"
+gnuplot> set ylabel "Latitude"
+gnuplot> set style fill solid
+gnuplot> set pointsize 2
+gnuplot> set palette defined (0 "blue", 1 "white", 2 "red")
+gnuplot> plot "en_climate_summaries_ON_01-2024.dat" using 1:2:3 with points pt 7 palette title ""
+```
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/4d645f73-d132-4293-b6d1-d852bd60ac97)
 
