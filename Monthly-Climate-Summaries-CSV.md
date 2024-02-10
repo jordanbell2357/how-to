@@ -133,3 +133,25 @@ gnuplot> plot 'formatted_coords.txt' using 1:2 with points
 ```
 
 ![image](https://github.com/jordanbell2357/how-to/assets/47544607/999454a3-2ac3-4044-9c4d-185055021ef3)
+
+```bash
+ubuntu@LAPTOP-JBell:~/climate$ cat geojson_200.sh
+#!/bin/bash
+
+geojson_file="climate_summaries_ON.geojson"
+output_file="formatted_coords_200.txt"
+
+# Extract the first two hundred coordinates and format them for Gnuplot
+jq -c '.features[0:200] | .[].geometry.coordinates' "$geojson_file" | \
+awk -F, '{print $1, $2}' | tr -d '[]' > "$output_file"
+
+echo "Data formatted for Gnuplot: $output_file"
+```
+
+```bash
+gnuplot
+gnuplot> plot 'formatted_coords_200.txt' using 1:2 with points
+```
+
+![image](https://github.com/jordanbell2357/how-to/assets/47544607/95a6a3ea-3853-468b-b132-6f252f2679b9)
+
