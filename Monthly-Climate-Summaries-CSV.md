@@ -1,12 +1,65 @@
 # Monthly Climate Summaries
 
-## Process and combine CSV files
+## Download and process CSV files
 
 https://climate.weather.gc.ca/prods_servs/cdn_climate_summary_e.html
 
 ```bash
 ubuntu@LAPTOP-JBell:~/climate$ dos2unix en_climate_summaries_ON*.csv
+```
 
+## Inspect and plot with Gnuplot
+
+```bash
+ubuntu@LAPTOP-JBell:~/climate$ head en_climate_summaries_ON_01-2024.csv
+"Long","Lat","Stn_Name","Clim_ID","Prov_or_Ter","Tm","DwTm","D","Tx","DwTx","Tn","DwTn","S","DwS","S%N","P","DwP","P%N","S_G","Pd","BS","DwBS","BS%","HDD","CDD"
+"-82.432","52.928","ATTAWAPISKAT A","6010400","ON","-15.8","0","NA","0.2","0","-31.5","0","","","NA","3.6","0","NA","","0","","","NA","1048.0","0.0"
+"-89.897","53.818","BIG TROUT LAKE A","6010735","ON","-17.7","1","NA","1.1","1","-33.3","1","","","NA","8.8","0","NA","","4","","","NA","1070.2","0.0"
+"-89.892","53.816","BIG TROUT LAKE","6010740","ON","-17.5","0","NA","1.3","0","-34.4","0","","","NA","26.3","0","NA","43.0","9","","","NA","1099.6","0.0"
+"-93.221","50.631","EAR FALLS (AUT)","6012199","ON","-12.6","0","NA","7.5","0","-31.2","0","","","NA","14.5","0","NA","21.0","6","","","NA","947.5","0.0"
+"-87.676","56.019","FORT SEVERN A","6012501","ON","-19.2","0","NA","1.5","0","-34.7","0","","","NA","0.7","0","NA","","0","","","NA","1152.4","0.0"
+"-87.934","52.196","LANSDOWNE HOUSE A","6014351","ON","-16.0","0","NA","1.1","0","-33.3","0","","","NA","4.5","0","NA","","1","","","NA","1053.6","0.0"
+"-87.936","52.196","LANSDOWNE HOUSE (AUT)","6014353","ON","-16.0","0","NA","0.9","0","-33.4","0","","","NA","13.9","0","NA","10.0","5","","","NA","1054.0","0.0"
+"-91.763","53.441","MUSKRAT DAM","6015026","ON","-17.2","0","NA","1.0","0","-35.8","0","","","NA","0.7","25","NA","","0","","","NA","1090.9","0.0"
+"-85.433","54.983","PEAWANUCK (AUT)","6016295","ON","-19.4","5","NA","1.4","5","-37.2","5","","","NA","17.4","5","NA","5.0","5","","","NA","971.5","0.0"
+```
+
+```bash
+ubuntu@LAPTOP-JBell:~/climate$ awk -F, 'NR>1 {for (i=1; i<=NF; i++) {gsub(/"/, "", $i); if ($i == "NA") $i = "NaN"; if (i != 3 && i != 4 && i != 5) printf "%s ", $i} printf "\n"}' en_climate_summaries_ON_01-2024.csv > en_climate_summaries_ON_01-2024.dat
+ubuntu@LAPTOP-JBell:~/climate$ head en_climate_summaries_ON_01-2024.dat
+-82.432 52.928 -15.8 0 NaN 0.2 0 -31.5 0   NaN 3.6 0 NaN  0   NaN 1048.0 0.0
+-89.897 53.818 -17.7 1 NaN 1.1 1 -33.3 1   NaN 8.8 0 NaN  4   NaN 1070.2 0.0
+-89.892 53.816 -17.5 0 NaN 1.3 0 -34.4 0   NaN 26.3 0 NaN 43.0 9   NaN 1099.6 0.0
+-93.221 50.631 -12.6 0 NaN 7.5 0 -31.2 0   NaN 14.5 0 NaN 21.0 6   NaN 947.5 0.0
+-87.676 56.019 -19.2 0 NaN 1.5 0 -34.7 0   NaN 0.7 0 NaN  0   NaN 1152.4 0.0
+-87.934 52.196 -16.0 0 NaN 1.1 0 -33.3 0   NaN 4.5 0 NaN  1   NaN 1053.6 0.0
+-87.936 52.196 -16.0 0 NaN 0.9 0 -33.4 0   NaN 13.9 0 NaN 10.0 5   NaN 1054.0 0.0
+-91.763 53.441 -17.2 0 NaN 1.0 0 -35.8 0   NaN 0.7 25 NaN  0   NaN 1090.9 0.0
+-85.433 54.983 -19.4 5 NaN 1.4 5 -37.2 5   NaN 17.4 5 NaN 5.0 5   NaN 971.5 0.0
+-85.443 54.988 -19.0 1 NaN 1.3 1 -37.2 1   NaN 2.2 1 NaN  1   NaN 1108.5 0.0
+```
+
+```bash
+gnuplot> set title "Lowest Monthly Minimum Temperature (°C)"
+gnuplot> set xlabel "Longitude"
+gnuplot> set ylabel "Latitude"
+gnuplot> set style fill solid
+gnuplot> set pointsize 2
+gnuplot> set palette defined (0 "blue", 1 "white", 2 "red")
+gnuplot> plot "en_climate_summaries_ON_01-2024.dat" using 1:2:8 with points pt 7 palette title ""
+```
+
+January 2024:
+
+![image](https://github.com/jordanbell2357/how-to/assets/47544607/f5b9faf5-ab14-4810-b594-8244f75dd424)
+
+![image](https://github.com/jordanbell2357/how-to/assets/47544607/4d645f73-d132-4293-b6d1-d852bd60ac97)
+
+
+
+## Process CSV files
+
+```bash
 ubuntu@LAPTOP-JBell:~/climate$ cat date_column.sh
 #!/bin/bash
 
@@ -32,6 +85,8 @@ echo "All files processed."
 
 ubuntu@LAPTOP-JBell:~/climate$ bash date_column.sh
 ```
+
+## Combine CSV files
 
 ```bash
 ubuntu@LAPTOP-JBell:~/climate$ cat combine_csv.sh
@@ -73,35 +128,6 @@ ubuntu@LAPTOP-JBell:~/climate$ head climate_summaries_ON.csv
 "-91.763","53.441","MUSKRAT DAM","6015026","ON","-12.2","9","NA","3.6","9","-34.5","9","","","NA","3.6","9","NA","","1","","","NA","664.3","0.0","2017-01"
 "-85.433","54.983","PEAWANUCK (AUT)","6016295","ON","-17.6","0","NA","1.6","0","-33.4","0","","","NA","18.6","0","NA","13.0","6","","","NA","1103.4","0.0","2017-01"
 "-90.218","51.449","PICKLE LAKE (AUT)","6016525","ON","-13.9","0","NA","4.8","0","-32.7","0","","","NA","38.1","0","NA","39.0","11","","","NA","987.4","0.0","2017-01"
-```
-
-## Gnuplot
-
-Make coordinates file `coords.dat`:
-
-```bash
-ubuntu@LAPTOP-JBell:~/climate$ awk -F, 'NR==1 {next} NR<=201 {gsub(/"/, "", $1); gsub(/"/, "", $2); print $1, $2}' climate_summaries_ON.csv > coords.dat
-```
-
-```bash
-ubuntu@LAPTOP-JBell:~/climate$ head coords.dat
--82.432 52.928
--89.897 53.818
--89.892 53.816
--93.221 50.631
--87.676 56.019
--87.936 52.196
--91.763 53.441
--85.433 54.983
--90.218 51.449
--90.214 51.446
-```
-
-Gnuplot:
-
-```bash
-ubuntu@LAPTOP-JBell:~/climate$ gnuplot
-gnuplot> plot 'coords.dat' using 1:2 with points
 ```
 
 ## GeoJSON
