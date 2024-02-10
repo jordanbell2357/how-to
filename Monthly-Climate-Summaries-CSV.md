@@ -109,49 +109,30 @@ jq '.features[].properties += {
 echo "Conversion complete: $output_file"
 ```
 
-GeoJSON:
+Make coordinates file `coords.dat` of first 200 entries in `.csv`:
 
 ```bash
-ubuntu@LAPTOP-JBell:~/climate$ cat geojson.sh
-#!/bin/bash
+awk -F, 'NR==1 {next} NR<=201 {gsub(/"/, "", $1); gsub(/"/, "", $2); print $1, $2}' climate_summaries_ON.csv > coords.dat
 
-geojson_file="climate_summaries_ON.geojson"
-output_file="formatted_coords.txt"
-
-# Extract the first hundred coordinates and format them for Gnuplot
-jq -c '.features[0:100] | .[].geometry.coordinates' "$geojson_file" | \
-awk -F, '{print $1, $2}' | tr -d '[]' > "$output_file"
-
-echo "Data formatted for Gnuplot: $output_file"
+ubuntu@LAPTOP-JBell:~/climate$ head coords.dat
+-82.432 52.928
+-89.897 53.818
+-89.892 53.816
+-93.221 50.631
+-87.676 56.019
+-87.936 52.196
+-91.763 53.441
+-85.433 54.983
+-90.218 51.449
+-90.214 51.446
 ```
 
 Gnuplot:
 
 ```bash
 gnuplot
-gnuplot> plot 'formatted_coords.txt' using 1:2 with points
+gnuplot> plot 'coords.dat' using 1:2 with points
 ```
 
-![image](https://github.com/jordanbell2357/how-to/assets/47544607/999454a3-2ac3-4044-9c4d-185055021ef3)
-
-```bash
-ubuntu@LAPTOP-JBell:~/climate$ cat geojson_200.sh
-#!/bin/bash
-
-geojson_file="climate_summaries_ON.geojson"
-output_file="formatted_coords_200.txt"
-
-# Extract the first two hundred coordinates and format them for Gnuplot
-jq -c '.features[0:200] | .[].geometry.coordinates' "$geojson_file" | \
-awk -F, '{print $1, $2}' | tr -d '[]' > "$output_file"
-
-echo "Data formatted for Gnuplot: $output_file"
-```
-
-```bash
-gnuplot
-gnuplot> plot 'formatted_coords_200.txt' using 1:2 with points
-```
-
-![image](https://github.com/jordanbell2357/how-to/assets/47544607/95a6a3ea-3853-468b-b132-6f252f2679b9)
+![image](https://github.com/jordanbell2357/how-to/assets/47544607/9695ae7d-9fb7-4940-bd42-17860d965354)
 
