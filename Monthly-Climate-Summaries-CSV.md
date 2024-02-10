@@ -142,4 +142,16 @@ jq '.features[].properties += {
 echo "Conversion complete: $output_file"
 
 ubuntu@LAPTOP-JBell:~/climate$ bash csv_to_geojson.sh
+
+ubuntu@LAPTOP-JBell:~/climate$ head climate_summaries_ON.geojson
+{
+  "type": "FeatureCollection",
+  "name": "climate_summaries_ON",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "Stn_Name": "ATTAWAPISKAT A",
+        "Clim_ID": "6010400",
+        "Prov_or_Ter": "ON",
 ```
