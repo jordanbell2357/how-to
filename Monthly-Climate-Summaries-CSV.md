@@ -104,7 +104,7 @@ ubuntu@LAPTOP-JBell:~/climate$ gnuplot
 gnuplot> plot 'coords.dat' using 1:2 with points
 ```
 
-# GeoJSON
+## GeoJSON
 
 ```bash
 ubuntu@LAPTOP-JBell:~/climate$ cat csv_to_geojson.sh
