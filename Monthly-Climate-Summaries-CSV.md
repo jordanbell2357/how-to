@@ -3,7 +3,7 @@
 https://climate.weather.gc.ca/prods_servs/cdn_climate_summary_e.html
 
 ```bash
-dos2unix en_climate_summaries_ON*.csv
+ubuntu@LAPTOP-JBell:~/climate$ dos2unix en_climate_summaries_ON*.csv
 
 ubuntu@LAPTOP-JBell:~/climate$ cat date_column.sh
 #!/bin/bash
@@ -28,8 +28,10 @@ done
 
 echo "All files processed."
 
-bash date_column.sh
+ubuntu@LAPTOP-JBell:~/climate$ bash date_column.sh
+```
 
+```bash
 ubuntu@LAPTOP-JBell:~/climate$ cat combine_csv.sh
 #!/bin/bash
 
@@ -55,6 +57,8 @@ for file in $(ls climate_summaries_ON_*.csv | sort -t '_' -k 3.1,3.4 -k 3.6,3.7)
 done
 
 echo "All files have been combined into $output_file"
+
+ubuntu@LAPTOP-JBell:~/climate$ bash combine_csv.sh
 
 ubuntu@LAPTOP-JBell:~/climate$ head climate_summaries_ON.csv
 "Long","Lat","Stn_Name","Clim_ID","Prov_or_Ter","Tm","DwTm","D","Tx","DwTx","Tn","DwTn","S","DwS","S%N","P","DwP","P%N","S_G","Pd","BS","DwBS","BS%","HDD","CDD","Date"
@@ -107,13 +111,14 @@ jq '.features[].properties += {
 }' > "$output_file"
 
 echo "Conversion complete: $output_file"
+
+ubuntu@LAPTOP-JBell:~/climate$ bash csv_to_geojson.sh
 ```
 
 Make coordinates file `coords.dat` of first 200 entries in `.csv`:
 
 ```bash
-awk -F, 'NR==1 {next} NR<=201 {gsub(/"/, "", $1); gsub(/"/, "", $2); print $1, $2}' climate_summaries_ON.csv > coords.dat
-
+ubuntu@LAPTOP-JBell:~/climate$ awk -F, 'NR==1 {next} NR<=201 {gsub(/"/, "", $1); gsub(/"/, "", $2); print $1, $2}' climate_summaries_ON.csv > coords.dat
 ubuntu@LAPTOP-JBell:~/climate$ head coords.dat
 -82.432 52.928
 -89.897 53.818
@@ -130,7 +135,7 @@ ubuntu@LAPTOP-JBell:~/climate$ head coords.dat
 Gnuplot:
 
 ```bash
-gnuplot
+ubuntu@LAPTOP-JBell:~/climate$ gnuplot
 gnuplot> plot 'coords.dat' using 1:2 with points
 ```
 
