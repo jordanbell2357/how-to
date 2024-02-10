@@ -109,3 +109,27 @@ jq '.features[].properties += {
 echo "Conversion complete: $output_file"
 ```
 
+GeoJSON:
+
+```bash
+ubuntu@LAPTOP-JBell:~/climate$ cat geojson.sh
+#!/bin/bash
+
+geojson_file="climate_summaries_ON.geojson"
+output_file="formatted_coords.txt"
+
+# Extract the first hundred coordinates and format them for Gnuplot
+jq -c '.features[0:100] | .[].geometry.coordinates' "$geojson_file" | \
+awk -F, '{print $1, $2}' | tr -d '[]' > "$output_file"
+
+echo "Data formatted for Gnuplot: $output_file"
+```
+
+Gnuplot:
+
+```bash
+gnuplot
+gnuplot> plot 'formatted_coords.txt' using 1:2 with points
+```
+
+![image](https://github.com/jordanbell2357/how-to/assets/47544607/999454a3-2ac3-4044-9c4d-185055021ef3)
