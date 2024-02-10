@@ -73,6 +73,35 @@ ubuntu@LAPTOP-JBell:~/climate$ head climate_summaries_ON.csv
 "-90.218","51.449","PICKLE LAKE (AUT)","6016525","ON","-13.9","0","NA","4.8","0","-32.7","0","","","NA","38.1","0","NA","39.0","11","","","NA","987.4","0.0","2017-01"
 ```
 
+Make coordinates file `coords.dat` of first 200 entries in `.csv`:
+
+```bash
+ubuntu@LAPTOP-JBell:~/climate$ awk -F, 'NR==1 {next} NR<=201 {gsub(/"/, "", $1); gsub(/"/, "", $2); print $1, $2}' climate_summaries_ON.csv > coords.dat
+```
+
+```bash
+ubuntu@LAPTOP-JBell:~/climate$ head coords.dat
+-82.432 52.928
+-89.897 53.818
+-89.892 53.816
+-93.221 50.631
+-87.676 56.019
+-87.936 52.196
+-91.763 53.441
+-85.433 54.983
+-90.218 51.449
+-90.214 51.446
+```
+
+Gnuplot:
+
+```bash
+ubuntu@LAPTOP-JBell:~/climate$ gnuplot
+gnuplot> plot 'coords.dat' using 1:2 with points
+```
+
+![image](https://github.com/jordanbell2357/how-to/assets/47544607/9695ae7d-9fb7-4940-bd42-17860d965354)
+
 ```bash
 ubuntu@LAPTOP-JBell:~/climate$ cat csv_to_geojson.sh
 #!/bin/bash
@@ -114,33 +143,3 @@ echo "Conversion complete: $output_file"
 
 ubuntu@LAPTOP-JBell:~/climate$ bash csv_to_geojson.sh
 ```
-
-Make coordinates file `coords.dat` of first 200 entries in `.csv`:
-
-```bash
-ubuntu@LAPTOP-JBell:~/climate$ awk -F, 'NR==1 {next} NR<=201 {gsub(/"/, "", $1); gsub(/"/, "", $2); print $1, $2}' climate_summaries_ON.csv > coords.dat
-```
-
-```bash
-ubuntu@LAPTOP-JBell:~/climate$ head coords.dat
--82.432 52.928
--89.897 53.818
--89.892 53.816
--93.221 50.631
--87.676 56.019
--87.936 52.196
--91.763 53.441
--85.433 54.983
--90.218 51.449
--90.214 51.446
-```
-
-Gnuplot:
-
-```bash
-ubuntu@LAPTOP-JBell:~/climate$ gnuplot
-gnuplot> plot 'coords.dat' using 1:2 with points
-```
-
-![image](https://github.com/jordanbell2357/how-to/assets/47544607/9695ae7d-9fb7-4940-bd42-17860d965354)
-
