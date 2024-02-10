@@ -1,5 +1,7 @@
 # Monthly Climate Summaries
 
+## Process and combine CSV files
+
 https://climate.weather.gc.ca/prods_servs/cdn_climate_summary_e.html
 
 ```bash
@@ -73,7 +75,9 @@ ubuntu@LAPTOP-JBell:~/climate$ head climate_summaries_ON.csv
 "-90.218","51.449","PICKLE LAKE (AUT)","6016525","ON","-13.9","0","NA","4.8","0","-32.7","0","","","NA","38.1","0","NA","39.0","11","","","NA","987.4","0.0","2017-01"
 ```
 
-Make coordinates file `coords.dat` of first 200 entries in `.csv`:
+## Gnuplot
+
+Make coordinates file `coords.dat`:
 
 ```bash
 ubuntu@LAPTOP-JBell:~/climate$ awk -F, 'NR==1 {next} NR<=201 {gsub(/"/, "", $1); gsub(/"/, "", $2); print $1, $2}' climate_summaries_ON.csv > coords.dat
@@ -100,7 +104,7 @@ ubuntu@LAPTOP-JBell:~/climate$ gnuplot
 gnuplot> plot 'coords.dat' using 1:2 with points
 ```
 
-![image](https://github.com/jordanbell2357/how-to/assets/47544607/9695ae7d-9fb7-4940-bd42-17860d965354)
+# GeoJSON
 
 ```bash
 ubuntu@LAPTOP-JBell:~/climate$ cat csv_to_geojson.sh
