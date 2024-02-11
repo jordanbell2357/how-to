@@ -5,6 +5,37 @@
 https://climate.weather.gc.ca/prods_servs/cdn_climate_summary_e.html
 
 ```bash
+ubuntu@LAPTOP-JBell:~/climate$ cat en_climate_summaries_legend.txt
+﻿Legend
+Long    Longitude (West - , degrees)
+Lat     Latitude (North + , degrees)
+Stn_Name        Station Name
+Clim_ID Climate Identifier
+Prov_or_Ter     Province or Territory
+Tm      Mean Temperature (°C)
+DwTm    Days without Valid Mean Temperature
+D       Mean Temperature difference from Normal (1981-2010) (°C)
+Tx      Highest Monthly Maximum Temperature (°C)
+DwTx    Days without Valid Maximum Temperature
+Tn      Lowest Monthly Minimum Temperature (°C)
+DwTn    Days without Valid Minimum Temperature
+S       Snowfall (cm)
+DwS     Days without Valid Snowfall
+S%N     Percent of Normal (1981-2010) Snowfall
+P       Total Precipitation (mm)
+DwP     Days without Valid Precipitation
+P%N     Percent of Normal (1981-2010) Precipitation
+S_G     Snow on the ground at the end of the month (cm)
+Pd      Number of days with Precipitation 1.0 mm or more
+BS      Bright Sunshine (hours)
+DwBS    Days without Valid Bright Sunshine
+BS%     Percent of Normal (1981-2010) Bright Sunshine
+HDD     Degree Days below 18 °C
+CDD     Degree Days above 18 °C
+NA      Not Available
+```
+
+```bash
 ubuntu@LAPTOP-JBell:~/climate$ dos2unix en_climate_summaries_ON*.csv
 ```
 
