@@ -6,6 +6,10 @@ https://www.earthdata.nasa.gov/learn/find-data/near-real-time/hazards-and-disast
 
 https://lpdaac.usgs.gov/products/mod11c3v061/#tools
 
+MOD11C3 v061
+
+MODIS/Terra Land Surface Temperature/Emissivity Monthly L3 Global 0.05 Deg CMG
+
 ```python
 #Import packages
 import earthaccess
