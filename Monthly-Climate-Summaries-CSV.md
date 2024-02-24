@@ -214,7 +214,11 @@ ubuntu@LAPTOP-JBell:~/climate$ head climate_summaries_ON.geojson
         "Prov_or_Ter": "ON",
 ```
 
-[climate_summaries_ON.geojson](https://github.com/jordanbell2357/how-to/blob/main/climate_summaries_ON.geojson)
+[climate_summaries_ON.geojson on GitHub](https://github.com/jordanbell2357/how-to/blob/main/climate_summaries_ON.geojson)
+
+[climate_summaries_ON.geojson on ArcGIS](https://arcg.is/14eSaf0)
+
+## PostGIS
 
 We run `psql`
 
