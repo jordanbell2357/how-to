@@ -215,3 +215,43 @@ ubuntu@LAPTOP-JBell:~/climate$ head climate_summaries_ON.geojson
 ```
 
 [climate_summaries_ON.geojson](https://github.com/jordanbell2357/how-to/blob/main/climate_summaries_ON.geojson)
+
+We run `psql`
+
+```bash
+sudo -u postgres psql
+```
+
+We create PostgreSQL DB `monthly_climate_summaries` and in it execute `CREATE EXTENSION postgis;`
+
+```sql
+postgres=# CREATE DATABASE monthly_climate_summaries;
+CREATE DATABASE
+postgres=# \c monthly_climate_summaries;
+You are now connected to database "monthly_climate_summaries" as user "postgres".
+monthly_climate_summaries=# CREATE EXTENSION postgis;
+CREATE EXTENSION
+monthly_climate_summaries=# quit
+```
+
+Now we load `geojson` file into PostGIS.
+
+Reference: https://gdal.org/drivers/vector/pg.html
+
+We run the following
+
+```bash
+ogr2ogr -f "PostgreSQL" PG:"dbname='monthly_climate_summaries' host='localhost' port='5432' user='postgres' password='postgres'" climate_summaries_ON.geojson
+```
+
+This creates a table `climate_summaries_on` in the DB `monthly_climate_summaries`.
+
+```sql
+monthly_climate_summaries=# SELECT COUNT(*) FROM climate_summaries_on;
+ count
+-------
+ 14633
+(1 row)
+monthly_climate_summaries=# quit
+```
+
