@@ -1,5 +1,7 @@
 # Removing duplicate entries for MMSI, BaseDateTime pairs
 
+Removing duplicate entries for MMSI, BaseDateTime pairs
+
 ```sql
 CREATE TABLE `ais-data-385301.uscg.no_dups` AS
 SELECT 
