@@ -279,3 +279,9 @@ ORDER BY
 [usace_principal_ports_monthly_visits.csv](https://docs.google.com/spreadsheets/d/e/2PACX-1vTubVzVNt76z3St9N7RPM_e6v5xDWaMqR17ql0XnDMz-SN2QCzxAtwJ7LTg7livY-nEwsDnHtbE4ZKd/pub?gid=798031662&single=true&output=csv)
 
 [Google Sheets view](https://docs.google.com/spreadsheets/d/e/2PACX-1vTubVzVNt76z3St9N7RPM_e6v5xDWaMqR17ql0XnDMz-SN2QCzxAtwJ7LTg7livY-nEwsDnHtbE4ZKd/pubhtml?gid=951681385&single=true)
+
+# Comparing to sources of truth
+
+We now have to compare our estimates for monthly port visits with sources of truth. The two parameters for measuring continuous visits to a port are radius of port and minimum time spent within that radius.
+
+After comparing to sources of truth, there is next a cycle of adjusting parameters and comparing results to sources of truth.
