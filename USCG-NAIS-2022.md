@@ -864,3 +864,61 @@ plt.show()
 
 ![KDE plot of distribution of Log MMSI Count](https://github.com/jordanbell2357/how-to/assets/47544607/e36448dc-dcef-4e60-a9b0-7e2a6472f78f)
 
+# H3
+
+https://github.com/dtws/bigquery-jslibs
+
+UDF `jslibs.h3.ST_H3`
+
+```sql
+-- Define the bounding box and hexagon resolution
+DECLARE min_lat FLOAT64 DEFAULT 10;
+DECLARE max_lat FLOAT64 DEFAULT 60;
+DECLARE min_lon FLOAT64 DEFAULT -140;
+DECLARE max_lon FLOAT64 DEFAULT -50;
+DECLARE resolution INT64 DEFAULT 4;
+
+-- Create a new table with daily H3 density data
+CREATE TABLE `ais-data-385301.uscg.h3_resolution4_daily_density` AS
+WITH 
+  -- Filter locations based on the bounding box
+  filtered_locations AS (
+    SELECT 
+      MMSI, 
+      BaseDateTime, 
+      vessel_geography,
+      DATE(BaseDateTime) AS DateOnly  -- Extract the date component
+    FROM `ais-data-385301.uscg.no_dups_simplified`
+    WHERE ST_WITHIN(vessel_geography, ST_GEOGFROMTEXT('POLYGON((-140 10, -50 10, -50 60, -140 60, -140 10))'))
+  ),
+  -- Create H3 index for each point
+  h3_indexed AS (
+    SELECT 
+      MMSI, 
+      BaseDateTime, 
+      DateOnly,
+      jslibs.h3.ST_H3(vessel_geography, resolution) AS h3_index
+    FROM filtered_locations
+  ),
+  -- Count occurrences of each H3 index per day
+  daily_density AS (
+    SELECT 
+      h3_index, 
+      DateOnly,
+      COUNT(*) AS count
+    FROM h3_indexed
+    GROUP BY h3_index, DateOnly
+  ),
+  -- Generate H3 polygons
+  h3_polygons AS (
+    SELECT 
+      h3_index, 
+      DateOnly,
+      count,
+      jslibs.h3.ST_H3_BOUNDARY(h3_index) AS h3_polygon
+    FROM daily_density
+  )
+SELECT * FROM h3_polygons;
+```
+
+
