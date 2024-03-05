@@ -965,136 +965,60 @@ import h3
 import matplotlib.colors as colors
 import pandas as pd
 
-# Define the lat/lon boundaries
-min_lat, max_lat, min_lon, max_lon = 10, 60, -140, -50
+def plot_geo_data_on_date(date, results):
+    # Define the lat/lon boundaries
+    min_lat, max_lat, min_lon, max_lon = 10, 60, -140, -50
 
-# Set the date for filtering
-data_date = '2022-01-01'  # Modify this to the desired date
+    # Calculate aspect ratio
+    width = max_lon - min_lon
+    height = max_lat - min_lat
+    aspect_ratio = width / height
 
-# Filter the DataFrame for the specified date and make a copy to avoid SettingWithCopyWarning
-filtered_results = results[results['DateOnly'] == pd.to_datetime(data_date)].copy()
-
-# Create polygons for each unique hex_id, and filter them based on the bounding box
-hex_polygons = []
-for hex_id in filtered_results['h3_index'].unique():
-    hex_boundary = h3.h3_to_geo_boundary(hex_id)
-    polygon = Polygon([(lon, lat) for lat, lon in hex_boundary])
-    centroid = polygon.centroid
-    if min_lat <= centroid.y <= max_lat and min_lon <= centroid.x <= max_lon:
-        hex_polygons.append(polygon)
-
-# Replace inf with max non-inf value and NaN with 1
-filtered_results.loc[filtered_results['count'] == np.inf, 'count'] = filtered_results.loc[filtered_results['count'] != np.inf, 'count'].max()
-filtered_results['count'] = filtered_results['count'].replace({0:1}).fillna(1)
-
-# Create a GeoDataFrame
-gdf = gpd.GeoDataFrame(filtered_results, geometry=hex_polygons)
-
-# Convert 'count' column to float
-gdf['count'] = gdf['count'].astype(float)
-
-# Check for NA or NaN in 'count' and fill them with a default value (e.g., 1)
-gdf['count'] = gdf['count'].fillna(1)
-
-# Calculate min and max values for 'count', ensuring they are valid
-count_min = gdf['count'].min()
-count_max = gdf['count'].max()
-
-# Set count_min to 1 if it's 0 to avoid issues with LogNorm
-if count_min <= 0:
-    count_min = 1
-
-# Plot the choropleth map
-fig, ax = plt.subplots(1, 1, figsize=(20, 20))
-gdf.plot(column='count', cmap='YlOrRd', 
-         norm=colors.LogNorm(vmin=count_min, vmax=count_max), 
-         missing_kwds={'color': 'lightgrey'}, ax=ax)
-
-# Setting the x and y limits to focus the map on the defined bounding box
-plt.xlim(min_lon, max_lon)
-plt.ylim(min_lat, max_lat)
-
-# Adding labels for clarity
-plt.xlabel('Longitude')
-plt.ylabel('Latitude')
-
-# Displaying the plot
-plt.show()
-```
-
-![h3 choropleth for 2022-01-01](https://github.com/jordanbell2357/how-to/assets/47544607/d360b695-a5f0-4d5a-9a06-1bb379eb63a6)
-
-```python
-gdf.info()
-```
-
-```
-<class 'geopandas.geodataframe.GeoDataFrame'>
-Int64Index: 2629 entries, 534 to 979494
-Data columns (total 5 columns):
- #   Column      Non-Null Count  Dtype   
----  ------      --------------  -----   
- 0   h3_index    2629 non-null   object  
- 1   DateOnly    2629 non-null   dbdate  
- 2   count       2629 non-null   float64 
- 3   h3_polygon  2629 non-null   object  
- 4   geometry    2629 non-null   geometry
-dtypes: dbdate(1), float64(1), geometry(1), object(2)
-memory usage: 123.2+ KB
-```
-
-# matplotlib.animation.FuncAnimation
-
-```python
-import matplotlib.pyplot as plt
-import matplotlib.colors as colors
-from matplotlib.animation import FuncAnimation
-import geopandas as gpd
-import pandas as pd
-from shapely.geometry import Polygon
-import h3
-import datetime
-
-# Define the lat/lon boundaries
-min_lat, max_lat, min_lon, max_lon = 10, 60, -140, -50
-
-# Define the date range for the year 2022
-start_date = datetime.date(2022, 1, 1)
-end_date = datetime.date(2022, 12, 31)
-date_range = pd.date_range(start_date, end_date)
-
-# Function to update the plot for each frame
-def update(frame_date):
-    ax.clear()
-    ax.set_xlim(min_lon, max_lon)
-    ax.set_ylim(min_lat, max_lat)
-    ax.set_xlabel('Longitude')
-    ax.set_ylabel('Latitude')
+    # Set the figure size based on the aspect ratio
+    fig_width = 10
+    fig_height = fig_width / aspect_ratio
 
     # Filter the DataFrame for the specified date
-    filtered_results = results[results['DateOnly'] == frame_date].copy()
+    filtered_results = results[results['DateOnly'] == pd.to_datetime(date)].copy()
 
     # Create polygons for each unique hex_id
-    hex_polygons = [Polygon(h3.h3_to_geo_boundary(hex_id)) for hex_id in filtered_results['h3_index']]
+    hex_polygons = []
+    for hex_id in filtered_results['h3_index'].unique():
+        hex_boundary = h3.h3_to_geo_boundary(hex_id)
+        polygon = Polygon([(lon, lat) for lat, lon in hex_boundary])
+        centroid = polygon.centroid
+        if min_lat <= centroid.y <= max_lat and min_lon <= centroid.x <= max_lon:
+            hex_polygons.append(polygon)
+
+    # Replace inf with max non-inf value and NaN with 1
+    filtered_results.loc[filtered_results['count'] == np.inf, 'count'] = filtered_results.loc[filtered_results['count'] != np.inf, 'count'].max()
+    filtered_results['count'] = filtered_results['count'].replace({0: 1}).fillna(1)
 
     # Create a GeoDataFrame
     gdf = gpd.GeoDataFrame(filtered_results, geometry=hex_polygons)
 
-    # Ensure 'count' is a float
-    gdf['count'] = gdf['count'].astype(float)
+    # Convert 'count' column to float and fill NaN with 1
+    gdf['count'] = gdf['count'].astype(float).fillna(1)
 
-    # Plotting
-    gdf.plot(column='count', cmap='YlOrRd', 
-             norm=colors.LogNorm(vmin=count_min, vmax=count_max), 
+    # Calculate min and max values for 'count', setting count_min to 1 if it's 0
+    count_min = max(gdf['count'].min(), 1)
+    count_max = gdf['count'].max()
+
+    # Plot the choropleth map
+    fig, ax = plt.subplots(1, 1, figsize=(fig_width, fig_height))
+    gdf.plot(column='count', cmap='YlOrRd', norm=colors.LogNorm(vmin=count_min, vmax=count_max), 
              missing_kwds={'color': 'lightgrey'}, ax=ax)
-    plt.title(f"Date: {frame_date.strftime('%Y-%m-%d')}")
+    plt.xlim(min_lon, max_lon)
+    plt.ylim(min_lat, max_lat)
+    plt.xlabel('Longitude')
+    plt.ylabel('Latitude')
+    plt.title(f'Vessel density map for {date}')
+    plt.savefig(f'ais-{date}.png')
 
-# Create the base figure
-fig, ax = plt.subplots(1, 1, figsize=(20, 20))
-
-# Create the animation
-ani = FuncAnimation(fig, update, frames=date_range, repeat=False, interval=(1000/12))  # 12 frames per second
-
-# Save the animation
-ani.save('animation.mp4', writer='ffmpeg', fps=12)
+# Example usage
+plot_geo_data_on_date('2022-01-01', results)
 ```
+
+![Vessel density map for 2022-01-01](https://github.com/jordanbell2357/how-to/assets/47544607/b9ece416-b421-480e-9014-5b945bf3fa90)
+
+
