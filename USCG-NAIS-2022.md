@@ -1015,7 +1015,7 @@ def plot_geo_data_on_date(date, results):
     plt.title(f'Vessel density map for {date}')
     plt.savefig(f'ais-{date}.png')
 
-# Example usage
+plt.ioff()
 plot_geo_data_on_date('2022-01-01', results)
 ```
 
