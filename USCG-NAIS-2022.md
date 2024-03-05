@@ -1043,5 +1043,58 @@ dtypes: dbdate(1), float64(1), geometry(1), object(2)
 memory usage: 123.2+ KB
 ```
 
+# matplotlib.animation.FuncAnimation
 
+```python
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+from matplotlib.animation import FuncAnimation
+import geopandas as gpd
+import pandas as pd
+from shapely.geometry import Polygon
+import h3
+import datetime
 
+# Define the lat/lon boundaries
+min_lat, max_lat, min_lon, max_lon = 10, 60, -140, -50
+
+# Define the date range for the year 2022
+start_date = datetime.date(2022, 1, 1)
+end_date = datetime.date(2022, 12, 31)
+date_range = pd.date_range(start_date, end_date)
+
+# Function to update the plot for each frame
+def update(frame_date):
+    ax.clear()
+    ax.set_xlim(min_lon, max_lon)
+    ax.set_ylim(min_lat, max_lat)
+    ax.set_xlabel('Longitude')
+    ax.set_ylabel('Latitude')
+
+    # Filter the DataFrame for the specified date
+    filtered_results = results[results['DateOnly'] == frame_date].copy()
+
+    # Create polygons for each unique hex_id
+    hex_polygons = [Polygon(h3.h3_to_geo_boundary(hex_id)) for hex_id in filtered_results['h3_index']]
+
+    # Create a GeoDataFrame
+    gdf = gpd.GeoDataFrame(filtered_results, geometry=hex_polygons)
+
+    # Ensure 'count' is a float
+    gdf['count'] = gdf['count'].astype(float)
+
+    # Plotting
+    gdf.plot(column='count', cmap='YlOrRd', 
+             norm=colors.LogNorm(vmin=count_min, vmax=count_max), 
+             missing_kwds={'color': 'lightgrey'}, ax=ax)
+    plt.title(f"Date: {frame_date.strftime('%Y-%m-%d')}")
+
+# Create the base figure
+fig, ax = plt.subplots(1, 1, figsize=(20, 20))
+
+# Create the animation
+ani = FuncAnimation(fig, update, frames=date_range, repeat=False, interval=(1000/12))  # 12 frames per second
+
+# Save the animation
+ani.save('animation.mp4', writer='ffmpeg', fps=12)
+```
