@@ -1015,10 +1015,47 @@ def plot_geo_data_on_date(date, results):
     plt.title(f'Vessel density map for {date}')
     plt.savefig(f'ais-{date}.png')
 
-plt.ioff()
 plot_geo_data_on_date('2022-01-01', results)
 ```
 
 ![Vessel density map for 2022-01-01](https://github.com/jordanbell2357/how-to/assets/47544607/b9ece416-b421-480e-9014-5b945bf3fa90)
 
+```python
+from datetime import datetime, timedelta
 
+# Function to generate all dates in 2022
+def generate_dates_for_2022():
+    start_date = datetime(2022, 1, 1)
+    end_date = datetime(2022, 12, 31)
+    total_days = (end_date - start_date).days + 1
+    return [start_date + timedelta(days=x) for x in range(total_days)]
+
+# Function to plot data for each day in 2022
+def plot_data_for_each_day(results):
+    for date in generate_dates_for_2022():
+        formatted_date = date.strftime("%Y-%m-%d")
+        print(f"Plotting for {formatted_date}...")
+        plot_geo_data_on_date(formatted_date, results)
+        print(f"Plotting completed for {formatted_date}")
+
+plt.ioff()
+plot_data_for_each_day(results)
+```
+
+```python
+import zipfile
+import os
+import glob
+
+# Function to zip all PNG files
+def zip_png_files(zip_name):
+    with zipfile.ZipFile(zip_name, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for file in glob.glob('ais-*.png'):
+            zipf.write(file)
+            print(f"Added {file} to the zip archive.")
+
+# Create a zip file named 'ais-2022.zip'
+zip_png_files('ais-2022.zip')
+
+print("All PNG files have been zipped successfully.")
+```
