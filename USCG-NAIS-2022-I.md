@@ -864,7 +864,7 @@ plt.show()
 
 ![KDE plot of distribution of Log MMSI Count](https://github.com/jordanbell2357/how-to/assets/47544607/e36448dc-dcef-4e60-a9b0-7e2a6472f78f)
 
-# H3
+# jslibs.h3 UDF for BigQuery
 
 https://github.com/dtws/bigquery-jslibs
 
@@ -920,5 +920,128 @@ WITH
   )
 SELECT * FROM h3_polygons;
 ```
+
+# h3 visualization with Python
+
+```python
+# Running this code will display the query used to generate your previous job
+
+job = client.get_job('bquxjob_7e97f84d_18e0becac51') # Job ID inserted based on the query results selected to explore
+print(job.query)
+```
+
+```sql
+SELECT * FROM `ais-data-385301.uscg.h3_resolution4_daily_density`;
+```
+
+```python
+# Running this code will read results from your previous job
+
+job = client.get_job('bquxjob_7e97f84d_18e0becac51') # Job ID inserted based on the query results selected to explore
+results = job.to_dataframe()
+results.info()
+```
+
+```
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 979955 entries, 0 to 979954
+Data columns (total 4 columns):
+ #   Column      Non-Null Count   Dtype 
+---  ------      --------------   ----- 
+ 0   h3_index    979955 non-null  object
+ 1   DateOnly    979955 non-null  dbdate
+ 2   count       979955 non-null  Int64 
+ 3   h3_polygon  979955 non-null  object
+dtypes: Int64(1), dbdate(1), object(2)
+memory usage: 30.8+ MB
+```
+
+```python
+import numpy as np
+import geopandas as gpd
+import matplotlib.pyplot as plt
+from shapely.geometry import Polygon
+import h3
+import matplotlib.colors as colors
+import pandas as pd
+
+# Define the lat/lon boundaries
+min_lat, max_lat, min_lon, max_lon = 10, 60, -140, -50
+
+# Set the date for filtering
+data_date = '2022-01-01'  # Modify this to the desired date
+
+# Filter the DataFrame for the specified date and make a copy to avoid SettingWithCopyWarning
+filtered_results = results[results['DateOnly'] == pd.to_datetime(data_date)].copy()
+
+# Create polygons for each unique hex_id, and filter them based on the bounding box
+hex_polygons = []
+for hex_id in filtered_results['h3_index'].unique():
+    hex_boundary = h3.h3_to_geo_boundary(hex_id)
+    polygon = Polygon([(lon, lat) for lat, lon in hex_boundary])
+    centroid = polygon.centroid
+    if min_lat <= centroid.y <= max_lat and min_lon <= centroid.x <= max_lon:
+        hex_polygons.append(polygon)
+
+# Replace inf with max non-inf value and NaN with 1
+filtered_results.loc[filtered_results['count'] == np.inf, 'count'] = filtered_results.loc[filtered_results['count'] != np.inf, 'count'].max()
+filtered_results['count'] = filtered_results['count'].replace({0:1}).fillna(1)
+
+# Create a GeoDataFrame
+gdf = gpd.GeoDataFrame(filtered_results, geometry=hex_polygons)
+
+# Convert 'count' column to float
+gdf['count'] = gdf['count'].astype(float)
+
+# Check for NA or NaN in 'count' and fill them with a default value (e.g., 1)
+gdf['count'] = gdf['count'].fillna(1)
+
+# Calculate min and max values for 'count', ensuring they are valid
+count_min = gdf['count'].min()
+count_max = gdf['count'].max()
+
+# Set count_min to 1 if it's 0 to avoid issues with LogNorm
+if count_min <= 0:
+    count_min = 1
+
+# Plot the choropleth map
+fig, ax = plt.subplots(1, 1, figsize=(20, 20))
+gdf.plot(column='count', cmap='YlOrRd', 
+         norm=colors.LogNorm(vmin=count_min, vmax=count_max), 
+         missing_kwds={'color': 'lightgrey'}, ax=ax)
+
+# Setting the x and y limits to focus the map on the defined bounding box
+plt.xlim(min_lon, max_lon)
+plt.ylim(min_lat, max_lat)
+
+# Adding labels for clarity
+plt.xlabel('Longitude')
+plt.ylabel('Latitude')
+
+# Displaying the plot
+plt.show()
+```
+
+![h3 choropleth for 2022-01-01](https://github.com/jordanbell2357/how-to/assets/47544607/d360b695-a5f0-4d5a-9a06-1bb379eb63a6)
+
+```python
+gdf.info()
+```
+
+```
+<class 'geopandas.geodataframe.GeoDataFrame'>
+Int64Index: 2629 entries, 534 to 979494
+Data columns (total 5 columns):
+ #   Column      Non-Null Count  Dtype   
+---  ------      --------------  -----   
+ 0   h3_index    2629 non-null   object  
+ 1   DateOnly    2629 non-null   dbdate  
+ 2   count       2629 non-null   float64 
+ 3   h3_polygon  2629 non-null   object  
+ 4   geometry    2629 non-null   geometry
+dtypes: dbdate(1), float64(1), geometry(1), object(2)
+memory usage: 123.2+ KB
+```
+
 
 
