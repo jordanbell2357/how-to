@@ -1074,4 +1074,4 @@ ffmpeg -framerate 5 -pattern_type glob -i 'ais-2022-*.png' -vf "scale=trunc(iw/2
 ffmpeg -i ais-2022.mp4 -vf "fps=3,scale=1000:-1:flags=lanczos" -c:v gif ais-2022.gif
 ```
 
-![Vessel density map animation for each day of 2022](https://github.com/jordanbell2357/how-to/assets/47544607/f7383885-8b52-44c0-97c4-fc7ee2e205ec)
+![Vessel density map animation for each day of 2022](ais-2022.gif)
