@@ -1287,3 +1287,5 @@ ON
 ORDER BY 
     V.ID, V.month;
 ```
+
+<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT9yHR2DZl1T239DVl3PX-8P_qr5K2rWG9D6rzaKVj8DK7AqQhYbH0QPCJn5Z2rCpVjfQtaWNV_arpi/pubhtml?widget=true&amp;headers=false"></iframe>
