@@ -1616,4 +1616,11 @@ plt.ioff()  # Turn off interactive plotting
 plot_data_for_each_hour(results)
 ```
 
+```bash
+ffmpeg -framerate 10 -pattern_type glob -i 'ais-2022-*.png' -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -c:v libx264 -r 10 -pix_fmt yuv420p ais-2022-01.mp4
+ffmpeg -i ais-2022-01.mp4 -vf "fps=5,scale=1000:-1:flags=lanczos" -c:v gif ais-2022-01.gif
+```
+
+![ais-2022-01](https://github.com/jordanbell2357/how-to/assets/47544607/2ced0dfd-11d5-4846-aa7e-eb09487c8383)
+
 
