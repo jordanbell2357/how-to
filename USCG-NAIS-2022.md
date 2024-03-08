@@ -1512,5 +1512,108 @@ WITH
 SELECT * FROM h3_polygons;
 ```
 
+```python
+import numpy as np
+import geopandas as gpd
+import matplotlib.pyplot as plt
+from shapely.geometry import Polygon
+import h3
+import matplotlib.colors as colors
+import pandas as pd
+
+def plot_geo_data_on_hour(datetime_hour, results, all_hex_cells):
+    # Define the lat/lon boundaries
+    min_lat, max_lat, min_lon, max_lon = 20, 55, -135, -110
+
+    # Calculate aspect ratio
+    width = max_lon - min_lon
+    height = max_lat - min_lat
+    aspect_ratio = width / height
+
+    # Set the figure size based on the aspect ratio
+    fig_width = 10
+    fig_height = fig_width / aspect_ratio
+
+    # Ensure every hex cell is represented for the hour
+    hour_data = results[results['DateTimeHour'] == datetime_hour]
+    missing_hex_cells = all_hex_cells - set(hour_data['h3_index'])
+    missing_data = pd.DataFrame({'h3_index': list(missing_hex_cells), 
+                                 'DateTimeHour': datetime_hour, 
+                                 'count': 0})
+    hour_data = pd.concat([hour_data, missing_data])
+
+    # Create a mapping of h3_index to polygons
+    hex_polygons = {hex_id: Polygon([(lon, lat) for lat, lon in h3.h3_to_geo_boundary(hex_id)])
+                    for hex_id in all_hex_cells}
+
+    # Filter out polygons not in the bounding box
+    hex_polygons = {hex_id: poly for hex_id, poly in hex_polygons.items()
+                    if min_lat <= poly.centroid.y <= max_lat and min_lon <= poly.centroid.x <= max_lon}
+
+    # Assign the corresponding polygon to each row
+    hour_data['geometry'] = hour_data['h3_index'].map(hex_polygons)
+
+    # Replace inf with max non-inf value and NaN with 1
+    hour_data.loc[hour_data['count'] == np.inf, 'count'] = hour_data.loc[hour_data['count'] != np.inf, 'count'].max()
+    hour_data['count'] = hour_data['count'].replace({np.nan: 1, 0: 1})
+
+    # Create a GeoDataFrame
+    gdf = gpd.GeoDataFrame(hour_data, geometry='geometry')
+
+    # Convert 'count' column to float and fill NaN with 1
+    gdf['count'] = gdf['count'].astype(float).fillna(1)
+
+    # Calculate min and max values for 'count', setting count_min to 1 if it's 0
+    count_min = max(gdf['count'].min(), 1)
+    count_max = gdf['count'].max()
+
+    # Plot the choropleth map
+    fig, ax = plt.subplots(1, 1, figsize=(fig_width, fig_height))
+    gdf.plot(column='count', cmap='YlOrRd', norm=colors.LogNorm(vmin=count_min, vmax=count_max), 
+             missing_kwds={'color': 'lightgrey'}, ax=ax)
+    plt.xlim(min_lon, max_lon)
+    plt.ylim(min_lat, max_lat)
+    plt.xlabel('Longitude')
+    plt.ylabel('Latitude')
+    plt.title(f'Vessel density map for {datetime_hour}')
+    plt.savefig(f'ais-{datetime_hour}.png')
+    plt.close()
+
+all_hex_cells = set(results['h3_index'])
+```
+
+```python
+plot_geo_data_on_hour('2022-01-01 00', results, all_hex_cells)
+```
+
+![2022-01-01 00](https://github.com/jordanbell2357/how-to/assets/47544607/bb0f3bf3-a4e5-4bbe-a1bd-886afc67f6f1)
+
+```python
+from datetime import datetime, timedelta
+
+# Function to generate all hours in January 2022
+def generate_hours_for_january_2022():
+    start_date = datetime(2022, 1, 1)
+    end_date = datetime(2022, 1, 31)
+    hours = []
+    while start_date <= end_date:
+        for hour in range(24):
+            hours.append(start_date + timedelta(hours=hour))
+        start_date += timedelta(days=1)
+    return hours
+
+# Function to plot data for each hour in January 2022
+def plot_data_for_each_hour(results):
+    for datetime_hour in generate_hours_for_january_2022():
+        formatted_datetime_hour = datetime_hour.strftime("%Y-%m-%d %H")
+        print(f"Plotting for {formatted_datetime_hour}...")
+        plot_geo_data_on_hour(formatted_datetime_hour, results, all_hex_cells)
+        print(f"Plotting completed for {formatted_datetime_hour}")
+```
+
+```python
+plt.ioff()  # Turn off interactive plotting
+plot_data_for_each_hour(results)
+```
 
 
