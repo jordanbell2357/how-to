@@ -1408,5 +1408,70 @@ WITH
 SELECT * FROM h3_polygons;
 ```
 
+```python
+import numpy as np
+import geopandas as gpd
+import matplotlib.pyplot as plt
+from shapely.geometry import Polygon
+import h3
+import matplotlib.colors as colors
+import pandas as pd
+
+def plot_geo_data_on_date(date, results):
+    # Define the lat/lon boundaries
+    min_lat, max_lat, min_lon, max_lon = 20, 55, -135, -110
+
+    # Calculate aspect ratio
+    width = max_lon - min_lon
+    height = max_lat - min_lat
+    aspect_ratio = width / height
+
+    # Set the figure size based on the aspect ratio
+    fig_width = 10
+    fig_height = fig_width / aspect_ratio
+
+    # Filter the DataFrame for the specified date
+    filtered_results = results[results['DateOnly'] == pd.to_datetime(date)].copy()
+
+    # Create polygons for each unique hex_id
+    hex_polygons = []
+    for hex_id in filtered_results['h3_index'].unique():
+        hex_boundary = h3.h3_to_geo_boundary(hex_id)
+        polygon = Polygon([(lon, lat) for lat, lon in hex_boundary])
+        centroid = polygon.centroid
+        if min_lat <= centroid.y <= max_lat and min_lon <= centroid.x <= max_lon:
+            hex_polygons.append(polygon)
+
+    # Replace inf with max non-inf value and NaN with 1
+    filtered_results.loc[filtered_results['count'] == np.inf, 'count'] = filtered_results.loc[filtered_results['count'] != np.inf, 'count'].max()
+    filtered_results['count'] = filtered_results['count'].replace({0: 1}).fillna(1)
+
+    # Create a GeoDataFrame
+    gdf = gpd.GeoDataFrame(filtered_results, geometry=hex_polygons)
+
+    # Convert 'count' column to float and fill NaN with 1
+    gdf['count'] = gdf['count'].astype(float).fillna(1)
+
+    # Calculate min and max values for 'count', setting count_min to 1 if it's 0
+    count_min = max(gdf['count'].min(), 1)
+    count_max = gdf['count'].max()
+
+    # Plot the choropleth map
+    fig, ax = plt.subplots(1, 1, figsize=(fig_width, fig_height))
+    gdf.plot(column='count', cmap='YlOrRd', norm=colors.LogNorm(vmin=count_min, vmax=count_max), 
+             missing_kwds={'color': 'lightgrey'}, ax=ax)
+    plt.xlim(min_lon, max_lon)
+    plt.ylim(min_lat, max_lat)
+    plt.xlabel('Longitude')
+    plt.ylabel('Latitude')
+    plt.title(f'Vessel density map for {date}')
+    plt.show()
+    plt.savefig(f'ais-{date}.png')
+    plt.close()
+
+plot_geo_data_on_date('2022-01-01', results)
+```
+
+![West coast vessel density plot for 2022-01-01](https://github.com/jordanbell2357/how-to/assets/47544607/c9a8ae16-167c-4ef4-a834-03417f8caa35)
 
 
