@@ -912,11 +912,6 @@ https://github.com/dtws/bigquery-jslibs
 UDF `jslibs.h3.ST_H3`
 
 ```sql
--- Define the bounding box and hexagon resolution
-DECLARE min_lat FLOAT64 DEFAULT 10;
-DECLARE max_lat FLOAT64 DEFAULT 60;
-DECLARE min_lon FLOAT64 DEFAULT -140;
-DECLARE max_lon FLOAT64 DEFAULT -50;
 DECLARE resolution INT64 DEFAULT 4;
 
 -- Create a new table with daily H3 density data
@@ -1358,11 +1353,6 @@ AND LAT BETWEEN 20 AND 55;
 ```
 
 ```sql
--- Define the bounding box and hexagon resolution
-DECLARE min_lat FLOAT64 DEFAULT 20;
-DECLARE max_lat FLOAT64 DEFAULT 55;
-DECLARE min_lon FLOAT64 DEFAULT -135;
-DECLARE max_lon FLOAT64 DEFAULT -110;
 DECLARE resolution INT64 DEFAULT 4;
 
 -- Create a new table with daily H3 density data
@@ -1473,5 +1463,54 @@ plot_geo_data_on_date('2022-01-01', results)
 ```
 
 ![West coast vessel density plot for 2022-01-01](https://github.com/jordanbell2357/how-to/assets/47544607/c9a8ae16-167c-4ef4-a834-03417f8caa35)
+
+# West coast hourly
+
+```sql
+-- Define the bounding box and hexagon resolution
+DECLARE resolution INT64 DEFAULT 4;
+
+-- Create a new table with hourly H3 density data
+CREATE TABLE `ais-data-385301.uscg.h3_resolution4_hourly_density_west_coast` AS
+WITH 
+  -- Filter locations based on the bounding box
+  filtered_locations AS (
+    SELECT 
+      MMSI, 
+      BaseDateTime, 
+      vessel_geography,
+      FORMAT_DATETIME('%Y-%m-%d %H', BaseDateTime) AS DateTimeHour  -- Extract date and hour
+    FROM `ais-data-385301.uscg.west_coast`
+  ),
+  -- Create H3 index for each point
+  h3_indexed AS (
+    SELECT 
+      MMSI, 
+      BaseDateTime, 
+      DateTimeHour,
+      jslibs.h3.ST_H3(vessel_geography, resolution) AS h3_index
+    FROM filtered_locations
+  ),
+  -- Count occurrences of each H3 index per hour
+  hourly_density AS (
+    SELECT 
+      h3_index, 
+      DateTimeHour,
+      COUNT(*) AS count
+    FROM h3_indexed
+    GROUP BY h3_index, DateTimeHour
+  ),
+  -- Generate H3 polygons
+  h3_polygons AS (
+    SELECT 
+      h3_index, 
+      DateTimeHour,
+      count,
+      jslibs.h3.ST_H3_BOUNDARY(h3_index) AS h3_polygon
+    FROM hourly_density
+  )
+SELECT * FROM h3_polygons;
+```
+
 
 
