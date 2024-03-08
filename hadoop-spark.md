@@ -1,5 +1,7 @@
 # Configuring and using Hadoop and Spark on Ubuntu 22.04 LTS (with Canada 2021 Census data)
 
+https://medium.com/@jordanbell2357/hadoop-and-spark-on-ubuntu-22-04-lts-with-canada-2021-census-data-f5c8a0df4613
+
 This tutorial works for Ubuntu 22.04 LTS both as VM (tested using VirtualBox) and using WSL2.
 
 I've made this because I haven't found a single guide that explains every step needed to configure and use Hadoop and Spark and actually use it for something meaningful like census data.
