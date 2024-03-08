@@ -15,3 +15,5 @@ https://open.canada.ca/data/en/dataset/10801c67-7f18-4ea1-bda7-8962abfc5578
 https://open.canada.ca/data/en/dataset/d5512235-cfb2-4ccf-a886-547913f4aa52
 
 https://open.canada.ca/data/en/dataset/065439a9-c194-4259-9c95-245a852be4a1
+
+https://lop.parl.ca/sites/ParlInfo/default/en_CA/ElectionsRidings/Ridings
