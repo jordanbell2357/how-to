@@ -864,6 +864,47 @@ plt.show()
 
 ![KDE plot of distribution of Log MMSI Count](https://github.com/jordanbell2357/how-to/assets/47544607/e36448dc-dcef-4e60-a9b0-7e2a6472f78f)
 
+# Duplicate entries for timestamps
+
+For some purposes we want at most one record for a particular time and vessel. This step is not necessary for the visualization we make below, but is necessary once we calculate vessel activity.
+
+```sql
+CREATE TABLE `ais-data-385301.uscg.no_dups` AS
+SELECT 
+    *
+FROM 
+    (
+        SELECT 
+            *, 
+            ROW_NUMBER() OVER(PARTITION BY MMSI, BaseDateTime ORDER BY MMSI) AS row_num 
+        FROM 
+            `ais-data-385301.uscg.nais`
+    )
+WHERE 
+    row_num = 1;
+```
+
+# BigQuery geographical data
+
+https://cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions
+
+```sql
+ALTER TABLE `ais-data-385301.uscg.no_dups`
+ADD COLUMN vessel_geography GEOGRAPHY;
+
+UPDATE `ais-data-385301.uscg.no_dups`
+SET vessel_geography = ST_GEOGPOINT(LON, LAT)
+WHERE LON IS NOT NULL AND LAT IS NOT NULL;
+```
+
+# no_dups_simplified
+
+```sql
+CREATE TABLE `ais-data-385301.uscg.no_dups_simplified` AS
+SELECT MMSI, BaseDateTime, vessel_geography
+FROM `ais-data-385301.uscg.no_dups`;
+```
+
 # jslibs.h3 UDF for BigQuery
 
 https://github.com/dtws/bigquery-jslibs
@@ -1212,6 +1253,23 @@ The schema of `ais-data-385301.usace.principal-ports` is then
 ]
 ```
 
+# Intervals between timestamps
+
+```sql
+CREATE TABLE `ais-data-385301.uscg.timestamp_diff` AS
+SELECT
+    MMSI,
+    BaseDateTime,
+    vessel_geography,
+    TIMESTAMP_DIFF(
+        BaseDateTime, 
+        LAG(BaseDateTime) OVER (PARTITION BY MMSI ORDER BY BaseDateTime), 
+        MINUTE
+    ) AS time_diff_minutes
+FROM 
+    `ais-data-385301.uscg.no_dups_simplified`
+```
+
 # Maximal Stays Near Ports
 
 ```sql
@@ -1289,3 +1347,14 @@ ORDER BY
 ```
 
 [usace_principal_ports_monthly_visits.csv](https://docs.google.com/spreadsheets/d/e/2PACX-1vT9yHR2DZl1T239DVl3PX-8P_qr5K2rWG9D6rzaKVj8DK7AqQhYbH0QPCJn5Z2rCpVjfQtaWNV_arpi/pub?gid=393238672&single=true&output=csv)
+
+# West coast
+
+```sql
+CREATE TABLE `ais-data-385301.uscg.west_coast` AS
+SELECT * FROM `ais-data-385301.uscg.nais`
+WHERE LON BETWEEN -135 AND -110
+AND LAT BETWEEN 20 AND 55;
+```
+
+
