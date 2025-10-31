@@ -1,12 +1,18 @@
 # OpenVPN
 
+Platforms: DigitalOcean and Cloudflare
+
+Major software: OpenVPN, easy-rsa
+
 ## Step 1
+
+Sign-up for OpenVPN:
 
 https://openvpn.net/access-server/
 
-Sign up
+Deploy Access Server:
 
-https://as-portal.openvpn.com/instructions/aws/installation
+https://as-portal.openvpn.com/instructions/digital-ocean/installation
 
 ## Step 2
 
