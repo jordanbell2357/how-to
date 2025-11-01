@@ -32,13 +32,9 @@ ubuntu@LAPTOP-JBell:~$ cat .ssh/OPEN_VPN.pub
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFwJ1Lw8LwnsmZZRd0AQ5arvqfNqZ0Y59wm9vtdozZiH OPEN_VPN
 ```
 
-## Create DigitalOcean account
+## Add SSH public key <pre>OPEN_VPN.pub</pre> to DigitalOcean account
 
-<https://www.digitalocean.com/>
-
-## Add SSH public key <tt>OPEN_VPN.pub</tt> to DigitalOcean account
-
-We then add the public key <tt>OPEN_VPN.pub</tt> to DigitalOcean and will associate the key with a droplet, following
+We then add the public key <pre>OPEN_VPN.pub</pre> to DigitalOcean and will associate the key with a droplet, following
 <https://docs.digitalocean.com/platform/teams/how-to/upload-ssh-keys/>
 
 ## Create OpenVPN account
