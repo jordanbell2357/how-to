@@ -1,11 +1,10 @@
-# ssh
+# OpenVPN Part 1
 
 # Introduction
 
 L = local Linux machine (WSL)
-R = remote Linux machine (DigitalOcean droplet)
-S = other remote Linux machine (DigitalOcean droplet)
-C = Cloudflare
+R = remote Linux machine (easy-rsa server)
+S = remote Linux machine (OpenVPN server)
 
 > SSH provides an authentication mechanism based on cryptographic keys, called public key authentication.
 > One or more public keys may be configured as authorized keys; the private key corresponding to an authorized key serves as authentication to the server.
@@ -17,8 +16,7 @@ C = Cloudflare
 
 # Local machine: make SSH key pairs
 
-We make two SSH key pairs, using the following with `KEY_NAME=EASY_RSA` and then `KEY_NAME=OPEN_VPN`. [^ssh-key-gen] (For "production", we'd want differnent SSH keys associated with each user
-on each remote machine, so we'd make four instead of two.)
+We make two SSH key pairs, using the following with `KEY_NAME=EASY_RSA` and then `KEY_NAME=OPEN_VPN`. [^ssh-key-gen]
 
 [^ssh-key-gen]: <https://www.ssh.com/academy/ssh/keygen>
 
