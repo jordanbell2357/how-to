@@ -188,7 +188,7 @@ openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ realpath pki/reqs/openvpn-as.r
 /home/openvpn/EasyRSA-3.2.4/pki/reqs/openvpn-as.req
 ```
 
-## Send CSR from S to R and impport
+## Send CSR from S to R and import
 
 We view the certificate signing request
 
