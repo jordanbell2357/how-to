@@ -16,7 +16,7 @@ S = remote Linux machine (OpenVPN Access Server)
 
 [^ssh]: <https://www.ssh.com/academy/ssh/protocol>
 
-We make an SSH key pairs using key file <tt>OPEN_VPN</tt>. [^ssh-key-gen]
+We make an SSH key pairs using key file `OPEN_VPN`. [^ssh-key-gen]
 
 [^ssh-key-gen]: <https://www.ssh.com/academy/ssh/keygen>
 
@@ -32,9 +32,9 @@ ubuntu@LAPTOP-JBell:~$ cat .ssh/OPEN_VPN.pub
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFwJ1Lw8LwnsmZZRd0AQ5arvqfNqZ0Y59wm9vtdozZiH OPEN_VPN
 ```
 
-## Add SSH public key <pre>OPEN_VPN.pub</pre> to DigitalOcean account
+## Add SSH public key OPEN_VPN.pub to DigitalOcean account
 
-We then add the public key <pre>OPEN_VPN.pub</pre> to DigitalOcean and will associate the key with a droplet, following
+We then add the public key OPEN_VPN.pub to DigitalOcean and will associate the key with a droplet, following
 <https://docs.digitalocean.com/platform/teams/how-to/upload-ssh-keys/>
 
 ## Create OpenVPN account
@@ -43,18 +43,18 @@ We then add the public key <pre>OPEN_VPN.pub</pre> to DigitalOcean and will asso
 
 ## Deploy Access Server S
 
-Associate SSH public key <tt>OPEN_VPN.pub</tt> to droplet.
+Associate SSH public key OPEN_VPN.pub to droplet.
 
 <https://as-portal.openvpn.com/instructions/digital-ocean/installation>
 
 <https://openvpn.net/as-docs/digitalocean.html>
 
-## Connect from L to S as root user using SSH private key <tt>OPEN_VPN</tt> and activate
+## Connect from L to S as root user using SSH private key OPEN_VPN and activate
 
 Now we use SSH to connect from L to system S. First we activate the OpenVPN Access Server S by accessing it with SSH, and using the
 activation key in <https://as-portal.openvpn.com/instructions/digital-ocean/activation>
 
-We make a user <tt>openvpn</tt>.
+We make a user `openvpn`.
 
 ```console
 ubuntu@LAPTOP-JBell:~$ ssh -i .ssh/OPEN_VPN -l root 159.65.255.114
@@ -67,8 +67,8 @@ Welcome to OpenVPN Access Server Appliance 2.14.3
 ⋮
 ```
 
-We agree to the agreement, and then use default choices. Then we use our activation key <tt>ACTIVATION_KEY</tt> from
-<<https://as-portal.openvpn.com/instructions/digital-ocean/activation>>
+We agree to the agreement, and then use default choices. Then we use our activation key ACTIVATION_KEY from
+<https://as-portal.openvpn.com/instructions/digital-ocean/activation>
 
 ```console
 To initially login to the Admin Web UI, you must use a
@@ -100,7 +100,7 @@ Type a password for the 'openvpn' account (if left blank, a random password will
 Confirm the password for the 'openvpn' account:
 ```
 
-Finally
+Last
 
 ```console
 Initial Configuration Complete!
@@ -130,11 +130,9 @@ Local time is now:      Sat Nov  1 11:00:11 EDT 2025.
 Universal Time is now:  Sat Nov  1 15:00:11 UTC 2025.
 ```
 
-
-
 ## Make non-root user on OpenVPN Access Server S and give private key OPEN_VPN
 
-We now make a non-root user <tt>openvpn</tt> on machine S.
+We now make a non-root user `openvpn` on machine S.
 
 ```console
 root@ASBuildImage-ubuntu24-v2:~# adduser openvpn
@@ -144,7 +142,7 @@ root@ASBuildImage-ubuntu24-v2:~# adduser openvpn
 root@ASBuildImage-ubuntu24-v2:~# usermod -aG sudo openvpn
 ```
 
-We have been able to access S from L because the public key <tt>OPEN_VPN.pub</tt> is installed on droplet creation in the `authorized_keys` file on machine S: [^authorized-keys]
+We have been able to access S from L because the public key OPEN_VPN.pub is installed on droplet creation in the authorized_keys file on machine S: [^authorized-keys]
 
 [^authorized-keys]: <https://www.ssh.com/academy/ssh/authorized-keys-openssh>
 
@@ -155,9 +153,9 @@ root@ASBuildImage-ubuntu24-v2:~# cat .ssh/authorized_keys
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFwJ1Lw8LwnsmZZRd0AQ5arvqfNqZ0Y59wm9vtdozZiH OPEN_VPN
 ```
 
-We add the public key <tt>OPEN_VPN.pub</tt> to the <tt>authorized_keys</tt> of user <tt>openvpn</tt>.
+We add the public key OPEN_VPN.pub to the authorized_keys file of user `openvpn`.
 
-Then we  use rsync to copy the SSH key pair from the root user home folder of S to the <tt>openvpn</tt> user home folder of S: [^rsync]
+Then we  use rsync to copy the SSH key pair from the root user home folder of S to the `openvpn` user home folder of S: [^rsync]
 
 [^rsync]: <https://download.samba.org/pub/rsync/rsync.1>
 
