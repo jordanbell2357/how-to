@@ -1,24 +1,22 @@
-# OpenVPN
+# OpenVPN Part 2
 
-Platforms: DigitalOcean and Cloudflare
-
-Major software: OpenVPN, easy-rsa
-
-## Step 1
+## Sign-up for OpenVPN and create Access Server
 
 Sign-up for OpenVPN:
 
-https://openvpn.net/access-server/
+<https://openvpn.net/access-server/>
 
 Deploy Access Server:
 
-https://as-portal.openvpn.com/instructions/digital-ocean/installation
+<https://as-portal.openvpn.com/instructions/digital-ocean/installation>
 
-## Step 2
+<https://openvpn.net/as-docs/digitalocean.html>
 
-https://openvpn.net/as-docs/digitalocean.html#create-a-droplet
+## Make local SSH key pair
 
-On local machine: https://www.ssh.com/academy/ssh/keygen
+On local machine:[^keygen]
+
+[^keygen]: <https://www.ssh.com/academy/ssh/keygen>
 
 ```bash
 ssh-keygen -t ed25519
@@ -27,7 +25,7 @@ cat .ssh/id_ed25519.pub
 
 Add the public key to DigitalOcean
 
-https://docs.digitalocean.com/platform/teams/how-to/upload-ssh-keys/
+<https://docs.digitalocean.com/platform/teams/how-to/upload-ssh-keys/>
 
 Connect to remote machine from local machine: https://docs.digitalocean.com/products/droplets/how-to/connect-with-ssh/openssh/
 
