@@ -16,20 +16,19 @@ S = remote Linux machine (OpenVPN Access Server)
 
 [^ssh]: <https://www.ssh.com/academy/ssh/protocol>
 
-We make an SSH key pairs using <tt>KEY_NAME=OPEN_VPN</tt>. [^ssh-key-gen]
+We make an SSH key pairs using key file <tt>OPEN_VPN</tt>. [^ssh-key-gen]
 
 [^ssh-key-gen]: <https://www.ssh.com/academy/ssh/keygen>
 
 ```console
-ubuntu@LAPTOP-JBell:~$ KEY_NAME=OPEN_VPN
-ubuntu@LAPTOP-JBell:~$ ssh-keygen -t ed25519 -C "$KEY_NAME" -f ~/.ssh/$KEY_NAME
+ubuntu@LAPTOP-JBell:~$ ssh-keygen -t ed25519 -C "OPEN_VPN" -f ~/.ssh/OPEN_VPN
 Generating public/private ed25519 key pair.
 Enter passphrase (empty for no passphrase):
 Enter same passphrase again:
 Your identification has been saved in /home/ubuntu/.ssh/OPEN_VPN
 Your public key has been saved in /home/ubuntu/.ssh/OPEN_VPN.pub
 
-ubuntu@LAPTOP-JBell:~$ cat .ssh/$KEY_NAME.pub
+ubuntu@LAPTOP-JBell:~$ cat .ssh/OPEN_VPN.pub
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFwJ1Lw8LwnsmZZRd0AQ5arvqfNqZ0Y59wm9vtdozZiH OPEN_VPN
 ```
 
@@ -123,6 +122,19 @@ To login please use the "openvpn" account with the password you specified during
 
 We then use a browser to access the OpenVPN Access Server Admin UI at <https://159.65.255.114:943/admin>, and agree to the
 terms of service.
+
+Following <https://openvpn.net/as-docs/digitalocean.html>, we do
+
+```console
+openvpn@ASBuildImage-ubuntu24-v2:~$ sudo dpkg-reconfigure tzdata
+[sudo] password for openvpn:
+
+Current default time zone: 'America/New_York'
+Local time is now:      Sat Nov  1 11:00:11 EDT 2025.
+Universal Time is now:  Sat Nov  1 15:00:11 UTC 2025.
+```
+
+
 
 ## Make non-root user on OpenVPN Access Server S and give private key OPEN_VPN
 
