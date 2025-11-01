@@ -1,5 +1,7 @@
 # ssh
 
+# Introduction
+
 L = local Linux machine (WSL)
 R = remote Linux machine (DigitalOcean droplet)
 S = other remote Linux machine (DigitalOcean droplet)
@@ -12,6 +14,8 @@ C = Cloudflare
 > (so that using it requires both a file and a passphrase only known to a user). However, in practice most keys are used for automation and do not have a passphrase. [^ssh]
 
 [^ssh]: <https://www.ssh.com/academy/ssh/protocol>
+
+# Local machine: make SSH key pairs
 
 We make two SSH key pairs, using the following with `KEY_NAME=EASY_RSA` and then `KEY_NAME=OPEN_VPN`. [^ssh-key-gen] (For "production", we'd want differnent SSH keys associated with each user
 on each remote machine, so we'd make four instead of two.)
@@ -237,9 +241,24 @@ Then use easy-rsa: [^easy-rsa-docs]
 [^easy-rsa-docs]: <https://community.openvpn.net/Pages/EasyRSA3-OpenVPN-Howto>
 
 ```console
-easyrsa@EASY-RSA-s-1vcpu-1gb-35gb-intel-sfo2-01:~/EasyRSA-3.2.4$ ./easyrsa build-ca nopass
-........+........+.......+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*......+.....+...+....+........+............+...............+.+..+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*..+.......+..............+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-.....+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.............+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+...+...+..+...+.........+..................+....+......+..+.+.........+..+.+..+............+....+.........+........+.........+................+..+...+.......+..+.........+.......+........+.+...+...+...+..............+......+......+......+...+............+.............+..+....+...+......+..+..........+..+...+....+...+..+.........+.+.........+..+....+...+...........+.+...+..+.+..................+..+..................+....+.....+.+..........................+.+..+...............+............+......+...+......+...+..........+......+..+...+.+...............+.....+....+.....+............+.......+..+..........+...+...+...+.................+....+...+.....+......+...............+.+........+.+.....+.+........+......+.........+...+....+.....+......+.......+..+.+.........+.........+............+........+....+......+......+.....+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+easyrsa@EASY-RSA-s-1vcpu-1gb-35gb-intel-sfo2-01:~/EasyRSA-3.2.4$ ./easyrsa init-pki
+
+Notice
+------
+'init-pki' complete; you may now create a CA or requests.
+
+Your newly created PKI dir is:
+* /home/easyrsa/EasyRSA-3.2.4/pki
+
+Using Easy-RSA configuration:
+* undefined
+easyrsa@EASY-RSA-s-1vcpu-1gb-35gb-intel-sfo2-01:~/EasyRSA-3.2.4$ ./easyrsa build-ca
+
+Enter New CA Key Passphrase:
+
+Confirm New CA Key Passphrase:
+...+.........+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+.......+..................+......+..+...+.+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.....+.........+....+...+...+..+.............+..+....+...+...+..+.....................+.+...............+.....+......+...+....+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+.....+......+..+.............+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*......+...+.....+....+..+.+...............+............+.....+...+.......+..................+.....+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
@@ -257,7 +276,7 @@ CA creation complete. Your new CA certificate is at:
 Build-ca completed successfully.
 ```
 
-Now we use SSH to connect from L to system S. First we activate the OpenVPN Access Server.
+Now we use SSH to connect from L to system S. First we activate the OpenVPN Access Server S by accessing it with SSH:
 
 ```console
 ubuntu@LAPTOP-JBell:~$ ssh -i .ssh/OPEN_VPN -l root 159.203.164.175
@@ -298,6 +317,8 @@ See https://ubuntu.com/esm or run: sudo pro status
           OpenVPN Access Server
           Initial Configuration Tool
 ```
+
+until
 
 
 ```console
@@ -366,8 +387,6 @@ Input activation key for OpenVPN, from <https://as-portal.openvpn.com/instructio
 
 ```console
 Activation succeeded
-
-
 
 Initializing OpenVPN...
 Removing Cluster Admin user login...
@@ -519,23 +538,24 @@ Now as user openvpn in machine S we do
 openvpn@openvpnaccessserver2143onubuntu2404-s-1vcpu-2gb-70gb-intel-nyc3:~$ KEYWORD=unknown-keyword
 openvpn@openvpnaccessserver2143onubuntu2404-s-1vcpu-2gb-70gb-intel-nyc3:~$ tar -xzf EasyRSA-3.2.4.tgz --warning=no-$KEYWORD
 openvpn@openvpnaccessserver2143onubuntu2404-s-1vcpu-2gb-70gb-intel-nyc3:~$ cd EasyRSA-3.2.4/
-openvpn@openvpnaccessserver2143onubuntu2404-s-1vcpu-2gb-70gb-intel-nyc3:~/EasyRSA-3.2.4$ ./easyrsa init-pki
+easyrsa@EASY-RSA-s-1vcpu-1gb-35gb-intel-sfo2-01:~/EasyRSA-3.2.4$ ./easyrsa init-pki
 
 Notice
 ------
 'init-pki' complete; you may now create a CA or requests.
 
 Your newly created PKI dir is:
-* /home/openvpn/EasyRSA-3.2.4/pki
+* /home/easyrsa/EasyRSA-3.2.4/pki
 
 Using Easy-RSA configuration:
 * undefined
-```
+easyrsa@EASY-RSA-s-1vcpu-1gb-35gb-intel-sfo2-01:~/EasyRSA-3.2.4$ ./easyrsa build-ca
 
-```console
-easyrsa@EASY-RSA-s-1vcpu-1gb-35gb-intel-sfo2-01:~/EasyRSA-3.2.4$ ./easyrsa build-ca nopass
-.......+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+....+.................+...+......+.+........+.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.......+...+..+.......+...........+....+...+...+..+.........+....+..+..............................+.......+.....+......+.........+..........+...+..+......+.+.........+.....+....+...+.........+.........+.....+....+.....+.+......+...+..+...+.+...........+.+...+......+...........+...+.+...........+.......+............+.....+...+......+.......+..+.+...............+.....+.+...............+......+............+.................+....+......+.....+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-...+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+...+..+.........+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*........+...+...........+..........+......+.........+......+............+..+.............+............+......+..+...+...+.+......+........................+......+.........+...+..+....+..+.........+....+......+...+........+.............+..+.......+...........+.+.....+...+.+.........+.....+...+...+....+...........+.......+..+.+...........+...+...+...+.+...........+...+..........+.....+......+.+...+.....+....+.....+................+..............+.+..+.......+........+.......+...........+.......+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Enter New CA Key Passphrase:
+
+Confirm New CA Key Passphrase:
+......+.....+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.......+..+....+.....+......+......+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*...+....+...+..+......................+......+..+......+.+........+.+............+..+.+.....+............+...+....+........+..........+.................+...+....+...........+.........+....+......+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+...+..........+.........+.........+.....+.+.....+.........+......+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+...+.........+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*........+...+.+...........+...+......+.+........+...............................+...........+......+.......+...........+.+...+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
@@ -552,5 +572,11 @@ CA creation complete. Your new CA certificate is at:
 
 Build-ca completed successfully.
 ```
+
+
+
+
+
+
 
 
