@@ -1,2 +1,4 @@
-# OpenVPN Part 3
+# OpenVPN Part 3: using certificate authority
+
+
 
