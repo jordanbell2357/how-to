@@ -3,6 +3,7 @@
 ## Introduction
 
 L = local Linux machine (WSL)
+
 S = remote Linux machine (OpenVPN Access Server)
 
 ## Make local SSH key pairs on local machine L
