@@ -286,10 +286,10 @@ Upload configuration file `profile-userlocked.ovpn` to Windows client.
 
 We download <https://proof.ovh.net/files/100Mb.dat> and observe the OpenVPN connection statistics.
 
-<img width="500" height="569" alt="image" src="https://github.com/user-attachments/assets/607ab062-1713-4248-b8dc-8e2d7715e882" />
-
-<img width="500" height="857" alt="image" src="https://github.com/user-attachments/assets/9a3f7aff-132b-43af-954d-5044222ccd31" />
+--
 
 <img width="500" height="857" alt="image" src="https://github.com/user-attachments/assets/d36d7225-e14e-4a54-b2bc-7f980101c71e" />
+
+--
 
 <img width="500" height="857" alt="image" src="https://github.com/user-attachments/assets/2fcbee68-1658-4900-9308-9e4e54363c1c" />
