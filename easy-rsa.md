@@ -1,4 +1,4 @@
-# OpenVPN Part 2: easy-rsa
+# easy-rsa
 
 ## Download easy-rsa to L
 
