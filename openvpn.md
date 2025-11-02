@@ -288,7 +288,7 @@ We download <https://proof.ovh.net/files/100Mb.dat> and observe the OpenVPN conn
 
 --
 
-<img width="500" height="857" alt="image" src="https://github.com/user-attachments/assets/d36d7225-e14e-4a54-b2bc-7f980101c71e" />
+<img width="250" height="428" alt="image" src="https://github.com/user-attachments/assets/d36d7225-e14e-4a54-b2bc-7f980101c71e" />
 
 --
 
