@@ -164,3 +164,17 @@ root@EASY-RSA-s-1vcpu-1gb-35gb-intel-sfo2-01:~# rsync --archive --chown=openvpn:
 root@ASBuildImage-ubuntu24-v2:~# cat /home/openvpn/.ssh/authorized_keys
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFwJ1Lw8LwnsmZZRd0AQ5arvqfNqZ0Y59wm9vtdozZiH OPEN_VPN
 ```
+
+## ufw
+
+```console
+openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ sudo ufw app list
+Available applications:
+  OpenSSH
+openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ sudo ufw allow OpenSSH
+Rules updated
+Rules updated (v6)
+openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ sudo ufw enable
+Command may disrupt existing ssh connections. Proceed with operation (y|n)? y
+Firewall is active and enabled on system startup
+```
