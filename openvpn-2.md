@@ -1,70 +1,17 @@
 # OpenVPN Part 2: easy-rsa
 
-## Deploy droplet R with SSH public key EASY_RSA.pub
-
-```console
-ubuntu@LAPTOP-JBell:~$ cat .ssh/EASY_RSA.pub
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOKivAF1DIVMFYBT0wK+kCPYmzO3YuAxWadpHG/Bws1f EASY_RSA
-```
-
-## Connect from L to R as root using SSH private key EASY_RSA
-
-We use the private key on local machine L to connect as root to remote machine R.[^connect-droplet]
-
-[^connect-droplet]: <https://docs.digitalocean.com/products/droplets/how-to/connect-with-ssh/openssh/>
-
-```console
-ubuntu@LAPTOP-JBell:~$ ssh -i .ssh/EASY_RSA -l root 104.131.173.60
-The authenticity of host '104.131.173.60 (104.131.173.60)' can't be established.
-ED25519 key fingerprint is SHA256:ghS9ATttKKWP6pRjETHUIj0skohCoI/cS8cNjLdtfAw.
-This key is not known by any other names
-Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-```
-
-On machine R, we make a user `easyrsa`. [^adduser]
-
-[^adduser]: https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu
-
-```console
-root@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~# adduser easyrsa
-```
-
-```console
-root@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~# usermod -aG sudo easyrsa
-```
-
-Then use rsync to copy the SSH key pair EASY_RSA, EASY_RSA.pub from the root user home folder to the `easyrsa` user home folder: [^rsync]
-
-[^rsync]: <https://download.samba.org/pub/rsync/rsync.1>
-
-```console
-root@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~# rsync --archive --chown=easyrsa:easyrsa ~/.ssh /home/easyrsa
-root@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~# cat /home/easyrsa/.ssh/authorized_keys
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOKivAF1DIVMFYBT0wK+kCPYmzO3YuAxWadpHG/Bws1f EASY_RSA
-```
-
-## Connect from L to R using EASY_RSA private key
-
-Now on machine L, we use SSH to connect as user `easyrsa` to machine R.
-
-```console
-ubuntu@LAPTOP-JBell:~$ ssh -i .ssh/EASY_RSA -l easyrsa 104.131.173.60
-Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.8.0-71-generic x86_64)
-⋮
-```
-
-## Download easy-rsa
+## Download easy-rsa to L
 
 Now we install easy-rsa. [^easy-rsa]
 
 [^easy-rsa]: <https://github.com/OpenVPN/easy-rsa/releases/tag/v3.2.4>
 
 ```console
-easyrsa@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~$ curl -L -o EasyRSA-3.2.4.tgz https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.4/EasyRSA-3.2.4.tgz
+ubuntu@LAPTOP-JBell:~$ curl -L -o EasyRSA-3.2.4.tgz https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.4/EasyRSA-3.2.4.tgz
 ```
 
 ```console
-easyrsa@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~$ tar -xzf EasyRSA-3.2.4.tgz
+ubuntu@LAPTOP-JBell:~$ tar -xzf EasyRSA-3.2.4.tgz
 tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.metadata:kMDItemTextContentLanguage'
 ```
 
@@ -76,52 +23,29 @@ Using GNU tar, we disable warnings with the option `--warning=no-$KEYWORD` where
 [^gnutar]: <https://www.gnu.org/software/tar/manual/html_node/warnings.html> and <https://www.gnu.org/software/tar/manual/html_node/Archive-Extraction-Warnings.html>
 
 ```console
-easyrsa@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~$ tar -xzf EasyRSA-3.2.4.tgz --warning=no-unknown-keyword
+ubuntu@LAPTOP-JBell:~$ tar -xzf EasyRSA-3.2.4.tgz --warning=no-unknown-keyword
 ```
 
-## ufw
-
-Set up ufw:
-
-```console
-easyrsa@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~/EasyRSA-3.2.4$ sudo ufw app list
-Available applications:
-  OpenSSH
-easyrsa@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~/EasyRSA-3.2.4$ sudo ufw allow OpenSSH
-Rules updated
-Rules updated (v6)
-easyrsa@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~/EasyRSA-3.2.4$ sudo ufw enable
-Command may disrupt existing ssh connections. Proceed with operation (y|n)? y
-Firewall is active and enabled on system startup
-easyrsa@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~/EasyRSA-3.2.4$ sudo ufw status
-Status: active
-
-To                         Action      From
---                         ------      ----
-OpenSSH                    ALLOW       Anywhere
-OpenSSH (v6)               ALLOW       Anywhere (v6)
-```
-
-## Use easy-rsa
+## Use easy-rsa on L
 
 We follow <https://community.openvpn.net/Pages/EasyRSA3-OpenVPN-Howto>
 
 ```console
-easyrsa@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~/EasyRSA-3.2.4$ ./easyrsa init-pki
+ubuntu@LAPTOP-JBell:~/EasyRSA-3.2.4$ ./easyrsa init-pki
 
 Notice
 ------
 'init-pki' complete; you may now create a CA or requests.
 
 Your newly created PKI dir is:
-* /home/easyrsa/EasyRSA-3.2.4/pki
+* /home/ubuntu/EasyRSA-3.2.4/pki
 
 Using Easy-RSA configuration:
 * undefined
 ```
 
 ```console
-easyrsa@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~/EasyRSA-3.2.4$ ./easyrsa build-ca nopass
+ubuntu@LAPTOP-JBell:~/EasyRSA-3.2.4$ ./easyrsa build-ca
 
 Enter New CA Key Passphrase:
 
@@ -132,10 +56,125 @@ Common Name (eg: your user, host, or server name) [Easy-RSA CA]:
 Notice
 ------
 CA creation complete. Your new CA certificate is at:
-* /home/easyrsa/EasyRSA-3.2.4/pki/ca.crt
+* /home/ubuntu/EasyRSA-3.2.4/pki/ca.crt
 
 Build-ca completed successfully.
 ```
+
+```console
+ubuntu@LAPTOP-JBell:~/EasyRSA-3.2.4$ ./easyrsa build-server-full openvpnaccessserver nopass
+⋮
+The Subject's Distinguished Name is as follows
+commonName            :ASN.1 12:'openvpnaccessserver'
+Certificate is to be certified until Feb  5 03:02:47 2028 GMT (825 days)
+
+Write out database with 1 new entries
+Data Base Updated
+
+WARNING
+=======
+INCOMPLETE Inline file created:
+* /home/ubuntu/EasyRSA-3.2.4/pki/inline/private/openvpnaccessserver.inline
+
+
+Notice
+------
+Certificate created at:
+* /home/ubuntu/EasyRSA-3.2.4/pki/issued/openvpnaccessserver.crt
+```
+
+```console
+ubuntu@LAPTOP-JBell:~/EasyRSA-3.2.4$ ./easyrsa build-client-full linux-localhost nopass
+⋮
+Notice
+------
+Certificate created at:
+* /home/ubuntu/EasyRSA-3.2.4/pki/issued/linux-localhost.crt
+```
+
+```console
+ubuntu@LAPTOP-JBell:~/EasyRSA-3.2.4$ ./easyrsa build-client-full windows-localhost nopass
+⋮
+Notice
+------
+Certificate created at:
+* /home/ubuntu/EasyRSA-3.2.4/pki/issued/windows-localhost.crt
+```
+
+## Download and use easy-rsa on S
+
+```console
+openvpn@ASBuildImage-ubuntu24-v2:~$ curl -L -o EasyRSA-3.2.4.tgz https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.4/EasyRSA-3.2.4.tgz
+openvpn@ASBuildImage-ubuntu24-v2:~$ tar -xzf EasyRSA-3.2.4.tgz --warning=no-unknown-keyword
+```
+
+```console
+openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ ./easyrsa init-pki
+
+Notice
+------
+'init-pki' complete; you may now create a CA or requests.
+
+Your newly created PKI dir is:
+* /home/openvpn/EasyRSA-3.2.4/pki
+
+Using Easy-RSA configuration:
+* undefined
+```
+
+```console
+openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ ./easyrsa gen-req openvpnaccessserver nopass
+⋮
+Common Name (eg: your user, host, or server name) [openvpnaccessserver]:
+
+Notice
+------
+Private-Key and Public-Certificate-Request files created.
+Your files are:
+* req: /home/openvpn/EasyRSA-3.2.4/pki/reqs/openvpnaccessserver.req
+* key: /home/openvpn/EasyRSA-3.2.4/pki/private/openvpnaccessserver.key
+```
+
+
+## Windows localhost
+
+We use [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/) and make `windows-localhost`
+and ``windows-localhost.ppk`.
+
+We use
+[DigiCert Certificate Utility for Windows](https://www.digicert.com/support/tools/certificate-utility-for-windows)
+with Commom Name "windows-localhost" and save to `windows-localhost.csr`.
+
+```
+-----BEGIN NEW CERTIFICATE REQUEST-----
+MIICwDCCAagCAQAwezELMAkGA1UEBhMCVVMxETAPBgNVBAgTCE5ldyBZb3JrMREw
+DwYDVQQHEwhOZXcgWW9yazEUMBIGA1UECxMLRGV2ZWxvcG1lbnQxFDASBgNVBAoT
+C0pvcmRhbiBCZWxsMRowGAYDVQQDExF3aW5kb3dzLWxvY2FsaG9zdDCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBANpcdOfJLkuhPXyAcbQphehKjvcv9iK+
+jMmzEW9mPVatXZqQ8lMlC9KbsCdIjfejQ8A/hRfCEIfD5K07DaJeBn4Utc9cVTxd
+uG6I4lNq/lkNg26WBGRik4y9LFtLXAYhS+Ie74jo7tWVVF7qtyM4zotYyYcrajuZ
+yx4N5XzJI9MoC7nwb6zvUnoFDvlvhfi2/oIJ9A4ms7+e/Vvxq0spgGf0OWFwuxab
+7otoIxQam8g5z41TFfwCmaku+YN7W/d3TnzG39HW8rQ5BQ4RjpxTLZmfXWB2Qdfq
+xDv9VL5WUQEqbrn/E0CdeAad7x/lVmmgO4haUwI9R96hMMT3Jeyhwf0CAwEAAaAA
+MA0GCSqGSIb3DQEBBQUAA4IBAQBkPgm5ic0+NjA5MT1WeIYCUjudEwOJFC28ZEXW
+zlRpCL/NRo22vUl5z38LDCX6ftaWtIyiOSEA0rktBgW9nv45aQ9IrI3y5FKgyYMi
+WaC4yXr6n2btQjBhgXzXdbD2A5k7elqvCUhLqdHefL3/gVwZRUIeMadu6qPMEgRI
+QvNXWB+em+KmFVs1+yeWqy7iIVQ0bxi+EvtAtxpcv3+NEg5ykS1gKHrasGHDdZtk
+EwwkyjuOPCjK1b/Pez6k/qH57+Qw6QjMo5aYgydFtC5Q0jD8tm29/vXEV+fDuEp6
+no0fEJhDYL2GY1QJGKgpfdGwvkUKMdZAiIQy/wVGvEF39eap
+-----END NEW CERTIFICATE REQUEST-----
+```
+
+
+## Easy-TLS on machine S
+
+```console
+openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ curl -L -O https://github.com/TinCanTech/easy-tls/archive/refs/tags/v2.7.0.tar.gz
+openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ tar -xzf v2.7.0.tar.gz
+openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ cp easy-tls-2.7.0/easytls ./
+```
+
+
 
 ## easy-rsa on machine S
 
@@ -149,10 +188,7 @@ As user `openvpn` in machine S,
 
 ```console
 penvpn@ASBuildImage-ubuntu24-v2:~$ curl -L -o EasyRSA-3.2.4.tgz https://github.com/OpenVPN/easy-rsa/releases/download/v3.2.4/EasyRSA-3.2.4.tgz
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100 89360  100 89360    0     0   371k      0 --:--:-- --:--:-- --:--:--  371k
+⋮
 openvpn@ASBuildImage-ubuntu24-v2:~$ tar -xzf EasyRSA-3.2.4.tgz --warning=no-unknown-keyword
 openvpn@ASBuildImage-ubuntu24-v2:~$ cd EasyRSA-3.2.4/
 openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ ./easyrsa init-pki
@@ -215,7 +251,7 @@ We make a file `openvpn-as.req` in  R with the same content, at path `/home/easy
 
 ```console
 easyrsa@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~/EasyRSA-3.2.4$ ./easyrsa import-req reqs/openvpn-as.req openvpn-as
-
+⋮
 Notice
 ------
 Request successfully imported with short-name: openvpn-as
@@ -225,36 +261,6 @@ This request is now ready to be signed.
 
 ```console
 easyrsa@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~/EasyRSA-3.2.4$ ./easyrsa sign-req server openvpn-as
-Please check over the details shown below for accuracy. Note that this request
-has not been cryptographically verified. Please be sure it came from a trusted
-source or that you have verified the request checksum with the sender.
-You are about to sign the following certificate:
-
-  Requested CN:     'openvpn-as'
-  Requested type:   'server'
-  Valid for:        '825' days
-
-
-subject=
-    commonName                = openvpn-as
-
-Type the word 'yes' to continue, or any other input to abort.
-  Confirm requested details: yes
-
-Using configuration from /home/easyrsa/EasyRSA-3.2.4/pki/43f6efc3/temp.02
-Check that the request matches the signature
-Signature ok
-The Subject's Distinguished Name is as follows
-commonName            :ASN.1 12:'openvpn-as'
-Certificate is to be certified until Feb  4 21:39:18 2028 GMT (825 days)
-
-Write out database with 1 new entries
-Database updated
-
-WARNING
-=======
-INCOMPLETE Inline file created:
-* /home/easyrsa/EasyRSA-3.2.4/pki/inline/openvpn-as.inline
 
 
 Notice
@@ -263,38 +269,13 @@ Certificate created at:
 * /home/easyrsa/EasyRSA-3.2.4/pki/issued/openvpn-as.crt
 ```
 
-
- ```console
-easyrsa@easy-rsa-s-1vcpu-1gb-35gb-intel-nyc3-01:~/EasyRSA-3.2.4$ cat pki/ca.crt
------BEGIN CERTIFICATE-----
-MIIDSzCCAjOgAwIBAgIUY6v2tbVY6w4is77XnwUVE9d5LS0wDQYJKoZIhvcNAQEL
-BQAwFjEUMBIGA1UEAwwLRWFzeS1SU0EgQ0EwHhcNMjUxMTAxMjAzOTM1WhcNMzUx
-MDMwMjAzOTM1WjAWMRQwEgYDVQQDDAtFYXN5LVJTQSBDQTCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBAPkbWf2Mx9H5SHZd0+2CwFvIl78BMQyn6rCU/WTm
-2J9WH0OZE9CY3LAWd864ibBkYXbTNAqbeJXENCUer5ZXJRRnOZxTN8t36f2P4UBn
-4CY70LPfu4eYNbUY7JCMIhplH8im9gYM6RdDwzf7wsBZTLyvvikvzwkH4M3NJ5nl
-mFCXQQMgUvL6A8yLbi/jKJ6yCMlz1kIcVisgiG5AH80D8ubS1gJp4RHm4wYzoi3s
-2nIfvTZ6ucMDVOVNlMZvunBTaCHxMS5O46HVuCQCVqpbZYVqf5rd15XTM2LZyu+l
-S0lKZDdmixhgiL/9jdRj0zi6HOUz5tdv4tDzP307ZWd6W78CAwEAAaOBkDCBjTAM
-BgNVHRMEBTADAQH/MB0GA1UdDgQWBBSsKZVE1Y0Uuums4BH+GixjvxQmpjBRBgNV
-HSMESjBIgBSsKZVE1Y0Uuums4BH+GixjvxQmpqEapBgwFjEUMBIGA1UEAwwLRWFz
-eS1SU0EgQ0GCFGOr9rW1WOsOIrO+158FFRPXeS0tMAsGA1UdDwQEAwIBBjANBgkq
-hkiG9w0BAQsFAAOCAQEAGC/OkOXNFrIeO90lBMUQTp7K9TQRRY6rbD4n6DGZNM41
-/vJY1muwtxJn1RWhXu+RaNtkI2MohJGF+xNkr9I3omT+gzK84gtu9d2ce2AHtJs2
-uY2GnEbYDPpkcJVZ1f30dpsInPZ5G4Kce018rQZo0OcAq6I9JZLa9AQmW6B159V7
-e5OcVzxQXqJrYksbOnOToP77E6dQfggNpuTEqdvSEhpxhk7Xg0CoVJMCdOSIQ3NQ
-LcC2+iQ+q1+Z7K1DKvb8osyDk9Xytxsc49dMtzX9ok0oFmW4M0eiK2DNHtV2rEyj
-jdfO6ArtQ3NpSLQ/5ost3GEfc8soDcFmUxqR7j4Ljw==
------END CERTIFICATE-----
-```
-
-In S, we now make a file `/tmp/ca.crt` with the same content. [^csr]
+We now make a file `/tmp/ca.crt` in S with the same content as `/home/easyrsa/EasyRSA-3.2.4/pki/issued/openvpn-as.crt` in R. [^csr]
 
 [^csr]: <https://www.digitalocean.com/community/tutorials/how-to-set-up-and-configure-a-certificate-authority-ca-on-debian-10>
 
 ```console
-openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ vi /tmp/ca.crt
-openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ sudo cp /tmp/ca.crt /usr/local/share/ca-certificates/
+openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ vi /tmp/openvpn-as.crt # with content of openvpn-as.crt in R
+openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ sudo cp /tmp/openvpn-as.crt /usr/local/share/ca-certificates/openvpn-as.crt
 openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ sudo update-ca-certificates
 Updating certificates in /etc/ssl/certs...
 rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
@@ -302,3 +283,40 @@ rehash: warning: skipping ca-certificates.crt,it does not contain exactly one ce
 Running hooks in /etc/ca-certificates/update.d...
 done.
 ```
+
+## Inspect openvpn-as.pem in S
+
+In S,
+
+```console
+openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ openssl x509 -in /etc/ssl/certs/openvpn-as.pem -noout -text
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            d3:ac:66:4c:1e:06:44:d0:ec:98:7a:83:58:10:ce:72
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN = Easy-RSA CA
+        Validity
+            Not Before: Nov  1 21:39:18 2025 GMT
+            Not After : Feb  4 21:39:18 2028 GMT
+        Subject: CN = openvpn-as
+        Subject Public Key Info:
+⋮
+```
+
+## DH Generation
+
+```console
+openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ ./easyrsa gen-dh
+Generating DH parameters, 2048 bit long safe prime
+⋮
+DH parameters appear to be ok.
+
+Notice
+------
+
+DH parameters of size 2048 created at:
+* /home/openvpn/EasyRSA-3.2.4/pki/dh.pem
+```
+
