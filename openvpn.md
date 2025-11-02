@@ -1,4 +1,4 @@
-# OpenVPN Part 1: Access Server
+# OpenVPN
 
 ## Introduction
 
@@ -165,7 +165,7 @@ root@ASBuildImage-ubuntu24-v2:~# cat /home/openvpn/.ssh/authorized_keys
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFwJ1Lw8LwnsmZZRd0AQ5arvqfNqZ0Y59wm9vtdozZiH OPEN_VPN
 ```
 
-## ufw
+## ufw on S
 
 ```console
 openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ sudo ufw app list
@@ -178,3 +178,118 @@ openvpn@ASBuildImage-ubuntu24-v2:~/EasyRSA-3.2.4$ sudo ufw enable
 Command may disrupt existing ssh connections. Proceed with operation (y|n)? y
 Firewall is active and enabled on system startup
 ```
+
+https://openvpn.net/community-docs/openvpn-client-for-linux.html
+
+## openvpn3-as on L
+
+<https://support.openvpn.com/hc/en-us/articles/19342886268059-Access-Server-Import-a-connection-profile-ovpn-file-directly-using-OpenVPN3-Linux-client-via-openvpn3-as-tool>
+
+```console
+ubuntu@LAPTOP-JBell:~$ openvpn3-as --insecure-certs --username openvpn https://159.65.255.114/
+OpenVPN Access Server Password:
+------------------------------------------------------------
+Profile imported successfully
+Configuration name: AS:159.65.255.114
+Configuration path: /net/openvpn/v3/configuration/54c3da09xf05bx492exbd55x177e0f882848
+```
+
+
+```console
+ubuntu@LAPTOP-JBell:~$ openvpn3 configs-list
+Configuration Name                                        Last used
+------------------------------------------------------------------------------
+openvpn.ovpn                                              2025-10-31 03:41:09
+AS:159.65.255.114                                         -
+------------------------------------------------------------------------------
+```
+
+## OpenVPN Linux cli client openvpn3
+
+<https://openvpn.net/community-docs/openvpn-client-for-linux.html>
+
+```console
+ubuntu@LAPTOP-JBell:~$ openvpn3 session-start --config AS:159.65.255.114
+Using pre-loaded configuration profile 'AS:159.65.255.114'
+Session path: /net/openvpn/v3/sessions/debf947csf0cds48bbsa019s946d6bc46a65
+Auth User name: openvpn
+Auth Password:
+Connected to 159.65.255.114 (159.65.255.114)
+```
+
+```console
+ubuntu@LAPTOP-JBell:~$ openvpn3 sessions-list
+-----------------------------------------------------------------------------
+        Path: /net/openvpn/v3/sessions/debf947csf0cds48bbsa019s946d6bc46a65
+     Created: 2025-11-02 14:14:28                       PID: 188942
+       Owner: ubuntu                                 Device: tun0
+ Config name: AS:159.65.255.114
+Connected to: udp:159.65.255.114:1194
+      Status: Connection, Client connected
+-----------------------------------------------------------------------------
+```
+
+We check the public IP of L using <https://www.my-ip.io/> which has nice result formatting endpoints.
+
+```console
+ubuntu@LAPTOP-JBell:~$ curl https://api.my-ip.io/v2/ip.txt
+159.65.255.114
+IPv4
+US
+United States
+New Jersey
+Clifton
+40.8364
+-74.1403
+America/New_York
+14061
+DIGITALOCEAN-ASN
+159.65.0.0/16
+```
+
+We use <https://proof.ovh.net/files/>:
+
+```console
+ubuntu@LAPTOP-JBell:~$ curl -L -O https://proof.ovh.net/files/100Mb.dat
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  100M  100  100M    0     0  3257k      0  0:00:31  0:00:31 --:--:-- 6520k
+```
+
+```console
+ubuntu@LAPTOP-JBell:~$ openvpn3 session-manage --config AS:159.65.255.114 --disconnect
+Initiated session shutdown.
+
+Connection statistics:
+     BYTES_IN...............110958336
+     BYTES_OUT................1164111
+     PACKETS_IN.................77478
+     PACKETS_OUT................14853
+     TUN_BYTES_IN..............803153
+     TUN_BYTES_OUT..........109094754
+     TUN_PACKETS_IN.............14762
+     TUN_PACKETS_OUT............77386
+```
+
+```console
+ubuntu@LAPTOP-JBell:~$ echo "100 * 1024 * 1024" | bc
+104857600
+```
+
+## OpenVPN Connect for Windows
+
+Download and install OpenVPN Connect for Windows: <https://openvpn.net/client/>
+
+Download Connection Profile from OpenVPN Access Server web server <https://159.65.255.114/>: `profile-userlocked.ovpn`
+
+Upload configuration file `profile-userlocked.ovpn` to Windows client.
+
+We download <https://proof.ovh.net/files/100Mb.dat> and observe the OpenVPN connection statistics.
+
+<img width="500" height="569" alt="image" src="https://github.com/user-attachments/assets/607ab062-1713-4248-b8dc-8e2d7715e882" />
+
+<img width="500" height="857" alt="image" src="https://github.com/user-attachments/assets/9a3f7aff-132b-43af-954d-5044222ccd31" />
+
+<img width="500" height="857" alt="image" src="https://github.com/user-attachments/assets/d36d7225-e14e-4a54-b2bc-7f980101c71e" />
+
+<img width="500" height="857" alt="image" src="https://github.com/user-attachments/assets/2fcbee68-1658-4900-9308-9e4e54363c1c" />
