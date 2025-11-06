@@ -1,3 +1,0 @@
-# Regex
-
-https://regexone.com/
