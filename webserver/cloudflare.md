@@ -42,3 +42,8 @@ ubuntu@vps-9e6a8f0e:~$ hostname -I | cut -d ' ' -f 2
 We make `cloudflare.sh` in the user home directory:
 
 
+```
+$ crontab -e
+# Add the following line to run the script every 5 minutes:
+*/5 * * * * /path/to/update_dns.sh
+```
