@@ -105,7 +105,6 @@ No improvement after using more than 4 cores:
 rsa 2048 bits 0.000189s 0.000009s   5279.0 114110.2
 ```
 
-
 ## Ookla Speedtest CLI 
 
 <https://www.speedtest.net/apps/cli>
