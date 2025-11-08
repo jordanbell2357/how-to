@@ -1,5 +1,7 @@
 # Cloudflare
 
+## Cloudflare API
+
 <https://developers.cloudflare.com/api/resources/zones/methods/list/>
 
 ```console
@@ -39,11 +41,9 @@ ubuntu@vps-9e6a8f0e:~$ hostname -I | cut -d ' ' -f 2
 2607:5300:205:200::2dec
 ```
 
-We make `cloudflare.sh` in the user home directory:
+## ddclient
 
+<https://jacobjangles.com/posts/free-ddns-using-ddclient-and-cloudflare/>
 
-```
-$ crontab -e
-# Add the following line to run the script every 5 minutes:
-*/5 * * * * /path/to/update_dns.sh
-```
+<https://ddclient.net/>
+
