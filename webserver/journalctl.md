@@ -4,6 +4,8 @@
 
 <https://www.loggly.com/ultimate-guide/using-journalctl/>
 
+<https://www.freedesktop.org/software/systemd/man/latest/journalctl.html>
+
 ## ssh.service
 
 After five or fewer days of operating a server, but revealing the user name, IP address and domain name in GitHub,
@@ -14,18 +16,41 @@ ubuntu@vps-9e6a8f0e:~$ journalctl -u ssh.service | grep "Failed password" | wc -
 13324
 ```
 
+```console
 ubuntu@vps-9e6a8f0e:~$ TZ="America/New_York" date; journalctl -u ssh.service | grep "Failed password" | wc -l
 Thu Nov  6 17:52:32 EST 2025
 26775
+```
 
+```console
 ubuntu@vps-9e6a8f0e:~$ TZ="America/New_York" date; journalctl -u ssh.service | grep -v "Failed password" | wc -l
 Thu Nov  6 17:53:30 EST 2025
 73194
+```
 
+```console
 ubuntu@vps-9e6a8f0e:~$ TZ="America/New_York" date; cat /var/log/auth.log | wc -l
 Thu Nov  6 17:54:50 EST 2025
 100815
 ```
+
+```console
+ubuntu@vps-9e6a8f0e:~$ TZ="America/New_York" date; journalctl -n 10 --no-pager -u ssh.service
+Sat Nov  8 09:14:51 EST 2025
+Nov 08 14:14:00 vps-9e6a8f0e sshd[96916]: Failed password for invalid user admin from 2.57.121.112 port 54765 ssh2
+Nov 08 14:14:00 vps-9e6a8f0e sshd[96916]: pam_unix(sshd:auth): check pass; user unknown
+Nov 08 14:14:02 vps-9e6a8f0e sshd[96916]: Failed password for invalid user admin from 2.57.121.112 port 54765 ssh2
+Nov 08 14:14:03 vps-9e6a8f0e sshd[96916]: Received disconnect from 2.57.121.112 port 54765:11: Bye [preauth]
+Nov 08 14:14:03 vps-9e6a8f0e sshd[96916]: Disconnected from invalid user admin 2.57.121.112 port 54765 [preauth]
+Nov 08 14:14:03 vps-9e6a8f0e sshd[96916]: PAM 4 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=2.57.121.112
+Nov 08 14:14:03 vps-9e6a8f0e sshd[96916]: PAM service(sshd) ignoring max retries; 5 > 3
+Nov 08 14:14:23 vps-9e6a8f0e sshd[96918]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=23.248.211.58  user=root
+Nov 08 14:14:25 vps-9e6a8f0e sshd[96918]: Failed password for root from 23.248.211.58 port 46190 ssh2
+Nov 08 14:14:26 vps-9e6a8f0e sshd[96918]: Connection closed by authenticating user root 23.248.211.58 port 46190 [preauth]
+```
+
+
+## --disk-usage and --vacuum-size
 
 ```console
 ubuntu@vps-9e6a8f0e:~$ journalctl --disk-usage
