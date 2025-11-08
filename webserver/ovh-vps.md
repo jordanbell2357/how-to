@@ -130,3 +130,45 @@ Idle Latency:     8.43 ms   (jitter: 0.04ms, low: 8.34ms, high: 8.45ms)
   Result URL: https://www.speedtest.net/result/c/50a8171f-7d30-424c-a123-99458ac5c434
 ```
 
+## dmidecode
+
+```console
+ubuntu@vps-9e6a8f0e:~$ sudo dmidecode --type memory
+# dmidecode 3.5
+Getting SMBIOS data from sysfs.
+SMBIOS 2.8 present.
+
+Handle 0x1000, DMI type 16, 23 bytes
+Physical Memory Array
+        Location: Other
+        Use: System Memory
+        Error Correction Type: Multi-bit ECC
+        Maximum Capacity: 8000 MB
+        Error Information Handle: Not Provided
+        Number Of Devices: 1
+
+Handle 0x1100, DMI type 17, 40 bytes
+Memory Device
+        Array Handle: 0x1000
+        Error Information Handle: Not Provided
+        Total Width: Unknown
+        Data Width: Unknown
+        Size: 8000 MB
+        Form Factor: DIMM
+        Set: None
+        Locator: DIMM 0
+        Bank Locator: Not Specified
+        Type: RAM
+        Type Detail: Other
+        Speed: Unknown
+        Manufacturer: QEMU
+        Serial Number: Not Specified
+        Asset Tag: Not Specified
+        Part Number: Not Specified
+        Rank: Unknown
+        Configured Memory Speed: Unknown
+        Minimum Voltage: Unknown
+        Maximum Voltage: Unknown
+        Configured Voltage: Unknown
+```
+
