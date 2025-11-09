@@ -70,6 +70,8 @@ If you like Certbot, please consider supporting our work by:
 
 ## Verifying
 
+<https://www.warp.dev/terminus/openssl-check-certificate>
+
 ```console
 ubuntu@LAPTOP-JBell:~$ openssl s_client -connect histfile.org:443
 CONNECTED(00000003)
