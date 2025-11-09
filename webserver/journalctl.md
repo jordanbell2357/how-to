@@ -1,12 +1,12 @@
 # journalctl
 
-<https://www.loggly.com/ultimate-guide/troubleshooting-with-linux-logs/>
-
-<https://www.loggly.com/ultimate-guide/using-journalctl/>
-
 <https://www.freedesktop.org/software/systemd/man/latest/journalctl.html>
 
 ## ssh.service
+
+<https://www.loggly.com/ultimate-guide/troubleshooting-with-linux-logs/>
+
+> For security purposes, you may want to know which users have logged in or attempted to log in to your system. You can check your authentication logs for failed attempts, which occur when users provide incorrect credentials or don’t have permission to log in. This often occurs when using SSH for remote access or when using the su command to run a command as another user. These types of authentication events are logged by the pluggable authentication module (PAM). Failed events often contain strings like “Failed password” and “user unknown,” while successful authentication events often contain strings like “Accepted password” and “session opened.”
 
 After five or fewer days of operating a server, but revealing the user name, IP address and domain name in GitHub,
 there are the following SSH login attempts attempted:
