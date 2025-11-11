@@ -172,3 +172,106 @@ Memory Device
         Configured Voltage: Unknown
 ```
 
+```console
+ubuntu@vps-9e6a8f0e:~$ sudo passwd -S
+root L 2025-10-26 0 99999 7 -1
+```
+
+## /etc/ssh/sshd_config
+
+We want to modify the contents of `/etc/ssh/sshd_config`. We can use sudo vi. Instead we do the following entirely in the shell. We
+use `grep -n` to determine the line number of an entry in the sshd configuration:
+
+```console
+ubuntu@vps-9e6a8f0e:~$ sudo cat /etc/ssh/sshd_config | grep -n PasswordAuthentication
+66:#PasswordAuthentication yes
+88:# PasswordAuthentication.  Depending on your PAM configuration,
+92:# PAM authentication, then enable this but set PasswordAuthentication
+```
+
+Then we use sed to replace this line (line 66):
+
+```console
+ubuntu@vps-9e6a8f0e:~$ sudo sed -i '66c\PasswordAuthentication no' /etc/ssh/sshd_config
+```
+
+```console
+ubuntu@vps-9e6a8f0e:~$ sudo cat /etc/ssh/sshd_config | grep -n PasswordAuthentication
+66:PasswordAuthentication no
+88:# PasswordAuthentication.  Depending on your PAM configuration,
+92:# PAM authentication, then enable this but set PasswordAuthentication
+```
+
+```console
+ubuntu@vps-9e6a8f0e:~$ sudo cat /etc/ssh/sshd_config | grep -n PermitRootLogin
+42:PermitRootLogin no
+90:# the setting of "PermitRootLogin prohibit-password".
+```
+
+Let's use tee [^tee] to write output as root, and take this as a chance to review this pattern.
+
+[^tee]: <https://pubs.opengroup.org/onlinepubs/000095399/utilities/tee.html>
+
+```console
+ubuntu@vps-9e6a8f0e:~$ echo bob | sudo cat > bob1; ls -l bob1
+-rw-rw-r-- 1 ubuntu ubuntu 4 Nov 10 23:55 bob1
+```
+
+compared to
+
+```console
+ubuntu@vps-9e6a8f0e:~$ echo bob | sudo tee -a bob2; ls -l bob2
+bob
+-rw-r--r-- 1 root root 4 Nov 11 00:08 bob2
+```
+
+or to eliminate standard output
+
+```console
+ubuntu@vps-9e6a8f0e:~$ echo bob | sudo tee -a bob2 1> /dev/null; ls -l bob2
+-rw-r--r-- 1 root root 4 Nov 11 00:09 bob2
+```
+
+We want a program with super user privileges to create a file, not a redirection from a Bash session being run as a regular user. We could instead use `sudo bash -c` thus
+
+```console
+ubuntu@vps-9e6a8f0e:~$ sudo bash -c "echo bob > bob3"; ls -l bob3
+-rw-r--r-- 1 root root 4 Nov 11 00:19 bob3
+```
+
+```console
+ubuntu@vps-9e6a8f0e:~$ echo AllowUsers ubuntu | sudo tee -a /etc/ssh/sshd_config
+AllowUsers ubuntu
+ubuntu@vps-9e6a8f0e:~$ tail -n 1 /etc/ssh/sshd_config
+AllowUsers ubuntu
+```
+
+```console
+ubuntu@vps-9e6a8f0e:~$ sudo sshd -t
+```
+
+## PAM
+
+```console
+ubuntu@vps-9e6a8f0e:~$ sudo sed -i '4c\#@include common-auth' /etc/pam.d/sshd
+ubuntu@vps-9e6a8f0e:~$ cat /etc/pam.d/sshd | grep -n common-auth
+4:#@include common-auth
+```
+
+```console
+ubuntu@vps-9e6a8f0e:~$ cat /etc/pam.d/sshd | grep -n common-password
+55:@include common-password
+ubuntu@vps-9e6a8f0e:~$ sudo sed -i '55c\#@include common-password' /etc/pam.d/sshd
+ubuntu@vps-9e6a8f0e:~$ cat /etc/pam.d/sshd | grep -n common-password
+55:#@include common-password
+```
+
+## UFW
+
+<http://documentation.ubuntu.com/server/how-to/security/firewalls/>
+
+```console
+ubuntu@vps-9e6a8f0e:~$ sudo ufw limit ssh/tcp
+Rule added
+Rule added (v6)
+```
