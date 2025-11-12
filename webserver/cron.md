@@ -80,6 +80,8 @@ ubuntu@vps-9e6a8f0e:~$ cat weather/2025/11/12/*
 
 <https://cronitor.io/guides/cron-jobs>
 
+<https://crontab-generator.org/>
+
 > At its most basic level, a cron job is an entry written into a table called the cron table, otherwise known as the crontab for short. This entry contains a schedule and a command to be executed. The cron daemon (crond) looks for entries in the crontab to determine what jobs it should run, and when it should run them according to the specified schedule.
 
 We run
