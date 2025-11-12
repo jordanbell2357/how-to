@@ -204,7 +204,7 @@ AS:159.65.255.114                                         -
 ------------------------------------------------------------------------------
 ```
 
-## OpenVPN Linux cli client openvpn3
+## OpenVPN 3 Client for Linux on localhost
 
 <https://openvpn.net/community-docs/openvpn-client-for-linux.html>
 
@@ -293,3 +293,4 @@ We download <https://proof.ovh.net/files/100Mb.dat> and observe the OpenVPN conn
 --
 
 <img width="250" height="428" alt="OpenVPN Windows client" src="https://github.com/user-attachments/assets/2fcbee68-1658-4900-9308-9e4e54363c1c" />
+
