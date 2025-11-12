@@ -294,3 +294,8 @@ We download <https://proof.ovh.net/files/100Mb.dat> and observe the OpenVPN conn
 
 <img width="250" height="428" alt="OpenVPN Windows client" src="https://github.com/user-attachments/assets/2fcbee68-1658-4900-9308-9e4e54363c1c" />
 
+## vpn.jordanbell.org
+
+<https://vpn.jordanbell.org/login>
+
+<img width="571" height="348" alt="image" src="https://github.com/user-attachments/assets/ccbd99ab-a84d-4243-a992-086610191ae9" />
