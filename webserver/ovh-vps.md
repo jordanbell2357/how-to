@@ -65,6 +65,37 @@ ubuntu@vps-9e6a8f0e:~$ sudo perf stat -a sleep 5
        5.002220504 seconds time elapsed
 ```
 
+## stressapptest
+
+<https://github.com/stressapptest/stressapptest>
+
+```console
+ubuntu@vps-9e6a8f0e:~$ stressapptest -W
+2025/11/13-04:34:22(UTC) Log: Commandline - stressapptest -W
+2025/11/13-04:34:22(UTC) Stats: SAT revision 1.0.11_autoconf, 64 bit binary
+2025/11/13-04:34:22(UTC) Log: reproducible @ reproducible on Mon Apr  1 08:22:50 UTC 2024 from open source release
+2025/11/13-04:34:22(UTC) Log: 1 nodes, 4 cpus.
+2025/11/13-04:34:22(UTC) Log: Defaulting to 4 copy threads
+2025/11/13-04:34:22(UTC) Log: Total 7751 MB. Free 7307 MB. Hugepages 0 MB. Targeting 7171 MB (92%)
+2025/11/13-04:34:22(UTC) Log: Prefer plain malloc memory allocation.
+2025/11/13-04:34:22(UTC) Log: Using mmap() allocation at 0x7fe5bfd00000.
+2025/11/13-04:34:22(UTC) Stats: Starting SAT, 7171M, 20 seconds
+2025/11/13-04:34:24(UTC) Log: Region mask: 0x1
+2025/11/13-04:34:34(UTC) Log: Seconds remaining: 10
+2025/11/13-04:34:45(UTC) Stats: Found 0 hardware incidents
+2025/11/13-04:34:45(UTC) Stats: Completed: 739158.00M in 20.00s 36952.52MB/s, with 0 hardware incidents, 0 errors
+2025/11/13-04:34:45(UTC) Stats: Memory Copy: 739158.00M at 36955.83MB/s
+2025/11/13-04:34:45(UTC) Stats: File Copy: 0.00M at 0.00MB/s
+2025/11/13-04:34:45(UTC) Stats: Net Copy: 0.00M at 0.00MB/s
+2025/11/13-04:34:45(UTC) Stats: Data Check: 0.00M at 0.00MB/s
+2025/11/13-04:34:45(UTC) Stats: Invert Data: 0.00M at 0.00MB/s
+2025/11/13-04:34:45(UTC) Stats: Disk: 0.00M at 0.00MB/s
+2025/11/13-04:34:45(UTC)
+2025/11/13-04:34:45(UTC) Status: PASS - please verify no corrected errors
+2025/11/13-04:34:45(UTC)
+```
+
+
 ## openssl-speed
 
 <https://docs.openssl.org/3.1/man1/openssl-speed/>
@@ -103,31 +134,6 @@ No improvement after using more than 4 cores:
 ```console
                   sign    verify    sign/s verify/s
 rsa 2048 bits 0.000189s 0.000009s   5279.0 114110.2
-```
-
-## Ookla Speedtest CLI 
-
-<https://www.speedtest.net/apps/cli>
-
-```console
-ubuntu@vps-9e6a8f0e:~$ curl -L -O https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-x86_64.tgz
-ubuntu@vps-9e6a8f0e:~$ tar -xzf ookla-speedtest-1.2.0-linux-x86_64.tgz
-```
-
-```console
-ubuntu@vps-9e6a8f0e:~$ ./speedtest
-⋮
-   Speedtest by Ookla
-
-      Server: Bell Canada - Toronto, ON (id: 53393)
-         ISP: OVHcloud
-Idle Latency:     8.43 ms   (jitter: 0.04ms, low: 8.34ms, high: 8.45ms)
-    Download:   386.46 Mbps (data used: 323.5 MB)
-                 81.48 ms   (jitter: 7.95ms, low: 8.26ms, high: 122.73ms)
-      Upload:   386.00 Mbps (data used: 183.3 MB)
-                 85.80 ms   (jitter: 14.81ms, low: 8.15ms, high: 130.18ms)
- Packet Loss:     0.0%
-  Result URL: https://www.speedtest.net/result/c/50a8171f-7d30-424c-a123-99458ac5c434
 ```
 
 ## dmidecode
@@ -175,6 +181,49 @@ Memory Device
 ```console
 ubuntu@vps-9e6a8f0e:~$ sudo passwd -S
 root L 2025-10-26 0 99999 7 -1
+```
+
+## Prime95
+
+<https://www.mersenne.org/download/>
+
+```console
+ubuntu@vps-9e6a8f0e:~/p95v3019b20.linux64$ curl -L -O https://download.mersenne.ca/gimps/v30/30.19/p95v3019b20.linux64.tar.gz
+```
+
+
+```console
+ubuntu@vps-9e6a8f0e:~/p95v3019b20.linux64$ tar -x -z --one-top-level -f p95v3019b20.linux64.tar.gz
+```
+
+```console
+ubuntu@vps-9e6a8f0e:~/p95v3019b20.linux64$ cd p95v3019b20.linux64
+ubuntu@vps-9e6a8f0e:~/p95v3019b20.linux64$ ./mprime
+```
+
+## Ookla Speedtest CLI 
+
+<https://www.speedtest.net/apps/cli>
+
+```console
+ubuntu@vps-9e6a8f0e:~$ curl -L -O https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-x86_64.tgz
+ubuntu@vps-9e6a8f0e:~$ tar -xzf ookla-speedtest-1.2.0-linux-x86_64.tgz
+```
+
+```console
+ubuntu@vps-9e6a8f0e:~$ ./speedtest
+⋮
+   Speedtest by Ookla
+
+      Server: Bell Canada - Toronto, ON (id: 53393)
+         ISP: OVHcloud
+Idle Latency:     8.43 ms   (jitter: 0.04ms, low: 8.34ms, high: 8.45ms)
+    Download:   386.46 Mbps (data used: 323.5 MB)
+                 81.48 ms   (jitter: 7.95ms, low: 8.26ms, high: 122.73ms)
+      Upload:   386.00 Mbps (data used: 183.3 MB)
+                 85.80 ms   (jitter: 14.81ms, low: 8.15ms, high: 130.18ms)
+ Packet Loss:     0.0%
+  Result URL: https://www.speedtest.net/result/c/50a8171f-7d30-424c-a123-99458ac5c434
 ```
 
 ## /etc/ssh/sshd_config
@@ -275,3 +324,4 @@ ubuntu@vps-9e6a8f0e:~$ sudo ufw limit ssh/tcp
 Rule added
 Rule added (v6)
 ```
+
