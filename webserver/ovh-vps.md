@@ -226,7 +226,9 @@ Idle Latency:     8.43 ms   (jitter: 0.04ms, low: 8.34ms, high: 8.45ms)
   Result URL: https://www.speedtest.net/result/c/50a8171f-7d30-424c-a123-99458ac5c434
 ```
 
-## /etc/ssh/sshd_config
+## SSH
+
+### /etc/ssh/sshd_config
 
 We want to modify the contents of `/etc/ssh/sshd_config`. We can use sudo vi. Instead we do the following entirely in the shell. We
 use `grep -n` to determine the line number of an entry in the sshd configuration:
@@ -257,62 +259,28 @@ ubuntu@vps-9e6a8f0e:~$ sudo cat /etc/ssh/sshd_config | grep -n PermitRootLogin
 90:# the setting of "PermitRootLogin prohibit-password".
 ```
 
-Let's use tee [^tee] to write output as root, and take this as a chance to review this pattern.
-
-[^tee]: <https://pubs.opengroup.org/onlinepubs/000095399/utilities/tee.html>
+### /etc/ssh/sshd_config.d
 
 ```console
-ubuntu@vps-9e6a8f0e:~$ echo bob | sudo cat > bob1; ls -l bob1
--rw-rw-r-- 1 ubuntu ubuntu 4 Nov 10 23:55 bob1
-```
-
-compared to
-
-```console
-ubuntu@vps-9e6a8f0e:~$ echo bob | sudo tee -a bob2; ls -l bob2
-bob
--rw-r--r-- 1 root root 4 Nov 11 00:08 bob2
-```
-
-or to eliminate standard output
-
-```console
-ubuntu@vps-9e6a8f0e:~$ echo bob | sudo tee -a bob2 1> /dev/null; ls -l bob2
--rw-r--r-- 1 root root 4 Nov 11 00:09 bob2
-```
-
-We want a program with super user privileges to create a file, not a redirection from a Bash session being run as a regular user. We could instead use `sudo bash -c` thus
-
-```console
-ubuntu@vps-9e6a8f0e:~$ sudo bash -c "echo bob > bob3"; ls -l bob3
--rw-r--r-- 1 root root 4 Nov 11 00:19 bob3
+ubuntu@vps-9e6a8f0e:~$ sudo grep -n -R PasswordAuthentication /etc/ssh/sshd_config.d
+/etc/ssh/sshd_config.d/50-cloud-init.conf:1:PasswordAuthentication yes
+/etc/ssh/sshd_config.d/60-cloudimg-settings.conf:1:PasswordAuthentication no
 ```
 
 ```console
-ubuntu@vps-9e6a8f0e:~$ echo AllowUsers ubuntu | sudo tee -a /etc/ssh/sshd_config
-AllowUsers ubuntu
-ubuntu@vps-9e6a8f0e:~$ tail -n 1 /etc/ssh/sshd_config
-AllowUsers ubuntu
+sudo sed -i '1c\PasswordAuthentication no' /etc/ssh/sshd_config.d/50-cloud-init.conf
 ```
 
 ```console
-ubuntu@vps-9e6a8f0e:~$ sudo sshd -t
+ubuntu@vps-9e6a8f0e:~$ sudo grep -n -R PasswordAuthentication /etc/ssh/sshd_config.d
+/etc/ssh/sshd_config.d/50-cloud-init.conf:1:PasswordAuthentication no
+/etc/ssh/sshd_config.d/60-cloudimg-settings.conf:1:PasswordAuthentication no
 ```
 
-## PAM
 
 ```console
-ubuntu@vps-9e6a8f0e:~$ sudo sed -i '4c\#@include common-auth' /etc/pam.d/sshd
-ubuntu@vps-9e6a8f0e:~$ cat /etc/pam.d/sshd | grep -n common-auth
-4:#@include common-auth
-```
-
-```console
-ubuntu@vps-9e6a8f0e:~$ cat /etc/pam.d/sshd | grep -n common-password
-55:@include common-password
-ubuntu@vps-9e6a8f0e:~$ sudo sed -i '55c\#@include common-password' /etc/pam.d/sshd
-ubuntu@vps-9e6a8f0e:~$ cat /etc/pam.d/sshd | grep -n common-password
-55:#@include common-password
+ubuntu@LAPTOP-JBell:~$ ssh -l ubuntu 148.113.200.36
+ubuntu@148.113.200.36: Permission denied (publickey).
 ```
 
 ## UFW
