@@ -7,7 +7,7 @@
 Ongoing notes - on updating IP address in DNS A and AAAA records.
 
 ```console
-ubuntu@vps-9e6a8f0e:~$ BEARER_TOKEN=
+ubuntu@vps-9e6a8f0e:~$ BEARER_TOKEN=<BEARER_TOKEN>
 ```
 
 ```bash
@@ -18,7 +18,7 @@ curl -X GET https://api.cloudflare.com/client/v4/zones \
 ```
 
 ```console
-ubuntu@vps-9e6a8f0e:~$ ZONE_ID=
+ubuntu@vps-9e6a8f0e:~$ ZONE_ID=<ZONE_ID>
 ```
 
 <https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/list/>
@@ -31,7 +31,7 @@ curl -X GET https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records \
 ```
 
 ```console
-ubuntu@vps-9e6a8f0e:~$ DNS_RECORD_ID=
+ubuntu@vps-9e6a8f0e:~$ DNS_RECORD_ID=<DNS_RECORD_ID>
 ```
 
 We can determine our public IP address thus:
