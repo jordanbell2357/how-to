@@ -4,6 +4,8 @@
 
 <https://developers.cloudflare.com/api/resources/zones/methods/list/>
 
+Ongoing notes - on updating IP address in DNS A and AAAA records.
+
 ```console
 ubuntu@vps-9e6a8f0e:~$ BEARER_TOKEN=
 ```
