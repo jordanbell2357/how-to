@@ -41,9 +41,4 @@ ubuntu@vps-9e6a8f0e:~$ hostname -I | cut -d ' ' -f 2
 2607:5300:205:200::2dec
 ```
 
-## ddclient
-
-<https://jacobjangles.com/posts/free-ddns-using-ddclient-and-cloudflare/>
-
-<https://ddclient.net/>
 
