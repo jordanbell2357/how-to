@@ -29,11 +29,9 @@ We navigate to "My Apps", and then to "Developer Apps". We make an app.
 
 We make credentials. There is a Consumer Key (=Client ID in Postman) and a Consumer Secret (=Client Secret in Postman).
 
-We download the OAuth 2.0 OpenAPI specification at <https://developers.usps.com/Oauth#tag/Resources/operation/post-token> and use Postman.
+We download the OAuth 2.0 OpenAPI specification at <https://developers.usps.com/Oauth>.
 
-<img width="1155" height="697" alt="image" src="https://github.com/user-attachments/assets/2efa60e5-6f8f-462b-a366-ba8bfbbaef52" />
-
-<img width="1055" height="307" alt="image" src="https://github.com/user-attachments/assets/edf6acb1-c54a-42ea-9e86-288fc7478822" />
+We use Postman and get a temporary OAuth token.
 
 We download the Addresses 3.0 OpenAPI specification at <https://developers.usps.com/addressesv3>
 
