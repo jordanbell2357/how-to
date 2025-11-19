@@ -127,3 +127,54 @@ Status for the jail: sshd
    |- Total banned:     4
    `- Banned IP list:   118.193.61.63 159.223.37.230 64.227.160.144 96.77.54.153
 ```
+
+We cast a wider net for IP addresses. We use grep with the option `-E, --extended-regexp` and the option `-o, --only-matching`. [^grep]
+
+[^grep]: <https://www.gnu.org/software/grep/manual/grep.html#index-_002do>
+
+```bash
+journalctl -u ssh.service | grep -o -E "[[:digit:]]{1,3}(\.[[:digit:]]{1,3}){3}"
+```
+
+```console
+ubuntu@vps-9e6a8f0e:~$ journalctl -u ssh.service | grep -o -E "[[:digit:]]{1,3}(\.[[:digit:]]{1,3}){3}" | sort | uniq | head
+0.0.0.0
+101.126.146.27
+101.126.21.134
+101.126.25.120
+101.126.54.36
+101.36.119.218
+101.36.121.72
+101.36.123.102
+101.43.48.241
+102.210.149.105
+```
+
+The 0.0.0.0 IP address is from
+
+```console
+ubuntu@vps-9e6a8f0e:~$ journalctl -u ssh.service | grep "0.0.0.0"
+Nov 16 20:21:13 vps-9e6a8f0e sshd[1140]: Server listening on 0.0.0.0 port 22.
+Nov 16 20:31:11 vps-9e6a8f0e sshd[906]: Server listening on 0.0.0.0 port 22.
+Nov 16 21:23:03 vps-9e6a8f0e sshd[984]: Server listening on 0.0.0.0 port 22.
+```
+
+So far there are 371 distinct IP addresses occurring in the sshd logs.
+
+```console
+ubuntu@vps-9e6a8f0e:~$ journalctl -u ssh.service | grep -o -E "[[:digit:]]{1,3}(\.[[:digit:]]{1,3}){3}" | sort | uniq | wc -l
+371
+```
+
+
+```console
+ubuntu@vps-9e6a8f0e:~$ journalctl -u ssh.service | grep -o -E "[[:digit:]]{1,3}(\.[[:digit:]]{1,3}){3}" | sort | uniq > ip_list
+```
+
+We remove the first line (0.0.0.0) and then
+
+```console
+ubuntu@vps-9e6a8f0e:~$ nohup sudo nmap -iL ip_list > nmap_output
+nohup: ignoring input and redirecting stderr to stdout
+```
+
