@@ -1,5 +1,11 @@
 # fail2ban
 
+<https://www.cisa.gov/news-events/ics-alerts/ics-alert-12-034-01>
+
+> A brute force authentication attack attempts to obtain a user’s logon credentials by guessing usernames and passwords. Brute force login tools exist for most services that allow remote access. Attackers can use brute force applications, such as password guessing tools and scripts, to automate username and password guessing. Such applications may use default password databases, dictionaries, or rainbow tables that contain commonly used passwords, or they may try all combinations of a character set to guess a password.
+>
+> To find running SSH services on networks, attackers probe a large number of IPs on Port 22/TCP—the default SSH listening port. If a response from the probe of Port 22/TCP is received, the attacker may initiate a brute force attack.
+
 <https://www.digitalocean.com/community/tutorials/how-to-protect-ssh-with-fail2ban-on-ubuntu-20-04>
 
 ```console
@@ -177,4 +183,61 @@ We remove the first line (0.0.0.0) and then
 ubuntu@vps-9e6a8f0e:~$ nohup sudo nmap -iL ip_list > nmap_output
 nohup: ignoring input and redirecting stderr to stdout
 ```
+
+Some of the results:
+
+```
+Nmap scan report for ec2-18-224-39-133.us-east-2.compute.amazonaws.com (18.224.39.133)
+Host is up (0.029s latency).
+Not shown: 999 closed tcp ports (reset)
+PORT   STATE SERVICE
+22/tcp open  ssh
+```
+
+```
+Nmap scan report for 172-238-207-226.ip.linodeusercontent.com (172.238.207.226)
+Host is up (0.043s latency).
+Not shown: 991 filtered tcp ports (no-response)
+PORT     STATE  SERVICE
+22/tcp   open   ssh
+23/tcp   closed telnet
+80/tcp   open   http
+443/tcp  open   https
+587/tcp  closed submission
+8000/tcp open   http-alt
+8001/tcp open   vcom-tunnel
+8002/tcp open   teradataordbms
+8007/tcp closed ajp12
+```
+
+```
+Nmap scan report for 183.56.167.11
+Host is up (0.29s latency).
+
+PORT      STATE    SERVICE
+1/tcp     open     tcpmux
+3/tcp     open     compressnet
+4/tcp     open     unknown
+6/tcp     open     unknown
+7/tcp     open     echo
+9/tcp     open     discard
+13/tcp    open     daytime
+17/tcp    open     qotd
+19/tcp    open     chargen
+20/tcp    open     ftp-data
+21/tcp    open     ftp
+22/tcp    open     ssh
+23/tcp    open     telnet
+24/tcp    open     priv-mail
+25/tcp    open     smtp
+26/tcp    open     rsftp
+30/tcp    open     unknown
+32/tcp    open     unknown
+33/tcp    open     dsp
+37/tcp    open     time
+42/tcp    open     nameserver
+43/tcp    open     whois
+⋮
+```
+
 
