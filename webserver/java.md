@@ -23,14 +23,14 @@ Press <enter> to keep the current choice[*], or type selection number:
 ```
 
 ```console
-ubuntu@vps-329cc0aa:~$ echo JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64/bin/java | sudo tee -a /etc/environment
-JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64/bin/java
+ubuntu@vps-329cc0aa:~$ echo JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64" | sudo tee -a /etc/environment
+JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
 ```
 
 ```console
 ubuntu@vps-329cc0aa:~$ cat /etc/environment
 PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
-JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64/bin/java
+JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
 ```
 
 ```console
