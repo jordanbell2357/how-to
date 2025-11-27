@@ -1,5 +1,18 @@
 # ELK
 
+## hostnamectl
+
+```bash
+sudo hostnamectl set-hostname nginx-server
+```
+
+## Fail2ban
+
+```bash
+sudo apt install fail2ban
+sudo systemctl enable fail2ban
+```
+
 ## Java
 
 <https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-on-ubuntu-22-04>
@@ -18,71 +31,44 @@ sudo apt install default-jdk
 
 ```bash
 sudo apt install nginx
+```
+
+```bash
 sudo systemctl enable nginx
-```
-
-```bash
-sudo mkdir -p /var/www/histfile.org/html
-sudo chown -R $USER:$USER /var/www/histfile.org/html
-sudo chmod -R 755 /var/www/histfile.org
-```
-
-```bash
-vi /var/www/histfile.org/html/index.html
-```
-
-```html
-<html>
-    <head>
-        <title>Welcome to histfile.org!</title>
-    </head>
-    <body>
-        <h1>Success!  The histfile.org server block is working!</h1>
-    </body>
-</html>
 ```
 
 ```bash
 sudo vi /etc/nginx/sites-available/histfile.org
 ```
 
-
 ```
 server {
         listen 80;
         listen [::]:80;
 
-        root /var/www/histfile.org/html;
-        index index.html index.htm index.nginx-debian.html;
-
         server_name histfile.org www.histfile.org;
 
+        auth_basic "Restricted Access";
+        auth_basic_user_file /etc/nginx/htpasswd.users;
+
         location / {
-                try_files $uri $uri/ =404;
+            proxy_pass http://localhost:5601;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
         }
 }
 ```
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/histfile.org /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/histfile.org /etc/nginx/sites-enabled/histfile.org
 ```
-
-```bash
-sudo vi /etc/nginx/nginx.conf
-```
-
-Change line 23, `# server_names_hash_bucket_size 64;` to `server_names_hash_bucket_size 64;`.
 
 ```bash
 sudo nginx -t
 sudo systemctl restart nginx
-```
-
-## Fail2ban
-
-```bash
-sudo apt install fail2ban
-sudo systemctl enable fail2ban
 ```
 
 ## Elasticsearch
@@ -103,16 +89,16 @@ sudo apt install elasticsearch
 ```
 
 ```bash
-sudo systemctl start elasticsearch
 sudo systemctl enable elasticsearch
+sudo systemctl start elasticsearch
 ```
 
 ```console
-ubuntu@vps-329cc0aa:~$ curl -X GET "localhost:9200"
+ubuntu@nginx-server:~$ curl -X GET "localhost:9200"
 {
-  "name" : "vps-329cc0aa",
+  "name" : "nginx-server",
   "cluster_name" : "elasticsearch",
-  "cluster_uuid" : "djJK8OAkQ8mhY08M9ZOs1A",
+  "cluster_uuid" : "hbee1OT5Rc-OdZs2dz0pjg",
   "version" : {
     "number" : "7.17.29",
     "build_flavor" : "default",
@@ -137,76 +123,15 @@ sudo systemctl start kibana
 ```
 
 ```bash
-echo "kibanauser:`openssl passwd -apr1`" | sudo tee -a /etc/nginx/htpasswd.users
+echo "kibana:`openssl passwd -apr1`" | sudo tee -a /etc/nginx/htpasswd.users
 ```
 
-```bash
-sudo vi /etc/nginx/sites-available/kibana.histfile.org
-```
+Then
 
-```
-server {
-    listen 80;
+<http://histfile.org>
 
-    server_name kibana.histfile.org;
+<img width="1911" height="952" alt="image" src="https://github.com/user-attachments/assets/f658c434-65d2-4c7c-ac3b-933295207f9a" />
 
-    auth_basic "Restricted Access";
-    auth_basic_user_file /etc/nginx/htpasswd.users;
 
-    location / {
-        proxy_pass http://localhost:5601;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
-```
 
-```bash
-sudo ln -s /etc/nginx/sites-available/kibana.histfile.org /etc/nginx/sites-enabled/kibana.histfile.org
-```
-
-```bash
-sudo nginx -t
-sudo systemctl reload nginx
-```
-
-<img width="1916" height="688" alt="image" src="https://github.com/user-attachments/assets/b3311ef2-eac0-499a-9668-52a51aa30a54" />
-
-## Certbot
-
-```bash
-sudo apt install python3 python3-dev python3-venv libaugeas-dev gcc
-```
-
-```bash
-sudo python3 -m venv /opt/certbot/
-sudo /opt/certbot/bin/pip install --upgrade pip
-```
-
-```bash
-sudo /opt/certbot/bin/pip install certbot certbot-nginx
-sudo ln -s /opt/certbot/bin/certbot /usr/bin/certbot
-```
-
-```bash
-echo "0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && sudo certbot renew -q" | sudo tee -a /etc/crontab > /dev/null
-```
-
-## Elasticsearch TLS
-
-<https://www.elastic.co/guide/en/elasticsearch/reference/7.17/configuring-stack-security.html>
-
-```bash
-sudo vi /etc/elasticsearch/elasticsearch.yml
-```
-
-Add lines to end:
-
-```
-xpack.security.enabled: true
-xpack.security.authc.api_key.enabled: true
-```
 
