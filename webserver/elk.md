@@ -174,3 +174,23 @@ sudo systemctl reload nginx
 ```
 
 <img width="1916" height="688" alt="image" src="https://github.com/user-attachments/assets/b3311ef2-eac0-499a-9668-52a51aa30a54" />
+
+## Certbot
+
+```bash
+sudo apt install python3 python3-dev python3-venv libaugeas-dev gcc
+```
+
+```bash
+sudo python3 -m venv /opt/certbot/
+sudo /opt/certbot/bin/pip install --upgrade pip
+```
+
+```bash
+sudo /opt/certbot/bin/pip install certbot certbot-nginx
+sudo ln -s /opt/certbot/bin/certbot /usr/bin/certbot
+```
+
+```bash
+echo "0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && sudo certbot renew -q" | sudo tee -a /etc/crontab > /dev/null
+```
