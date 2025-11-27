@@ -207,6 +207,6 @@ Add lines to end:
 
 ```
 xpack.security.enabled: true
-discovery.type: single-node
+xpack.security.authc.api_key.enabled: true
 ```
 
