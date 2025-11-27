@@ -1,14 +1,6 @@
 # Java
 
-<https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-on-ubuntu-22-04>
 
-```bash
-sudo apt install default-jre
-```
-
-```bash
-sudo apt install default-jdk
-```
 
 ```console
 ubuntu@vps-329cc0aa:~$ sudo update-alternatives --config java
