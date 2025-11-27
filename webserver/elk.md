@@ -1,5 +1,7 @@
 # ELK
 
+## Java
+
 <https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-on-ubuntu-22-04>
 
 ```bash
@@ -9,6 +11,81 @@ sudo apt install default-jre
 ```bash
 sudo apt install default-jdk
 ```
+
+## Nginx
+
+<https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-22-04>
+
+```bash
+sudo apt install nginx
+sudo systemctl enable nginx
+```
+
+```bash
+sudo mkdir -p /var/www/histfile.org/html
+sudo chown -R $USER:$USER /var/www/histfile.org/html
+sudo chmod -R 755 /var/www/histfile.org
+```
+
+```bash
+vi /var/www/histfile.org/html/index.html
+```
+
+```html
+<html>
+    <head>
+        <title>Welcome to histfile.org!</title>
+    </head>
+    <body>
+        <h1>Success!  The histfile.org server block is working!</h1>
+    </body>
+</html>
+```
+
+```bash
+sudo vi /etc/nginx/sites-available/histfile.org
+```
+
+
+```
+server {
+        listen 80;
+        listen [::]:80;
+
+        root /var/www/histfile.org/html;
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name histfile.org www.histfile.org;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+}
+```
+
+```bash
+sudo ln -s /etc/nginx/sites-available/histfile.org /etc/nginx/sites-enabled/
+```
+
+```bash
+sudo vi /etc/nginx/nginx.conf
+```
+
+Change line 23, `# server_names_hash_bucket_size 64;` to `server_names_hash_bucket_size 64;`.
+
+```bash
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+## Fail2ban
+
+```bash
+sudo apt install fail2ban
+sudo systemctl enable fail2ban
+```
+
+## Elasticsearch
 
 <https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-elastic-stack-on-ubuntu-22-04>
 
@@ -51,6 +128,7 @@ ubuntu@vps-329cc0aa:~$ curl -X GET "localhost:9200"
 }
 ```
 
+## Kibana
 
 ```bash
 sudo apt install kibana
@@ -94,3 +172,5 @@ sudo ln -s /etc/nginx/sites-available/kibana.histfile.org /etc/nginx/sites-enabl
 sudo nginx -t
 sudo systemctl reload nginx
 ```
+
+<img width="1916" height="688" alt="image" src="https://github.com/user-attachments/assets/b3311ef2-eac0-499a-9668-52a51aa30a54" />
