@@ -174,29 +174,28 @@ sudo systemctl restart named
 Before restricting access to nameserver only to localhost on histfile.org:
 
 ```console
-ubuntu@LAPTOP-JBell:~$ dig @158.69.60.101 bob.com
+ubuntu@LAPTOP-JBell:~$ dig @158.69.60.101 example.com
 
-; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> @158.69.60.101 bob.com
+; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> @158.69.60.101 example.com
 ; (1 server found)
 ;; global options: +cmd
 ;; Got answer:
-;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 43542
-;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 27663
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
 
 ;; OPT PSEUDOSECTION:
 ; EDNS: version: 0, flags:; udp: 1232
-; COOKIE: cff30e44c86f763101000000692c4fe8f6fe650f9f02ae84 (good)
+; COOKIE: 38e97f445d63b50901000000692c4fdfb17b567d58750a78 (good)
 ;; QUESTION SECTION:
-;bob.com.                       IN      A
+;example.com.                   IN      A
 
 ;; ANSWER SECTION:
-bob.com.                600     IN      CNAME   xrek5v.ckwoy.com.
-xrek5v.ckwoy.com.       60      IN      A       206.119.83.34
+example.com.            604800  IN      A       148.113.200.36
 
-;; Query time: 394 msec
+;; Query time: 12 msec
 ;; SERVER: 158.69.60.101#53(158.69.60.101) (UDP)
-;; WHEN: Sun Nov 30 09:08:41 EST 2025
-;; MSG SIZE  rcvd: 110
+;; WHEN: Sun Nov 30 09:08:31 EST 2025
+;; MSG SIZE  rcvd: 84
 ```
 
 After restricting access to the nameserver to localhost on histfile.org:
