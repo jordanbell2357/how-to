@@ -144,3 +144,28 @@ example.com.            604800  IN      A       148.113.200.36
 ;; WHEN: Sun Nov 30 14:14:40 UTC 2025
 ;; MSG SIZE  rcvd: 84
 ```
+
+```
+ubuntu@histfile:~$ dig @127.0.0.1 -x 192.168.1.20
+
+; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> @127.0.0.1 -x 192.168.1.20
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 35386
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 123940549e17fba501000000692cb6d1ceff33af13e1d012 (good)
+;; QUESTION SECTION:
+;20.1.168.192.in-addr.arpa.     IN      PTR
+
+;; ANSWER SECTION:
+20.1.168.192.in-addr.arpa. 604800 IN    PTR     www.example.com.
+
+;; Query time: 0 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1) (UDP)
+;; WHEN: Sun Nov 30 21:27:45 UTC 2025
+;; MSG SIZE  rcvd: 111
+```
