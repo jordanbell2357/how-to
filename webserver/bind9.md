@@ -263,3 +263,87 @@ ubuntu@histfile:~$ dig @127.0.0.1 -x 192.168.1.20
 ;; WHEN: Sun Nov 30 21:27:45 UTC 2025
 ;; MSG SIZE  rcvd: 111
 ```
+
+
+We can make our DNS server temporarily open to the internet using socat.
+
+```bash
+sudo socat UDP4-LISTEN:53,fork,bind=158.69.60.101 UDP4:127.0.0.1:53
+```
+
+Then on our laptop we succeed in using the nameserver
+
+```
+ubuntu@LAPTOP-JBell:~$ dig @158.69.60.101 example.com
+
+; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> @158.69.60.101 example.com
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 59036
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 7eaafeefab39360601000000692cbe14d0decc8b63d67af7 (good)
+;; QUESTION SECTION:
+;example.com.                   IN      A
+
+;; ANSWER SECTION:
+example.com.            604800  IN      A       148.113.200.36
+
+;; Query time: 12 msec
+;; SERVER: 158.69.60.101#53(158.69.60.101) (UDP)
+;; WHEN: Sun Nov 30 16:58:45 EST 2025
+;; MSG SIZE  rcvd: 84
+```
+
+Once we terminate the socat command, using the nameserver from the internet goes back to failing:
+
+```
+ubuntu@LAPTOP-JBell:~$ dig @158.69.60.101 example.com
+;; communications error to 158.69.60.101#53: connection refused
+;; communications error to 158.69.60.101#53: connection refused
+;; communications error to 158.69.60.101#53: connection refused
+
+; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> @158.69.60.101 example.com
+; (1 server found)
+;; global options: +cmd
+;; no servers could be reached
+```
+
+When socat is running again, we use the nameserver on our laptop
+
+```console
+ubuntu@LAPTOP-JBell:~$ dig +short @158.69.60.101 example.com
+148.113.200.36
+```
+
+Together this is
+
+```bash
+IP_ADDRESS=$(dig +short @158.69.60.101 example.com)
+
+curl --resolve example.com:80:$IP_ADDRESS http://example.com/
+```
+
+Then
+
+```console
+ubuntu@LAPTOP-JBell:~$ curl --resolve example.com:80:148.113.200.36 http://example.com/
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+<h1>Index of /</h1>
+  <table>
+   <tr><th valign="top"><img src="/icons/blank.gif" alt="[ICO]"></th><th><a href="?C=N;O=D">Name</a></th><th><a href="?C=M;O=A">Last modified</a></th><th><a href="?C=S;O=A">Size</a></th><th><a href="?C=D;O=A">Description</a></th></tr>
+   <tr><th colspan="5"><hr></th></tr>
+   <tr><th colspan="5"><hr></th></tr>
+</table>
+<address>Apache/2.4.58 (Ubuntu) Server at example.com Port 80</address>
+</body></html>
+```
+
