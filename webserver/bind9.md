@@ -1,5 +1,7 @@
 # BIND9
 
+https://www.isc.org/bind/
+
 https://www.zenarmor.com/docs/linux-tutorials/how-to-set-up-bind-dns-server-on-ubuntu-linux
 
 ```bash
@@ -345,4 +347,21 @@ ubuntu@LAPTOP-JBell:~$ curl --resolve example.com:80:148.113.200.36 http://examp
 <address>Apache/2.4.58 (Ubuntu) Server at example.com Port 80</address>
 </body></html>
 ```
+
+
+```console
+ubuntu@histfile:~$ sudo rndc querylog on
+ubuntu@histfile:~$ dig example.com +short
+148.113.200.36
+ubuntu@histfile:~$ dig example.com +short
+148.113.200.36
+ubuntu@histfile:~$ sudo rndc querylog off
+buntu@histfile:~$ sudo tail -n 5 /var/log/syslog
+2025-11-30T23:36:24.684330+00:00 histfile named[721]: query logging is now on
+2025-11-30T23:36:45.303051+00:00 histfile named[721]: client @0x7fdb45341c08 127.0.0.1#58793 (example.com): query: example.com IN A +E(0)K (127.0.0.1)
+2025-11-30T23:37:03.954788+00:00 histfile named[721]: client @0x7fdb45341c08 127.0.0.1#57800 (example.com): query: example.com IN A +E(0)K (127.0.0.1)
+2025-11-30T23:37:48.434922+00:00 histfile named[721]: received control channel command 'querylog off'
+2025-11-30T23:37:48.435090+00:00 histfile named[721]: query logging is now off
+```
+
 
