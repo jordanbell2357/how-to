@@ -6,9 +6,76 @@ https://www.zenarmor.com/docs/linux-tutorials/how-to-set-up-bind-dns-server-on-u
 sudo apt install bind9 bind9utils bind9-doc dnsutils -y
 ```
 
-
 ```bash
 sudo vi /etc/bind/named.conf.options
+```
+
+```
+options {
+        directory "/var/cache/bind";
+
+        // If there is a firewall between you and nameservers you want
+        // to talk to, you may need to fix the firewall to allow multiple
+        // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+        // If your ISP provided one or more IP addresses for stable
+        // nameservers, you probably want to use them as forwarders.
+        // Uncomment the following block, and insert the addresses replacing
+        // the all-0's placeholder.
+
+        forwarders {
+        8.8.8.8;
+        8.8.4.4;
+        };
+
+        //========================================================================
+        // If BIND logs error messages about the root key being expired,
+        // you will need to update your keys.  See https://www.isc.org/bind-keys
+        //========================================================================
+        dnssec-validation auto;
+
+        listen-on port 53 { 127.0.0.1; };
+        listen-on-v6 { ::1; };
+
+        allow-query {
+        localhost;
+        };
+};
+```
+
+
+```bash
+sudo vi /etc/bind/named.conf.local
+```
+
+```
+//
+// Do any local configuration here
+//
+
+zone "example.com" {
+type master;
+file "/etc/bind/zones/db.example.com";
+};
+
+zone "1.168.192.in-addr.arpa" {
+type master;
+file "/etc/bind/zones/db.192";
+};
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+```
+
+```bash
+sudo mkdir -p /etc/bind/zones
+sudo cp /etc/bind/db.local /etc/bind/zones/db.example.com
+sudo cp /etc/bind/db.127 /etc/bind/zones/db.192
+```
+
+```bash
+sudo vi /etc/bind/zones/db.example.com
 ```
 
 ```
@@ -26,23 +93,28 @@ $TTL 604800
 
 @       IN  NS  ns1.example.com.
 
-; RS2 runs the DNS → ns1.example.com must point to RS2
+; histfile.org runs the DNS and its IP is 158.69.60.101
 ns1     IN  A   158.69.60.101
 
-; RS1 is where example.com should resolve to
+; jordanbell.org is where example.com should resolve
+; jordanbell.org has IP 148.113.200.36
 @       IN  A   148.113.200.36
 www     IN  A   148.113.200.36
-"/etc/bind/zones/db.example.com" 21L, 513B written
 ```
 
-
-```
-nameserver 158.69.60.101
-/etc/resolv.conf
+```bash
+echo "nameserver 127.0.0.1" | sudo tee /etc/resolv.conf
 ```
 
+```bash
+sudo systemctl disable --now systemd-resolved
 ```
-ubuntu@histfile:~$ cat /etc/hosts
+
+```bash
+sudo vi /etc/hosts
+```
+
+```
 127.0.0.1       localhost
 
 # The following lines are desirable for IPv6 capable hosts
@@ -53,10 +125,55 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 ff02::3 ip6-allhosts
 
-127.0.1.1       vps-329cc0aa.vps.ovh.ca vps-329cc0aa
+127.0.1.1       histfile
+```
+
+
+```bash
+sudo vi /etc/bind/named.conf.options
 ```
 
 ```
+options {
+        directory "/var/cache/bind";
+
+        // If there is a firewall between you and nameservers you want
+        // to talk to, you may need to fix the firewall to allow multiple
+        // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+        // If your ISP provided one or more IP addresses for stable
+        // nameservers, you probably want to use them as forwarders.
+        // Uncomment the following block, and insert the addresses replacing
+        // the all-0's placeholder.
+
+        forwarders {
+        8.8.8.8;
+        8.8.4.4;
+        };
+
+        //========================================================================
+        // If BIND logs error messages about the root key being expired,
+        // you will need to update your keys.  See https://www.isc.org/bind-keys
+        //========================================================================
+        dnssec-validation auto;
+
+        listen-on port 53 { 127.0.0.1; };
+        listen-on-v6 { ::1; };
+
+        allow-query {
+        localhost;
+        };
+};
+```
+
+
+```bash
+sudo systemctl restart named
+```
+
+Before restricting access to nameserver only to localhost on histfile.org:
+
+```console
 ubuntu@LAPTOP-JBell:~$ dig @158.69.60.101 bob.com
 
 ; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> @158.69.60.101 bob.com
@@ -82,30 +199,7 @@ xrek5v.ckwoy.com.       60      IN      A       206.119.83.34
 ;; MSG SIZE  rcvd: 110
 ```
 
-
-```bash
-sudo vi /etc/bind/named.conf.options
-```
-
-```
-options {
-    directory "/var/cache/bind";
-
-    forwarders {
-        8.8.8.8;
-        8.8.4.4;
-    };
-
-    dnssec-validation auto;
-
-    listen-on port 53 { 127.0.0.1; };
-    listen-on-v6 { ::1; };
-
-    allow-query { localhost; };
-};
-```
-
-
+After restricting access to the nameserver to localhost on histfile.org:
 
 ```
 ubuntu@LAPTOP-JBell:~$ dig @158.69.60.101 example.com
