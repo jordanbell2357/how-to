@@ -13,18 +13,6 @@ sudo apt install fail2ban
 sudo systemctl enable fail2ban
 ```
 
-## Java
-
-<https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-on-ubuntu-22-04>
-
-```bash
-sudo apt install default-jre
-```
-
-```bash
-sudo apt install default-jdk
-```
-
 ## Nginx
 
 <https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-22-04>
@@ -52,4 +40,14 @@ sudo certbot --nginx
 echo "0 0,12 * * * root /opt/certbot/bin/python -c 'import random; import time; time.sleep(random.random() * 3600)' && sudo certbot renew -q" | sudo tee -a /etc/crontab > /dev/null
 ```
 
+## Java
 
+<https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-on-ubuntu-22-04>
+
+```bash
+sudo apt install default-jre
+```
+
+```bash
+sudo apt install default-jdk
+```
