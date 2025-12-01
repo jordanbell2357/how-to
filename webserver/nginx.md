@@ -3,7 +3,7 @@
 ## hostnamectl
 
 ```bash
-sudo hostnamectl set-hostname nginx-server
+sudo hostnamectl set-hostname histfile
 ```
 
 ## Fail2ban
