@@ -72,3 +72,38 @@ https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-on-ubunt
 
 https://www.digitalocean.com/community/tutorials/how-to-install-lamp-stack-on-ubuntu
 
+```console
+mkdir -p /var/www/etcconf.net/public_html
+```
+
+```
+vi /etc/apache2/sites-available/etcconf.net.conf
+```
+
+```
+<VirtualHost *:80>
+    ServerName etcconf.net
+    ServerAlias www.etcconf.net
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/etcconf.net
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+
+```console
+root@etcconf:~# vi /etc/apache2/sites-available/etcconf.net.conf
+root@etcconf:~# sudo a2ensite etcconf.net
+Enabling site etcconf.net.
+To activate the new configuration, you need to run:
+  systemctl reload apache2
+```
+
+<https://www.digitalocean.com/community/tutorials/apache-configuration-error-ah00558-could-not-reliably-determine-the-server-s-fully-qualified-domain-name#setting-a-global-servername-directive>
+
+```bash
+echo "ServerName 127.0.0.1" | tee -a /etc/apache2/apache2.conf
+```
+
+
+
