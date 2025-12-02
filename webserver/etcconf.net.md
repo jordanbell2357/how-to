@@ -106,4 +106,48 @@ echo "ServerName 127.0.0.1" | tee -a /etc/apache2/apache2.conf
 ```
 
 
+```bash
+sudo vi /var/www/etcconf.net/info.php
+```
 
+```php
+<?php
+phpinfo();
+```
+
+
+```sql
+CREATE DATABASE weather;
+ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '<password>';
+CREATE USER 'dbuser'@'%' IDENTIFIED BY 'password';
+GRANT ALL ON weather.* TO 'dbuser'@'%';
+```
+
+```bash
+mysql -u dbuser -p
+```
+
+```sql
+CREATE TABLE weather.test_table (
+item_id INT AUTO_INCREMENT,
+content VARCHAR(255),
+PRIMARY KEY(item_id)
+);
+```
+
+```sql
+INSERT INTO weather.test_table (content) VALUES ("America/Los_Angeles");
+INSERT INTO weather.test_table (content) VALUES ("America/Chicago");
+INSERT INTO weather.test_table (content) VALUES ("America/New_York");
+```
+
+```bash
+vi /var/www/etcconf.net/tz_list.php
+```
+
+https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-phpmyadmin-on-ubuntu-20-04
+
+```bash
+apt-get install php8.5-mbstring
+phpenmod mbstring
+```
