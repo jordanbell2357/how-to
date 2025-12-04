@@ -2,8 +2,11 @@
 
 ## curl
 
-```console
-ubuntu@LAPTOP-JBell:~/ovh$ curl -s https://api.weather.gov/stations/1147W/observations/latest?require_qc=false | jq '.properties | {station: .stationId, stationName: .stationName, timestamp: .timestamp, temperature_C: .temperature.value, dewpoint_C: .dewpoint.value, windDirection_deg: .windDirection.value, windSpeed_km_h: .windSpeed.value, barometricPressure_Pa: .barometricPressure.value, precipitationLast3Hours_mm: .precipitationLast3Hours.value}'
+```bash
+curl -s https://api.weather.gov/stations/1147W/observations/latest?require_qc=false | jq '.properties | {station: .stationId, stationName: .stationName, timestamp: .timestamp, temperature_C: .temperature.value, dewpoint_C: .dewpoint.value, windDirection_deg: .windDirection.value, windSpeed_km_h: .windSpeed.value, barometricPressure_Pa: .barometricPressure.value, precipitationLast3Hours_mm: .precipitationLast3Hours.value}'
+```
+
+```json
 {
   "station": "1147W",
   "stationName": "The Weather Channel",
@@ -42,41 +45,9 @@ mv weather.json weather/$YEAR/$MONTH/$DAY/"$STATIONID"_"$TIMESTAMP".json
 chmod +x weather.sh
 ```
 
-We execute `weather.sh` twice.
-
-```console
-ubuntu@vps-9e6a8f0e:~$ ls weather/2025/11/12/*
-weather/2025/11/12/1147W_20251112T001442.json  weather/2025/11/12/1147W_20251112T001757.json
-```
-
-
-```console
-ubuntu@vps-9e6a8f0e:~$ cat weather/2025/11/12/*
-{
-  "station": "1147W",
-  "stationName": "The Weather Channel",
-  "timestamp": "2025-11-11T23:50:00+00:00",
-  "temperature_C": 7.89,
-  "dewpoint_C": -5.58,
-  "windDirection_deg": 44,
-  "windSpeed_km_h": 3.24,
-  "barometricPressure_Pa": 102438.2,
-  "precipitationLast3Hours_mm": null
-}
-{
-  "station": "1147W",
-  "stationName": "The Weather Channel",
-  "timestamp": "2025-11-12T00:00:00+00:00",
-  "temperature_C": 7.78,
-  "dewpoint_C": -5.75,
-  "windDirection_deg": 76,
-  "windSpeed_km_h": 3.24,
-  "barometricPressure_Pa": 102438.2,
-  "precipitationLast3Hours_mm": null
-}
-```
-
 ## cron
+
+<https://opensource.com/article/17/11/how-use-cron-linux>
 
 <https://cronitor.io/guides/cron-jobs>
 
