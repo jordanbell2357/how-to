@@ -2,6 +2,10 @@
 
 https://www.digitalocean.com/community/tutorials/how-to-set-up-a-samba-share-for-a-small-organization-on-ubuntu-16-04
 
+https://documentation.ubuntu.com/server/how-to/samba/file-server/
+
+https://phoenixnap.com/kb/ubuntu-samba
+
 ```bash
 ip link
 ```
