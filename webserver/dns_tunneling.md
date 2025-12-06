@@ -12,7 +12,7 @@ sudo socat UDP4-LISTEN:53,fork,bind=158.69.60.101 UDP4:127.0.0.1:53 &
 
 On remote machine, we capture traffic on port 53: [^tcpdump]
 
-[^tcpdump]: <https://www.tcpdump.org/manpages/tcpdump.1.html>
+[^tcpdump]: <https://www.tcpdump.org/manpages/tcpdump.1.html> and <https://danielmiessler.com/blog/tcpdump>
 
 ```bash
 sudo tcpdump -i any -w /tmp/dns_capture.pcap 'port 53'
