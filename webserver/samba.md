@@ -7,6 +7,12 @@ https://documentation.ubuntu.com/server/how-to/samba/file-server/
 https://phoenixnap.com/kb/ubuntu-samba
 
 ```bash
+sudo apt install samba samba-common
+```
+
+The network interfaces are found using
+
+```bash
 ip link
 ```
 
@@ -18,10 +24,16 @@ ip link
     altname enp0s3
 ```
 
+namely, lo and ens3.
+
+
+We edit the Samba config file
 
 ```bash
 sudo vi /etc/samba/smb.conf
 ```
+
+and place the following lines at the end
 
 ```
 [share]
@@ -31,6 +43,8 @@ sudo vi /etc/samba/smb.conf
     browsable = yes
     valid users = sambauser
 ```
+
+We run
 
 ```bash
 testparm
@@ -66,16 +80,16 @@ Press enter to see a dump of your service definitions
         valid users = sambauser
 ```
 
-```bash
-sudo mkdir -p /samba/sambauser
-sudo chown :sambashare -R /samba/
-sudo adduser --home /samba/sambauser --no-create-home --shell /usr/sbin/nologin --ingroup sambashare sambauser
-```
+Then we make a user "sambauser"
 
 ```bash
+sudo adduser --home /samba/sambauser --no-create-home --shell /usr/sbin/nologin --ingroup sambashare sambauser
 sudo chown sambauser:sambashare /samba/sambauser/
 sudo chmod 2770 /samba/sambauser/
 ```
+
+There is a separate Samba user, which we give the same username as the system user "sambauser". It has its own password distinct from
+the system password.
 
 ```bash
 sudo smbpasswd -a sambauser
@@ -91,6 +105,8 @@ On another machine,
 ```bash
 smbclient //158.69.60.101/share -U sambauser
 ```
+
+which opens the Samba client session, in which we upload a file "weather.sh"
 
 ```console
 Password for [WORKGROUP\sambauser]:
