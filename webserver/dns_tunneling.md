@@ -2,6 +2,8 @@
 
 <https://isc.sans.edu/diary/Packet+Tricks+with+xxd/10306/>
 
+<https://leonjza.github.io/2014/03/11/dnsfilexfer-yet-another-take-on-file-transfer-via-dns/>
+
 Remote machine has IP 158.69.60.101 and domain name histfile.org.
 
 On remote machine, we have BIND9 server. It only serves requests from localhost. We temporarily open port 53 to DNS requests, using socat:
