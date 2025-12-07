@@ -24,15 +24,12 @@ sudo vi /etc/samba/smb.conf
 ```
 
 ```
-[global]
-        server string = sambda.histfile.org
-        server role = standalone server
-        interfaces = lo ens3
-        bind interfaces only = yes
-        disable netbios = yes
-        smb ports = 445
-        log file = /var/log/samba/smb.log
-        max log size = 10000
+[share]
+    comment = Samba on Ubuntu
+    path = /samba/sambauser
+    read only = no
+    browsable = yes
+    valid users = sambauser
 ```
 
 ```bash
@@ -51,14 +48,22 @@ Press enter to see a dump of your service definitions
 # Global parameters
 [global]
         bind interfaces only = Yes
-        disable netbios = Yes
         interfaces = lo ens3
-        log file = /var/log/samba/smb.log
-        max log size = 10000
+        log file = /var/log/samba/log.%m
+        logging = file
+        max log size = 1000
+        panic action = /usr/share/samba/panic-action %d
         server role = standalone server
-        server string = sambda.histfile.org
-        smb ports = 445
+        server string = samba_server
+        usershare allow guests = Yes
         idmap config * : backend = tdb
+
+
+[share]
+        comment = Samba on Ubuntu
+        path = /samba/sambauser
+        read only = No
+        valid users = sambauser
 ```
 
 ```bash
@@ -78,15 +83,36 @@ sudo smbpasswd -e sambauser
 ```
 
 ```bash
-sudo vi /etc/sambda/smb.conf
+sudo service smbd restart
+```
+
+On another machine,
+
+```bash
+smbclient //158.69.60.101/share -U sambauser
 ```
 
 ```console
-[sambauser]
-        path = /samba/sambauser
-        browseable = no
-        read only = no
-        force create mode = 0660
-        force directory mode = 2770
-        valid users = sambauser
+Password for [WORKGROUP\sambauser]:
+Try "help" to get a list of possible commands.
+smb: \> put weather.sh
+putting file weather.sh as \weather.sh (137.1 kb/s) (average 137.1 kb/s)
+smb: \> quit
+```
+
+On the Samba server,
+
+```bash
+sudo stat /samba/sambauser/weather.sh
+```
+
+```console
+  File: /samba/sambauser/weather.sh
+  Size: 702             Blocks: 8          IO Block: 4096   regular file
+Device: 8,1     Inode: 1048579     Links: 1
+Access: (0744/-rwxr--r--)  Uid: ( 1001/sambauser)   Gid: (  987/sambashare)
+Access: 2025-12-07 03:34:05.419694560 +0000
+Modify: 2025-12-07 03:33:03.297657669 +0000
+Change: 2025-12-07 03:33:03.296621562 +0000
+ Birth: 2025-12-07 03:33:03.293621510 +0000
 ```
