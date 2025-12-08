@@ -14,7 +14,8 @@ wget https://postalpro.usps.com/mnt/glusterfs/2025-12/ZIP_Locale_Detail.xls
 sudo apt install gnumeric
 ```
 
-> -S, --export-file-per-sheet 
+> -S, --export-file-per-sheet
+> 
 >              Export a file for each sheet if the exporter only supports one sheet at a time.   The  output
 >              filename  is treated as a template in which sheet number is substituted for %n, sheet name is
 >              substituted for %s, and sheet object name is substituted for %o in case of graph export.   If
