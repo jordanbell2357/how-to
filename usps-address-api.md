@@ -38,3 +38,51 @@ We download the Addresses 3.0 OpenAPI specification at <https://developers.usps.
 We use the OAuth token to use this API.
 
 
+We select a Pizza Hut restaurant in Chicago:
+
+> 2516 W North Ave, Chicago, IL 60647, United States
+
+We use the USPS API to find the best standardized form of the address.
+
+```json
+{
+    "firm": "PIZZA HUT",
+    "address": {
+        "streetAddress": "2516 W NORTH AVE",
+        "streetAddressAbbreviation": "2516 W NORTH AVE",
+        "secondaryAddress": "",
+        "cityAbbreviation": "CHICAGO",
+        "city": "CHICAGO",
+        "state": "IL",
+        "ZIPCode": "60647",
+        "ZIPPlus4": "5202",
+        "urbanization": ""
+    },
+    "additionalInfo": {
+        "deliveryPoint": "16",
+        "carrierRoute": "C022",
+        "DPVConfirmation": "Y",
+        "DPVCMRA": "N",
+        "business": "Y",
+        "centralDeliveryPoint": "N",
+        "vacant": "N"
+    },
+    "corrections": [
+        {
+            "code": "",
+            "text": ""
+        }
+    ],
+    "matches": [
+        {
+            "code": "31",
+            "text": "Single Response - exact match"
+        }
+    ]
+}
+```
+
+<img width="1367" height="870" alt="image" src="https://github.com/user-attachments/assets/b1d215fc-1a12-4864-b843-99e44bfac951" />
+
+
+<img width="1427" height="958" alt="Screenshot 2025-12-09 022014" src="https://github.com/user-attachments/assets/10152421-f28b-4f06-936c-d3fecef0b685" />
