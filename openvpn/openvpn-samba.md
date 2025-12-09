@@ -1,4 +1,6 @@
-# OpenVPN Access Server
+# Using OpenVPN for Samba
+
+## OpenVPN Access Server
 
 https://as-portal.openvpn.com/quick-start
 
@@ -33,3 +35,13 @@ We then download the Connection Profile from
 https://64.225.5.143:943/
 
 profile-userlocked.ovpn
+
+## Samba
+
+https://www.bellmts.ca/support/internet/security/blocked-or-restricted-ports
+
+TCP port 445 is blocked by my ISP. Using OpenVPN, we can use Samba on the standard port 445.
+
+<img width="1088" height="487" alt="image" src="https://github.com/user-attachments/assets/76dee5a9-68e2-460c-a35d-339bd03b8d2e" />
+
+
