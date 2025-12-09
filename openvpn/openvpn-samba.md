@@ -44,4 +44,19 @@ TCP port 445 is blocked by my ISP. Using OpenVPN, we can use Samba on the standa
 
 <img width="1088" height="487" alt="image" src="https://github.com/user-attachments/assets/76dee5a9-68e2-460c-a35d-339bd03b8d2e" />
 
+We then see the file on the Samba server:
 
+```bash
+sudo stat /samba/sambauser/openvpn-connect-3.8.0.4528_signed.msi
+```
+
+```console
+  File: /samba/sambauser/openvpn-connect-3.8.0.4528_signed.msi
+  Size: 115945472       Blocks: 226464     IO Block: 4096   regular file
+Device: 8,1     Inode: 1048580     Links: 1
+Access: (0744/-rwxr--r--)  Uid: ( 1001/sambauser)   Gid: (  987/sambashare)
+Access: 2025-12-09 04:35:32.246383259 +0000
+Modify: 2025-12-09 03:58:07.502152800 +0000
+Change: 2025-12-09 04:35:36.791463323 +0000
+ Birth: 2025-12-09 04:35:32.246383259 +0000
+```
