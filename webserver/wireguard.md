@@ -34,3 +34,6 @@ sudo cat /etc/wireguard/private.key | wg pubkey | sudo tee /etc/wireguard/public
 
 
 https://www.wireguard.com/install/
+
+
+https://www.wireguardconfig.com/
