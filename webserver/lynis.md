@@ -2,6 +2,9 @@
 
 https://cisofy.com/documentation/lynis/get-started/
 
+```bash
+sudo lynis audit system
+```
 
 ```console
   -[ Lynis 3.0.9 Results ]-
@@ -29,7 +32,6 @@ https://cisofy.com/documentation/lynis/get-started/
       https://cisofy.com/lynis/controls/DEB-0811/
 ```
 
-...
 
 
 ```console
@@ -132,5 +134,57 @@ sudo sed -i "s/SecResponseBodyAccess On/SecResponseBodyAccess Off/" /etc/modsecu
 ```
 
 ```bash
+sudo vi /etc/apache2/mods-enabled/security2.conf
+```
+
+
+```bash
 systemctl restart apache2
+```
+
+
+```bash
+sudio vi /etc/hosts
+```
+
+```
+127.0.0.1       localhost
+127.0.0.1       etcconf.net etcconf
+
+104.236.44.229  etcconf.net etcconf
+```
+
+Final run:
+
+```bash
+sudo lynis audit system
+```
+
+
+```
+================================================================================
+
+  Lynis security scan details:
+
+  Hardening index : 73 [##############      ]
+  Tests performed : 270
+  Plugins enabled : 1
+
+  Components:
+  - Firewall               [V]
+  - Malware scanner        [V]
+
+  Scan mode:
+  Normal [V]  Forensics [ ]  Integration [ ]  Pentest [ ]
+
+  Lynis modules:
+  - Compliance status      [?]
+  - Security audit         [V]
+  - Vulnerability scan     [V]
+
+  Files:
+  - Test and debug information      : /var/log/lynis.log
+  - Report data                     : /var/log/lynis-report.dat
+
+================================================================================
 ```
