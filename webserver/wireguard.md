@@ -18,11 +18,22 @@ sudo apt install wireguard
 
 ```bash
 wg genkey | sudo tee /etc/wireguard/private.key
+```
+
+```console
+<base64_server_private_key>
+```
+
+```bash
 sudo chmod go= /etc/wireguard/private.key
 ```
 
 ```bash
 sudo cat /etc/wireguard/private.key | wg pubkey | sudo tee /etc/wireguard/public.key
+```
+
+```console
+3/6vqif1839TEH16Az4jsfuHGoqYwudjSP+y/uUSHVk=
 ```
 
 ```bash
@@ -31,7 +42,7 @@ sudo vi /etc/wireguard/wg0.conf
 
 ```
 [Interface]
-PrivateKey = base64_encoded_private_key_goes_here
+PrivateKey = <base64_server_private_key>
 Address = 10.8.0.1/24
 ListenPort = 51820
 SaveConfig = true
@@ -41,10 +52,14 @@ SaveConfig = true
 sudo vi /etc/sysctl.conf
 ```
 
+We uncomment (line 28 in my configuration)
+
 ```console
+# Uncomment the next line to enable packet forwarding for IPv4
 net.ipv4.ip_forward=1
 ```
 
+We determine the network interface
 
 ```bash
 ip route list default
@@ -54,13 +69,19 @@ ip route list default
 default via 158.69.60.1 dev ens3 proto dhcp src 158.69.60.101 metric 100
 ```
 
+Thus the network interface is ens3.
+
+We create the file `wg0.conf`
+
 ```bash
 sudo vi /etc/wireguard/wg0.conf
 ```
 
+with the following contents
+
 ```console
 [Interface]
-PrivateKey = base64_encoded_private_key_goes_here
+PrivateKey = <base64_server_private_key>
 Address = 10.8.0.1/24
 ListenPort = 51820
 SaveConfig = true
@@ -69,21 +90,16 @@ PostUp = ufw route allow in on wg0 out on ens3
 PostUp = iptables -t nat -I POSTROUTING -o ens3 -j MASQUERADE
 PreDown = ufw route delete allow in on wg0 out on ens3
 PreDown = iptables -t nat -D POSTROUTING -o ens3 -j MASQUERADE
-```
 
-
-```bash
-sudo vi /etc/wireguard/wg0.conf
-```
-
-
-```
 PostUp = ip rule add table 200 from 158.69.60.101
 PostUp = ip route add table 200 default via 158.69.60.101
 PreDown = ip rule delete table 200 from 158.69.60.101
 PreDown = ip route delete table 200 default via 158.69.60.101
 ```
 
+We use resolvectl [^resolvectl] to find the IP address of the DNS server used by the interface ens3.
+
+[^resolvectl]: <https://www.freedesktop.org/software/syst1emd/man/latest/resolvectl.html>
 
 ```bash
 resolvectl dns ens3
@@ -92,6 +108,8 @@ resolvectl dns ens3
 ```
 Link 2 (ens3): 213.186.33.99
 ```
+
+Now we use the public key of the Windows client, which is 3Rm2j4hlEk98AbF5cfmBHW9fXfKsLeO2UfuCbRu1jSM=
 
 
 ```bash
@@ -137,12 +155,13 @@ https://browserleaks.com/ip
 
 https://cmdns.dev.dns-oarc.net/
 
-<img width="1434" height="740" alt="image" src="https://github.com/user-attachments/assets/505b2eaf-7095-4d5d-8ae5-f9db5e853d28" />
+<img width="717" height="370" alt="image" src="https://github.com/user-attachments/assets/505b2eaf-7095-4d5d-8ae5-f9db5e853d28" />
 
 
 
 ## Buffer Bloat
 
-https://www.waveform.com/tools/bufferbloat?test-id=d8890c6b-f474-4a2a-b8b2-529ab2fa1721
+https://www.waveform.com/tools/bufferbloat?test-id=6234e80a-8070-4153-96ef-97586920ad9a
 
+<img width="1442" height="410" alt="image" src="https://github.com/user-attachments/assets/879ea8d7-aa04-40d1-9aa5-d230bb639c84" />
 
