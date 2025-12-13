@@ -188,7 +188,7 @@ buntu@jordanbell:~$ jq ".[0]" weather_2025_12_13.json
 
 Each entry in the JSON file is made of 11 lines, along with initial and terminal JSON list brackets.
 
-``console
+```console
 ubuntu@jordanbell:~$ echo "885 * 11" | bc
 9735
 ubuntu@jordanbell:~$ jq ". | length" weather_2025_12_13.json
