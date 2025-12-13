@@ -92,3 +92,115 @@ Nov 12 00:30:01 vps-9e6a8f0e CRON[11485]: pam_unix(cron:session): session opened
 Nov 12 00:30:01 vps-9e6a8f0e CRON[11486]: (ubuntu) CMD (/home/ubuntu/weather.sh)
 Nov 12 00:30:03 vps-9e6a8f0e CRON[11485]: pam_unix(cron:session): session closed for user ubuntu
 ```
+
+
+
+Later:
+
+```console
+ubuntu@jordanbell:~/weather/2025/12$ TZ=EST date
+Sat Dec 13 01:00:45 EST 2025
+ubuntu@jordanbell:~$ find $(pwd) -name "1147W_*.json" | wc -l
+885
+```
+
+```console
+ubuntu@jordanbell:~$ find $(pwd) -name "1147W_*.json" | head
+/home/ubuntu/weather/2025/12/13/1147W_20251213T024501.json
+/home/ubuntu/weather/2025/12/13/1147W_20251213T004501.json
+/home/ubuntu/weather/2025/12/13/1147W_20251213T010001.json
+/home/ubuntu/weather/2025/12/13/1147W_20251213T040001.json
+/home/ubuntu/weather/2025/12/13/1147W_20251213T054501.json
+/home/ubuntu/weather/2025/12/13/1147W_20251213T060001.json
+/home/ubuntu/weather/2025/12/13/1147W_20251213T034501.json
+/home/ubuntu/weather/2025/12/13/1147W_20251213T051501.json
+/home/ubuntu/weather/2025/12/13/1147W_20251213T000001.json
+/home/ubuntu/weather/2025/12/13/1147W_20251213T014501.json
+ubuntu@jordanbell:~$ find $(pwd) -name "1147W_*.json" | tail
+/home/ubuntu/weather/2025/12/05/1147W_20251205T000001.json
+/home/ubuntu/weather/2025/12/05/1147W_20251205T024501.json
+/home/ubuntu/weather/2025/12/05/1147W_20251205T233001.json
+/home/ubuntu/weather/2025/12/05/1147W_20251205T081501.json
+/home/ubuntu/weather/2025/12/05/1147W_20251205T043001.json
+/home/ubuntu/weather/2025/12/05/1147W_20251205T221501.json
+/home/ubuntu/weather/2025/12/05/1147W_20251205T104501.json
+/home/ubuntu/weather/2025/12/05/1147W_20251205T094501.json
+/home/ubuntu/weather/2025/12/05/1147W_20251205T021502.json
+/home/ubuntu/weather/2025/12/05/1147W_20251205T210001.json
+```
+
+
+We use xargs [^xargs] and cat, and then jq [^jq] to combine the JSON files.
+
+[^xargs]: https://pubs.opengroup.org/onlinepubs/009604599/utilities/xargs.html
+
+[^jq]:
+
+```console
+ubuntu@jordanbell:~$ find $(pwd) -name "1147W_*.json" | tail -n 2 | xargs cat | jq --slurp
+[
+  {
+    "station": "1147W",
+    "stationName": "The Weather Channel",
+    "timestamp": "2025-12-05T02:00:00+00:00",
+    "temperature_C": 7.28,
+    "dewpoint_C": 3.11,
+    "windDirection_deg": 0,
+    "windSpeed_km_h": 0,
+    "barometricPressure_Pa": 102065.7,
+    "precipitationLast3Hours_mm": null
+  },
+  {
+    "station": "1147W",
+    "stationName": "The Weather Channel",
+    "timestamp": "2025-12-05T20:40:00+00:00",
+    "temperature_C": 7.94,
+    "dewpoint_C": 6.68,
+    "windDirection_deg": 0,
+    "windSpeed_km_h": 0,
+    "barometricPressure_Pa": 101490.02,
+    "precipitationLast3Hours_mm": null
+  }
+]
+```
+
+
+```console
+ubuntu@jordanbell:~$ find $(pwd) -name "1147W_*.json" | xargs cat | jq --slurp > weather_2025_12_13.json
+```
+
+
+```console
+buntu@jordanbell:~$ jq ".[0]" weather_2025_12_13.json
+{
+  "station": "1147W",
+  "stationName": "The Weather Channel",
+  "timestamp": "2025-12-13T02:30:00+00:00",
+  "temperature_C": 8.5,
+  "dewpoint_C": 4.04,
+  "windDirection_deg": 0,
+  "windSpeed_km_h": 0,
+  "barometricPressure_Pa": 101896.38,
+  "precipitationLast3Hours_mm": null
+}
+```
+
+
+Each entry in the JSON file is made of 11 lines, along with initial and terminal JSON list brackets.
+
+``console
+ubuntu@jordanbell:~$ echo "885 * 11" | bc
+9735
+ubuntu@jordanbell:~$ jq ". | length" weather_2025_12_13.json
+885
+ubuntu@jordanbell:~$ wc -l weather_2025_12_13.json
+9737 weather_2025_12_13.json
+```
+
+
+We download the combined JSON file using WinSCP.
+
+<img width="1491" height="645" alt="image" src="https://github.com/user-attachments/assets/dfd4d497-f059-4ae3-a191-6329c95a4f39" />
+
+
+
