@@ -32,6 +32,24 @@ https://dennisbabkin.com/kbdkeyinfo/
 
 https://lateralus138.github.io/Key-ScanCode/
 
+INFO.txt:
+
+>  - ScanCode    = scan code for the key. This value is presented in hexadecimal form but can
+>                 be shown as a decimal too. To change that go to View -> and uncheck
+>                 "View Hexadecimal Values" menu item. After that press the same key again.
+>                 Note that scan codes are hardware-dependent and may be different for various
+>                 keyboards and languages.
+>
+> - Extended    = Yes or No for whether the scan code represents the extended key. 
+>                 (For instance, left and right Ctrl keys.)
+>
+> - VirtualKeyCode  = virtual key code for the key. This code represents key's standard code
+>                     and doesn't change from keyboard to keyboard. Note though that some
+>                     virtual key codes may be specific for some languages.
+>                     This value is presented in hexadecimal form but can be shown as a 
+>                     decimal too. To change that go to View -> and uncheck "View Hexadecimal
+>                     Values" menu item. After that press the same key again.
+
 
 
 <img width="377" height="168" alt="image" src="https://github.com/user-attachments/assets/69512db3-42fd-46e4-bd0d-4243b12093c1" />
