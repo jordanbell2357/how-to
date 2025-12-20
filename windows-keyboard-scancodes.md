@@ -33,6 +33,7 @@ https://dennisbabkin.com/kbdkeyinfo/
 https://lateralus138.github.io/Key-ScanCode/
 
 
+
 <img width="377" height="168" alt="image" src="https://github.com/user-attachments/assets/69512db3-42fd-46e4-bd0d-4243b12093c1" />
 
 
@@ -43,3 +44,7 @@ https://lateralus138.github.io/Key-ScanCode/
 
 
 <img width="377" height="168" alt="image" src="https://github.com/user-attachments/assets/16db6724-22b0-4396-9b90-cdccde03b238" />
+
+
+<img width="377" height="168" alt="image" src="https://github.com/user-attachments/assets/d16fa83e-6df2-439d-b155-6187cc31316f" />
+
