@@ -2,6 +2,8 @@
 
 https://homepages.cwi.nl/~aeb/linux/kbd/scancodes-1.html
 
+https://w3c.github.io/uievents/tools/key-event-viewer.html
+
 ## PassMark® Software KeyboardTest
 
 https://www.passmark.com/products/keytest/
