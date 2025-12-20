@@ -23,15 +23,6 @@ https://www.passmark.com/products/keytest/
 
 https://dennisbabkin.com/kbdkeyinfo/
 
-
-<img width="867" height="576" alt="image" src="https://github.com/user-attachments/assets/83577137-c0c6-41e0-b61c-62fbae234513" />
-
-
-
-## Key-ScanCode
-
-https://lateralus138.github.io/Key-ScanCode/
-
 INFO.txt:
 
 >  - ScanCode    = scan code for the key. This value is presented in hexadecimal form but can
@@ -50,6 +41,16 @@ INFO.txt:
 >                     decimal too. To change that go to View -> and uncheck "View Hexadecimal
 >                     Values" menu item. After that press the same key again.
 
+
+
+
+<img width="867" height="576" alt="image" src="https://github.com/user-attachments/assets/83577137-c0c6-41e0-b61c-62fbae234513" />
+
+
+
+## Key-ScanCode
+
+https://lateralus138.github.io/Key-ScanCode/
 
 
 <img width="377" height="168" alt="image" src="https://github.com/user-attachments/assets/69512db3-42fd-46e4-bd0d-4243b12093c1" />
