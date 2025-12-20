@@ -16,13 +16,16 @@ https://www.passmark.com/products/keytest/
 
 <img width="1283" height="852" alt="image" src="https://github.com/user-attachments/assets/93440690-55fe-4475-8dce-a631d239889a" />
 
+<img width="1283" height="852" alt="image" src="https://github.com/user-attachments/assets/4567d853-6185-4a65-8515-ae882a7ed3f7" />
+
 
 ## Keyboard Key Info
 
 https://dennisbabkin.com/kbdkeyinfo/
 
 
-<img width="867" height="576" alt="image" src="https://github.com/user-attachments/assets/bf84ebdb-409d-4f6d-ad1b-bdb0ce742ad3" />
+<img width="867" height="576" alt="image" src="https://github.com/user-attachments/assets/83577137-c0c6-41e0-b61c-62fbae234513" />
+
 
 
 ## Key-ScanCode
