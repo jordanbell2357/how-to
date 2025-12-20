@@ -50,7 +50,11 @@ INFO.txt:
 
 ## Key-ScanCode
 
-https://lateralus138.github.io/Key-ScanCode/
+https://github.com/Lateralus138/Key-ScanCode
+
+> Key ScanCode is a small gui utility to view the scan and virtual key codes
+of individual keys on a keyboard.
+
 
 
 <img width="377" height="168" alt="image" src="https://github.com/user-attachments/assets/69512db3-42fd-46e4-bd0d-4243b12093c1" />
