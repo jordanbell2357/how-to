@@ -48,3 +48,5 @@ https://lateralus138.github.io/Key-ScanCode/
 
 <img width="377" height="168" alt="image" src="https://github.com/user-attachments/assets/d16fa83e-6df2-439d-b155-6187cc31316f" />
 
+<img width="377" height="168" alt="image" src="https://github.com/user-attachments/assets/7ae80d4e-671a-4293-8102-a8b8aca23189" />
+
