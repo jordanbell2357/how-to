@@ -1,4 +1,4 @@
-# Randonmess beacons
+# Randonmess sources
 
 # NIST Randomness Beacon (Version 2.0 Beta) -- work in progress
 
